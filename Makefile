@@ -5,7 +5,7 @@ CC=g++
 PARAM=-std=c++11 
 OUTPUT=myparse
 
-all: flex yacc clang
+all: flex yacc clang run
 
 clang: *.cpp *.h
 	${CC} -o ${OUTPUT} *.cpp ${LLVMPARAM} ${PARAM}
@@ -21,5 +21,8 @@ clean:
 
 test: all
 	./${OUTPUT} < input_example
+
+run: all
+	 ./${OUTPUT}
 
 

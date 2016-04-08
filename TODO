@@ -1,5 +1,10 @@
 V0.1 = Soma de inteiros; [OK]
 V0.2 = Multiplicacao e Debug; [OK]
 V0.2.1 = Definicao de variaveis;
+	ºdef a
+	ºdef wee
+	ºdef bla, wee, alce
+	-> Guardar em uma tabela de simbolos!	
+
 V0.2.2 = Uso de variaveis em expressoes;
 V0.3 = atribuicao;
