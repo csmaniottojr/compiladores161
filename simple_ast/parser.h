@@ -39,16 +39,26 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 17 "parser.y" /* yacc.c:1909  */
+
+#include "structures.h"
+using Structures::Identifier;
+
+#line 49 "parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    T_INT = 258,
-    T_PLUS = 259,
-    T_MULT = 260,
-    T_NL = 261
+    T_ID = 258,
+    T_INT = 259,
+    T_PLUS = 260,
+    T_MULT = 261,
+    T_NL = 262,
+    T_VIRGULA = 263,
+    T_DEF = 264
   };
 #endif
 
@@ -57,13 +67,15 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 13 "parser.y" /* yacc.c:1909  */
+#line 25 "parser.y" /* yacc.c:1909  */
 
+	Identifier* identifier;	
 	int integer;
 	AST::Node *node;
 	AST::Block *block;
+	
 
-#line 67 "parser.h" /* yacc.c:1909  */
+#line 79 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

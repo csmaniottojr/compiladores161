@@ -2,7 +2,7 @@
 FLEX=flex
 BISON=bison
 CC=g++
-PARAM=-std=c++11 
+PARAM=-std=gnu++11 
 OUTPUT=myparse
 
 all: flex yacc clang run
@@ -22,7 +22,7 @@ clean:
 test: all
 	./${OUTPUT} < input_example
 
-run: all
+run:
 	 ./${OUTPUT}
 
 

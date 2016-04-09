@@ -3,6 +3,7 @@
 #include "ast.h"
 #include "parser.h"
 #include <cstdarg>
+
 extern int yylineno;
 void yyerror(const char *s, ...);
 %}
@@ -18,6 +19,9 @@ digs [0-9]+
 "+"		{return T_PLUS;}
 "*"		{return T_MULT;}
 \n		{return T_NL;}
+","		{return T_VIRGULA;}
+"def"		{return T_DEF;}
+[a-zA-Z_][a-zA-Z0-9_]* { yylval.identifier = new Structures::Identifier(yytext);return T_ID;}
 .		{yyerror("Unknown token! %c\n", *yytext);} /*complains about every unknown character like a bitch*/
 
 %%
