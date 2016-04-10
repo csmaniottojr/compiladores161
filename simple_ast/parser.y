@@ -44,6 +44,7 @@ using Structures::Identifier;
  */
 %type <node> expr line
 %type <block> lines program
+%type <int> exprVar
 
 
 /* Operator precedence for mathematical operators
@@ -59,8 +60,8 @@ using Structures::Identifier;
 
 %%
 
-program : 
-	lines { programRoot = $1; }
+program 
+	:lines { programRoot = $1; }
 ;
 
 
@@ -79,16 +80,32 @@ expr
 	: T_INT { $$ = new AST::Integer($1); }
 	| expr T_PLUS expr { $$ = new AST::BinOp($1,AST::plus,$3); }
 	| expr T_MULT expr { $$ = new AST::BinOp($1,AST::mult,$3);}
+	| exprVar { AST::Integer* varExpr = new AST::Integer($1); $$ = varExpr;}
+	| exprVar T_PLUS expr { $$ = new::AST::BinOp(new AST::Integer($1),AST::plus,$3); }
+	| expr T_PLUS exprVar {$$ = new::AST::BinOp($1,AST::plus,new AST::Integer($3));}
+	| exprVar T_MULT expr { $$ = new AST::BinOp(new AST::Integer($1),AST::mult,$3);}
+	| expr T_MULT exprVar { $$ = new AST::BinOp($1,AST::mult,new AST::Integer($3));}
 	| expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
-;
-var
-	: T_DEF vars 
 	;
-vars
-	:T_ID { simbolTable->insertIdentifier ( $1->idName ,0 ); std::cout << "Achou o id "<< $1->idName << std::endl;}
-	|vars T_VIRGULA T_ID { simbolTable->insertIdentifier ( $3->idName, 0 );std::cout << "Achou o id "<< $3->idName << std::endl; }
+var
+	: T_DEF T_ID { simbolTable->insertIdentifier ( $2->idName ,0 ); std::cout << "Achou o id "<< $2->idName << std::endl;} 
+	| var T_VIRGULA T_ID { simbolTable->insertIdentifier ( $3->idName, 0 );std::cout << "Achou o id "<< $3->idName << std::endl; }
 	;
 
+exprVar
+	:T_ID {
+		if(simbolTable->containsIdentifier(*$1)){
+			$$ = simbolTable->getIdentifierValue(*$1);
+		}else{
+		//Erro sintático! Operador não definido!
+			yyerrok;//Não  sei bem o que isso faz 
+		}
+	}
+	|exprVar T_PLUS exprVar {$$ = $1 + $3;}
+	|exprVar T_MULT exprVar {$$ = $1 * $3;}
+	;
+	
+	
 %%
 
 

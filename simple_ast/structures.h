@@ -24,7 +24,8 @@ namespace Structures {
 		IdList();
 //Returns true if sucefuly inserted the identifier in list. If a error ocurred, or the identifier was already inserted.
 		bool insertIdentifier(Structures::Identifier id, int value);	
-
+                bool containsIdentifier(Structures::Identifier id);
+                int getIdentifierValue(Structures::Identifier id);
 	};
 
 
