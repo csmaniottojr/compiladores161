@@ -12,7 +12,7 @@ extern Structures::SymbolTable* simbolTable;//Simbol Table, in Bison file
 namespace AST {
 
 //Binary operations
-	enum Operation { plus, mult };
+	enum Operation { plus, mult, assign };
         
 	class Node;
 

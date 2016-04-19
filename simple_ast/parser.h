@@ -57,8 +57,9 @@ extern int yydebug;
     T_PLUS = 260,
     T_MULT = 261,
     T_NL = 262,
-    T_VIRGULA = 263,
-    T_DEF = 264
+    T_ATRIB = 263,
+    T_VIRGULA = 264,
+    T_DEF = 265
   };
 #endif
 
@@ -75,7 +76,7 @@ union YYSTYPE
 	AST::Block *block;
 
 
-#line 79 "parser.h" /* yacc.c:1909  */
+#line 80 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

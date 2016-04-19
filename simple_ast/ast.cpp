@@ -14,6 +14,7 @@ void BinOp::printTree() {
 	switch( op ) {
 		case plus: std::cout << " + "; break;
 		case mult: std::cout << " * "; break;
+		case AST::assign: std::cout << "="; break;
 	}
 	right->printTree();
 	return;
@@ -49,6 +50,13 @@ int BinOp::computeTree() {
 	switch( op ) {
 		case plus: value = lvalue + rvalue; break;
 		case mult: value = lvalue * rvalue; break;
+		/*Syntax: var assign expression*/
+		case AST::assign: {
+			Variable *var = dynamic_cast<Variable *>( left );
+			simbolTable->symbolMap[var->id].value= rvalue;
+			value = rvalue;
+		}
+		break;
 	}
 	return value;
 }

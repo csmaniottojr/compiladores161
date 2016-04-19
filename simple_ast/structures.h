@@ -32,7 +32,7 @@ namespace Structures {
 
                 AST::Node* insertVariable(std::__cxx11::string idName, AST::Node *nextVar);
                 AST::Node* assignVariable(std::string id);
-		bool containsIdentifier(std::string id);
+                bool containsIdentifier(std::string id);
 		AST::Node* getIdentifierValue(std::string id);
 	};
 

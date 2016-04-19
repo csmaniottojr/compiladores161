@@ -15,13 +15,17 @@ digs [0-9]+
 %%
 
 [ \t]		; //ignores spaces
+
 {digs}		{yylval.integer = std::atoi(yytext); return T_INT;}
 "+"		{return T_PLUS;}
 "*"		{return T_MULT;}
-\n		{return T_NL;}
 ","		{return T_VIRGULA;}
 "def"		{return T_DEF;}
-[a-zA-Z_][a-zA-Z0-9_]* { yylval.identifier = (yytext); return T_ID;}
+"=" 		{return T_ATRIB;}
+"int"		{return T_TINT;}
+"double"	{return T_TDOUBLE;}
+\n		{return T_NL;}
+[a-z][a-z0-1]* { yylval.identifier = strdup(yytext); return T_ID;} /*Copy the string, so are diferent pointers!*/
 .		{yyerror("Unknown token! %c\n", *yytext);} /*complains about every unknown character like a bitch*/
 
 %%
