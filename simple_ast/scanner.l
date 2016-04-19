@@ -21,7 +21,7 @@ digs [0-9]+
 \n		{return T_NL;}
 ","		{return T_VIRGULA;}
 "def"		{return T_DEF;}
-[a-zA-Z_][a-zA-Z0-9_] * { yylval.identifier = new Structures::Identifier(yytext); return T_ID;}
+[a-zA-Z_][a-zA-Z0-9_]* { yylval.identifier = (yytext); return T_ID;}
 .		{yyerror("Unknown token! %c\n", *yytext);} /*complains about every unknown character like a bitch*/
 
 %%

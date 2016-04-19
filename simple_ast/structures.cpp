@@ -1,12 +1,19 @@
 #include "structures.h"
 #include "ast.h"
 
-Structures::SymbolTable::IdList() {
+//Constructors========================================================
+
+Structures::SymbolTable::SymbolTable() {
 }
 
-Structures::Symbol::Identifier ( std::string identifier )  {
-	this->idName = identifier;
+
+Structures::Symbol::Symbol() {
+	this->initialized = false;
+	this->type = Structures::Types::integer;
+	this->kind = Structures::Kinds::variable;
+	this->value = 0;
 }
+//Constructors========================================================
 
 
 /*
@@ -15,11 +22,12 @@ Structures::Symbol::Identifier ( std::string identifier )  {
  and id is the identifier infos (A Structures::Identifier obj)
  */
 
-AST::Node *Structures::SymbolTable::insertVariable ( std::__cxx11::string idName, AST::Node nextVar ) {
+AST::Node *Structures::SymbolTable::insertVariable ( std::__cxx11::string idName, AST::Node* nextVar ) {
 	if ( this->symbolMap.find( idName ) == this->symbolMap.end() ) {
-		std::pair<std::string,Structures::Symbol> newElement ( idName,id );
+		Structures::Symbol newSymbol( variable,Types::integer,0,false );
+		std::pair<std::string,Structures::Symbol> newElement ( idName,newSymbol );
 		this->symbolMap.insert ( newElement );
-		return true;
+		//Aqui tinha um return ????
 	} else {
 		yyerror( "Variable redefinition! [%s]",idName.c_str() );
 	}
@@ -30,7 +38,7 @@ bool Structures::SymbolTable::containsIdentifier( std::string idName ) {
 	return ( !( this->symbolMap.find( idName ) == this->symbolMap.end() ) );
 }
 
-AST::Node Structures::SymbolTable::getIdentifierValue( std::string id ) {
+AST::Node * Structures::SymbolTable::getIdentifierValue( std::string id ) {
 	if( !containsIdentifier( id ) ) {
 		yyerror( "Variable \"%s\" used but not defined!",id.c_str() );
 	}
@@ -39,6 +47,8 @@ AST::Node Structures::SymbolTable::getIdentifierValue( std::string id ) {
 	}
 	return new AST::Variable( id, NULL );
 }
+
+
 
 AST::Node *Structures::SymbolTable::assignVariable( std::__cxx11::string id ) {
 	if( !containsIdentifier( id ) ) {

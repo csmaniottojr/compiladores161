@@ -5,7 +5,9 @@
 #include "structures.h"
 
 extern void yyerror(const char*s, ...);//The error funtion in Bison 
-extern Structures::SymbolTable *simbolTable;//Simbol Table, in Bison file
+namespace Structures {class SymbolTable;};
+
+extern Structures::SymbolTable* simbolTable;//Simbol Table, in Bison file
 
 namespace AST {
 
@@ -50,6 +52,7 @@ namespace AST {
 	};
         
         class Variable : public Node{
+        public:
           std::string id;//The var "name"
           AST::Node* next;//Next Variable, to multiple variable declarations
           Variable(std::string id,  Node* next) :id(id), next(next){} //Default Constructor

@@ -31,7 +31,7 @@ void Variable::printTree() {
 	if( next != nullptr ) {
 		next->printTree();
 	}
-	std::cout << this->id;F
+	std::cout << this->id;
 	return;
 }
 
@@ -63,6 +63,6 @@ int Block::computeTree() {
 }
 //Variable
 int Variable::computeTree() {
-	return simbolTable.symbolMap[this->id].value;
+	return simbolTable->symbolMap[this->id].value;
 }
 
