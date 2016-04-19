@@ -1,30 +1,50 @@
 #include "structures.h"
+#include "ast.h"
 
-Structures::IdList::IdList() {
+Structures::SymbolTable::IdList() {
 }
 
-Structures::Identifier::Identifier ( std::string identifier )  {
+Structures::Symbol::Identifier ( std::string identifier )  {
 	this->idName = identifier;
 }
 
 
+/*
+ idMap is a <string,Identifier> Map !
+ Where string is the id. name (the "var name")
+ and id is the identifier infos (A Structures::Identifier obj)
+ */
 
-bool Structures::IdList::insertIdentifier ( Structures::Identifier id ,int value ) {
-	if ( this->idMap.find( id.idName ) == this->idMap.end() ) {
-		std::pair<std::string,int> newElement ( id.idName,value );
-		this->idMap.insert ( newElement );
+AST::Node *Structures::SymbolTable::insertVariable ( std::__cxx11::string idName, AST::Node nextVar ) {
+	if ( this->symbolMap.find( idName ) == this->symbolMap.end() ) {
+		std::pair<std::string,Structures::Symbol> newElement ( idName,id );
+		this->symbolMap.insert ( newElement );
 		return true;
+	} else {
+		yyerror( "Variable redefinition! [%s]",idName.c_str() );
 	}
-	return false;
-}
-bool Structures::IdList::containsIdentifier(Structures::Identifier id) {
-	return (!(this->idMap.find(id.idName) == this->idMap.end()));
+	return new AST::Variable( idName,nextVar );
 }
 
-int Structures::IdList::getIdentifierValue(Structures::Identifier id) {
-	return this->idMap.at(id.idName);
-	
+bool Structures::SymbolTable::containsIdentifier( std::string idName ) {
+	return ( !( this->symbolMap.find( idName ) == this->symbolMap.end() ) );
 }
 
+AST::Node Structures::SymbolTable::getIdentifierValue( std::string id ) {
+	if( !containsIdentifier( id ) ) {
+		yyerror( "Variable \"%s\" used but not defined!",id.c_str() );
+	}
+	if( !symbolMap[id].initialized ) {
+		yyerror( "Variable \"%s\" defined but not initilized!",id.c_str() );
+	}
+	return new AST::Variable( id, NULL );
+}
 
+AST::Node *Structures::SymbolTable::assignVariable( std::__cxx11::string id ) {
+	if( !containsIdentifier( id ) ) {
+		yyerror( "Variable \"%s\" used but not defined!",id.c_str() );
+	}
+	this->symbolMap[id].initialized=true;
+	return new AST::Variable( id,NULL );
+}
 

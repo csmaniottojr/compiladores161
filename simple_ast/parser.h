@@ -43,37 +43,35 @@ extern int yydebug;
 #line 17 "parser.y" /* yacc.c:1909  */
 
 #include "structures.h"
-using Structures::Identifier;
+using Structures::Symbol;
 
 #line 49 "parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    T_ID = 258,
-    T_INT = 259,
-    T_PLUS = 260,
-    T_MULT = 261,
-    T_NL = 262,
-    T_VIRGULA = 263,
-    T_DEF = 264
-  };
+enum yytokentype {
+	T_ID = 258,
+	T_INT = 259,
+	T_PLUS = 260,
+	T_MULT = 261,
+	T_NL = 262,
+	T_VIRGULA = 263,
+	T_DEF = 264
+};
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
-union YYSTYPE
-{
+union YYSTYPE {
 #line 25 "parser.y" /* yacc.c:1909  */
 
-	Identifier* identifier;	
+	Symbol *identifier;
 	int integer;
 	AST::Node *node;
 	AST::Block *block;
-	
+
 
 #line 79 "parser.h" /* yacc.c:1909  */
 };
@@ -84,6 +82,6 @@ union YYSTYPE
 
 extern YYSTYPE yylval;
 
-int yyparse (void);
+int yyparse ( void );
 
 #endif /* !YY_YY_PARSER_H_INCLUDED  */
