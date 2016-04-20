@@ -12,15 +12,16 @@ namespace AST{class Node;}
 namespace Structures {
 
         enum Kinds {variable};
-        enum Types {integer};
+        enum Types {integer, doub};
 	class Symbol {
 	public:
 		
                 Kinds kind;//Kind of symbol (var, func,...)
                 Types type;//Type of symbol (Int, Double,...)
-                int64_t value;//Space to store a value while interpretating
+                void* value;//Space to store a value while interpretating
                 bool initialized;//Defines if th symbol was initialized or not
-		Symbol(Kinds kind, Types type, int64_t value, bool initialized): kind(kind), type(type),value(value),initialized(initialized){};
+		Symbol(Kinds kind, Types type, void* value, bool initialized):
+		kind(kind), type(type),value(value),initialized(initialized){};
                 Symbol();
          
         };

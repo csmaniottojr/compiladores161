@@ -34,7 +34,8 @@
  */
 %token <identifier> T_ID
 %token <integer> T_INT
-%token T_PLUS T_MULT T_NL T_ATRIB T_TINT T_TDOUBLE
+%token T_PLUS T_MULT T_NL T_ATRIB
+%token T_TINT T_TDOUBLE
 %token T_VIRGULA T_DEF
 
 
@@ -74,8 +75,7 @@ line
 : T_NL { $$ = NULL; } /*nothing here to be used */
 | expr T_NL /*$$ = $1 when nothing is said*/
 | T_DEF var T_NL {$$ = $2;} /*Variable definitions*/
-| T_ID T_ATRIB expr {   std::cout << "RECONHECEU ATRIBUICAO\nid=" << $1 << std::endl; 
-			AST::Node* node = simbolTable->assignVariable($1);
+| T_ID T_ATRIB expr {  	AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::assign,$3); }
 ;
 

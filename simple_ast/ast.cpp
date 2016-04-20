@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "structures.h"
 
 using namespace AST;
 
@@ -71,6 +72,14 @@ int Block::computeTree() {
 }
 //Variable
 int Variable::computeTree() {
-	return simbolTable->symbolMap[this->id].value;
+	Structures::Symbol thisSymbol = simbolTable->symbolMap[this->id];
+	switch( thisSymbol.type ) {
+		case Structures::integer:
+			int64_t *thisValue = ( int64_t * )thisSymbol.value;
+			return thisValue;
+			break;
+		case Structures::doub:
+			double *thisValue = ( double * )thisSymbol.value;
+	}
 }
 
