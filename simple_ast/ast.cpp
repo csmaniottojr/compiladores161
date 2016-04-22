@@ -71,15 +71,9 @@ int Block::computeTree() {
 	return 0;
 }
 //Variable
-int Variable::computeTree() {
+void *Variable::computeTree() {
 	Structures::Symbol thisSymbol = simbolTable->symbolMap[this->id];
-	switch( thisSymbol.type ) {
-		case Structures::integer:
-			int64_t *thisValue = ( int64_t * )thisSymbol.value;
-			return thisValue;
-			break;
-		case Structures::doub:
-			double *thisValue = ( double * )thisSymbol.value;
-	}
+	return thisSymbol.value;
 }
+
 
