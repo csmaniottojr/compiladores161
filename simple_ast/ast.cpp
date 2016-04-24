@@ -1,5 +1,4 @@
 #include "ast.h"
-#include "structures.h"
 
 using namespace AST;
 
@@ -40,38 +39,38 @@ void Variable::printTree() {
 
 /* ================Compute methods================*/
 //Integer
-int Integer::computeTree() {
-	return value;
+DataContainer Integer::computeTree() {
+	return DataContainer( value );
 }
 //Binary Operation
-int BinOp::computeTree() {
-	int value, lvalue, rvalue;
-	lvalue = left->computeTree();
-	rvalue = right->computeTree();
+DataContainer BinOp::computeTree() {
+	DataContainer lvalue = left->computeTree();
+	DataContainer rvalue = right->computeTree();
 	switch( op ) {
-		case plus: value = lvalue + rvalue; break;
-		case mult: value = lvalue * rvalue; break;
+		case plus: {DataContainer value = lvalue + rvalue; return value; break;}
+		case mult: {DataContainer value = lvalue * rvalue; return value; break;}
 		/*Syntax: var assign expression*/
 		case AST::assign: {
 			Variable *var = dynamic_cast<Variable *>( left );
 			simbolTable->symbolMap[var->id].value= rvalue;
-			value = rvalue;
+			DataContainer value = rvalue;
+			return value;
+			break;
 		}
-		break;
 	}
-	return value;
+	return DataContainer( 0 );
 }
 //Block
-int Block::computeTree() {
-	int value;
+DataContainer Block::computeTree() {
+	;
 	for ( Node *line: lines ) {
-		value = line->computeTree();
+		DataContainer value = line->computeTree();
 		std::cout << "Computed " << value << std::endl;
 	}
 	return 0;
 }
 //Variable
-void *Variable::computeTree() {
+DataContainer Variable::computeTree() {
 	Structures::Symbol thisSymbol = simbolTable->symbolMap[this->id];
 	return thisSymbol.value;
 }

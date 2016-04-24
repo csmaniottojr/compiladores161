@@ -4,7 +4,7 @@ BISON=bison
 CC=g++
 PARAM=-std=c++14
 OUTPUT=myparse
-all: flex yacc clang run
+all: flex yacc clang
 clang:*.cpp *.h
 	${CC} -o ${OUTPUT} *.cpp ${LLVMPARAM} ${PARAM}
 
