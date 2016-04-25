@@ -25,8 +25,8 @@ public:
         DataContainer( int value );
 	DataContainer( double value );
 	~DataContainer();
-	void insertData( int &data );
-	void insertData( double &data );
+	void insertData( int &newDdata );
+	void insertData( double &newDdata );
 	DataTypes getType() const;
 	DataContainer operator+ ( DataContainer &other );
 	DataContainer operator* ( DataContainer &other );

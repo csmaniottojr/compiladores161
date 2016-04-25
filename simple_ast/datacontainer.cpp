@@ -70,6 +70,7 @@ DataContainer DataContainer::operator+( DataContainer &other ) {
 				case DataContainer::tInteger: { //Int Int
 					int *thisValue = ( int * )this->data;
 					int *otherValue = ( int * )other.data;
+					std::cout<<"[DEBUG][DataContainer] Vai somar " << *thisValue << " + " <<*otherValue<<std::endl;
 					return DataContainer( *thisValue + *otherValue );
 					break;
 				}
@@ -139,14 +140,18 @@ DataContainer DataContainer::operator*( DataContainer &other ) {
 }
 //Data insertion===================================================================================
 //Integer========================================
-void DataContainer::insertData( int &data ) {
+void DataContainer::insertData( int &newData ) {
 	this->type = DataContainer::tInteger;
-	this->data = &data;
+	//std::cout<<"[DEBUG][DataContainer] Vai criar int " << newData << std::endl;
+	this->data = new int(newData);
+	//std::cout<<"[DEBUG][DataContainer] ctiou int " << *(int*)data << std::endl;
+	
 }
 //Double=========================================
-void DataContainer::insertData( double &data ) {
+void DataContainer::insertData( double &newData ) {
 	this->type = DataContainer::tDouble;
-	this->data = &data;
+	//std::cout<<"[DEBUG][DataContainer] Vai criar double " << data << std::endl;
+	this->data = new double(newData);
 }
 //Information======================================================================================
 DataContainer::DataTypes DataContainer::getType() const {
@@ -156,19 +161,20 @@ DataContainer::DataTypes DataContainer::getType() const {
 std::ostream &operator<< ( std::ostream &out,const DataContainer &dataContainer ) {
 	switch( dataContainer.getType() ) {
 		case DataContainer::tDouble: {
-			double *value = ( double * ) dataContainer.data;
-			out << *value;
+			double value = *( double * ) dataContainer.data;
+			out << value;
 			return out;
 			break;
 		}
 		case DataContainer::tInteger: {
-			int *value = ( int * ) dataContainer.data;
-			out << *value;
+			int value = *( int * ) dataContainer.data;
+//			std::cout<<"[DEBUG][DataContainer] dentro << : " << *(int*)dataContainer.data << std::endl;
+			out << value;
 			return out;
 			break;
 		}
 		default: {
-			out << "Unimplementes DataContainer type print!";
+			out << "Unimplemented DataContainer type print!";
 			return out;
 		}
 	}

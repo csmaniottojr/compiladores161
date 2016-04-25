@@ -39,7 +39,7 @@ namespace AST {
 	public:
 		virtual ~Node() {}
 		virtual void printTree() {}
-		virtual DataContainer computeTree() {int zero = 0;return DataContainer(zero);}
+		virtual DataContainer computeTree() {return DataContainer(0);}
 	};
 
 	class Integer : public Node {

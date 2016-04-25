@@ -14,7 +14,7 @@ void BinOp::printTree() {
 	switch( op ) {
 		case plus: std::cout << " + "; break;
 		case mult: std::cout << " * "; break;
-		case AST::assign: std::cout << "="; break;
+		case AST::assign: std::cout << " = "; break;
 	}
 	right->printTree();
 	return;
@@ -46,6 +46,8 @@ DataContainer Integer::computeTree() {
 DataContainer BinOp::computeTree() {
 	DataContainer lvalue = left->computeTree();
 	DataContainer rvalue = right->computeTree();
+	
+//	std::cout << "[Debug][AST] Operacao com " << *(int*)lvalue.data << " e " << *(int*)rvalue.data<<std::endl;
 	switch( op ) {
 		case plus: {DataContainer value = lvalue + rvalue; return value; break;}
 		case mult: {DataContainer value = lvalue * rvalue; return value; break;}
