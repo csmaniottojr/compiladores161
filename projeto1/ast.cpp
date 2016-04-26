@@ -3,11 +3,17 @@
 using namespace AST;
 
 /* ================Print Methods================*/
-//Integerw
+//Integer
 void Integer::printTree() {
 	std::cout << value;
 	return;
 }
+//Double
+void Double::printTree() {
+	std::cout << value;
+	return;
+}
+
 //Binary Operation
 void BinOp::printTree() {
 	left->printTree();
@@ -42,15 +48,23 @@ void Variable::printTree() {
 DataContainer Integer::computeTree() {
 	return DataContainer( value );
 }
+//Integer
+DataContainer Double::computeTree() {
+	return DataContainer( value );
+}
+
 //Binary Operation
 DataContainer BinOp::computeTree() {
 	DataContainer lvalue = left->computeTree();
 	DataContainer rvalue = right->computeTree();
-	
 //	std::cout << "[Debug][AST] Operacao com " << *(int*)lvalue.data << " e " << *(int*)rvalue.data<<std::endl;
 	switch( op ) {
-		case plus: {DataContainer value = lvalue + rvalue; return value; break;}
-		case mult: {DataContainer value = lvalue * rvalue; return value; break;}
+		case plus: {
+			DataContainer value = lvalue + rvalue; return value; break;
+		}
+		case mult: {
+			DataContainer value = lvalue * rvalue; return value; break;
+		}
 		/*Syntax: var assign expression*/
 		case AST::assign: {
 			Variable *var = dynamic_cast<Variable *>( left );

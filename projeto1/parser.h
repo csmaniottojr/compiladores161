@@ -54,14 +54,16 @@ extern int yydebug;
   {
     T_ID = 258,
     T_INT = 259,
-    T_PLUS = 260,
-    T_MULT = 261,
-    T_NL = 262,
-    T_ATRIB = 263,
-    T_TINT = 264,
-    T_TDOUBLE = 265,
-    T_VIRGULA = 266,
-    T_DEF = 267
+    T_DOUBLE = 260,
+    T_PLUS = 261,
+    T_MULT = 262,
+    T_NL = 263,
+    T_ATRIB = 264,
+    T_TINT = 265,
+    T_TDOUBLE = 266,
+    T_TBOOL = 267,
+    T_VIRGULA = 268,
+    T_DEF = 269
   };
 #endif
 
@@ -74,11 +76,12 @@ union YYSTYPE
 
 	char* identifier;
 	int integer;
+	double ddouble;
 	AST::Node *node;
 	AST::Block *block;
 
 
-#line 82 "parser.h" /* yacc.c:1909  */
+#line 85 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

@@ -25,6 +25,7 @@
 %union {
 	char* identifier;
 	int integer;
+	double ddouble;
 	AST::Node *node;
 	AST::Block *block;
 
@@ -34,8 +35,9 @@
  */
 %token <identifier> T_ID
 %token <integer> T_INT
+%token <ddouble> T_DOUBLE
 %token T_PLUS T_MULT T_NL T_ATRIB
-%token T_TINT T_TDOUBLE
+%token T_TINT T_TDOUBLE T_TBOOL
 %token T_VIRGULA T_DEF
 
 
@@ -74,13 +76,14 @@ lines
 line
 : T_NL { $$ = NULL; } /*nothing here to be used */
 | expr T_NL /*$$ = $1 when nothing is said*/
-| T_DEF var T_NL {$$ = $2;} /*Variable definitions*/
+|type T_DEF var T_NL {$$ = $3;} /*Variable definitions*/
 | T_ID T_ATRIB expr {  	AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::assign,$3); }
 ;
 
 expr
 : T_INT { $$ = new AST::Integer($1); }
+| T_DOUBLE {$$ = new AST::Double($1);}
 | T_ID {$$= simbolTable->getIdentifierValue($1);}
 | expr T_PLUS expr { $$ = new AST::BinOp($1,AST::plus,$3); }
 | expr T_MULT expr { $$ = new AST::BinOp($1,AST::mult,$3);}
@@ -90,6 +93,11 @@ var /*list of declared vars.*/
 : T_ID { $$ = simbolTable->insertVariable($1,NULL);}
 | var T_VIRGULA T_ID {$$= simbolTable->insertVariable($3,$1);} /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
 ;
+
+type
+:T_TDOUBLE
+|T_TINT
+|T_TBOOL
 
 
 

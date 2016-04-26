@@ -1,0 +1,365 @@
+Grammar
+
+    0 $accept: program $end
+
+    1 program: lines
+
+    2 lines: line
+    3      | lines line
+
+    4 line: T_NL
+    5     | expr T_NL
+    6     | type T_DEF var T_NL
+    7     | T_ID T_ATRIB expr
+
+    8 expr: T_INT
+    9     | T_DOUBLE
+   10     | T_ID
+   11     | expr T_PLUS expr
+   12     | expr T_MULT expr
+   13     | expr error
+
+   14 var: T_ID
+   15    | var T_VIRGULA T_ID
+
+   16 type: T_TDOUBLE
+   17     | T_TINT
+   18     | T_TBOOL
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256) 13
+T_ID (258) 7 10 14 15
+T_INT (259) 8
+T_DOUBLE (260) 9
+T_PLUS (261) 11
+T_MULT (262) 12
+T_NL (263) 4 5 6
+T_ATRIB (264) 7
+T_TINT (265) 17
+T_TDOUBLE (266) 16
+T_TBOOL (267) 18
+T_VIRGULA (268) 15
+T_DEF (269) 6
+
+
+Nonterminals, with rules where they appear
+
+$accept (15)
+    on left: 0
+program (16)
+    on left: 1, on right: 0
+lines (17)
+    on left: 2 3, on right: 1 3
+line (18)
+    on left: 4 5 6 7, on right: 2 3
+expr (19)
+    on left: 8 9 10 11 12 13, on right: 5 7 11 12 13
+var (20)
+    on left: 14 15, on right: 6 15
+type (21)
+    on left: 16 17 18, on right: 6
+
+
+State 0
+
+    0 $accept: . program $end
+
+    T_ID       shift, and go to state 1
+    T_INT      shift, and go to state 2
+    T_DOUBLE   shift, and go to state 3
+    T_NL       shift, and go to state 4
+    T_TINT     shift, and go to state 5
+    T_TDOUBLE  shift, and go to state 6
+    T_TBOOL    shift, and go to state 7
+
+    program  go to state 8
+    lines    go to state 9
+    line     go to state 10
+    expr     go to state 11
+    type     go to state 12
+
+
+State 1
+
+    7 line: T_ID . T_ATRIB expr
+   10 expr: T_ID .
+
+    T_ATRIB  shift, and go to state 13
+
+    $default  reduce using rule 10 (expr)
+
+
+State 2
+
+    8 expr: T_INT .
+
+    $default  reduce using rule 8 (expr)
+
+
+State 3
+
+    9 expr: T_DOUBLE .
+
+    $default  reduce using rule 9 (expr)
+
+
+State 4
+
+    4 line: T_NL .
+
+    $default  reduce using rule 4 (line)
+
+
+State 5
+
+   17 type: T_TINT .
+
+    $default  reduce using rule 17 (type)
+
+
+State 6
+
+   16 type: T_TDOUBLE .
+
+    $default  reduce using rule 16 (type)
+
+
+State 7
+
+   18 type: T_TBOOL .
+
+    $default  reduce using rule 18 (type)
+
+
+State 8
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 14
+
+
+State 9
+
+    1 program: lines .
+    3 lines: lines . line
+
+    T_ID       shift, and go to state 1
+    T_INT      shift, and go to state 2
+    T_DOUBLE   shift, and go to state 3
+    T_NL       shift, and go to state 4
+    T_TINT     shift, and go to state 5
+    T_TDOUBLE  shift, and go to state 6
+    T_TBOOL    shift, and go to state 7
+
+    $default  reduce using rule 1 (program)
+
+    line  go to state 15
+    expr  go to state 11
+    type  go to state 12
+
+
+State 10
+
+    2 lines: line .
+
+    $default  reduce using rule 2 (lines)
+
+
+State 11
+
+    5 line: expr . T_NL
+   11 expr: expr . T_PLUS expr
+   12     | expr . T_MULT expr
+   13     | expr . error
+
+    error   shift, and go to state 16
+    T_PLUS  shift, and go to state 17
+    T_MULT  shift, and go to state 18
+    T_NL    shift, and go to state 19
+
+
+State 12
+
+    6 line: type . T_DEF var T_NL
+
+    T_DEF  shift, and go to state 20
+
+
+State 13
+
+    7 line: T_ID T_ATRIB . expr
+
+    T_ID      shift, and go to state 21
+    T_INT     shift, and go to state 2
+    T_DOUBLE  shift, and go to state 3
+
+    expr  go to state 22
+
+
+State 14
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 15
+
+    3 lines: lines line .
+
+    $default  reduce using rule 3 (lines)
+
+
+State 16
+
+   13 expr: expr error .
+
+    $default  reduce using rule 13 (expr)
+
+
+State 17
+
+   11 expr: expr T_PLUS . expr
+
+    T_ID      shift, and go to state 21
+    T_INT     shift, and go to state 2
+    T_DOUBLE  shift, and go to state 3
+
+    expr  go to state 23
+
+
+State 18
+
+   12 expr: expr T_MULT . expr
+
+    T_ID      shift, and go to state 21
+    T_INT     shift, and go to state 2
+    T_DOUBLE  shift, and go to state 3
+
+    expr  go to state 24
+
+
+State 19
+
+    5 line: expr T_NL .
+
+    $default  reduce using rule 5 (line)
+
+
+State 20
+
+    6 line: type T_DEF . var T_NL
+
+    T_ID  shift, and go to state 25
+
+    var  go to state 26
+
+
+State 21
+
+   10 expr: T_ID .
+
+    $default  reduce using rule 10 (expr)
+
+
+State 22
+
+    7 line: T_ID T_ATRIB expr .
+   11 expr: expr . T_PLUS expr
+   12     | expr . T_MULT expr
+   13     | expr . error
+
+    error   shift, and go to state 16
+    T_PLUS  shift, and go to state 17
+    T_MULT  shift, and go to state 18
+
+    $end       reduce using rule 7 (line)
+    T_ID       reduce using rule 7 (line)
+    T_INT      reduce using rule 7 (line)
+    T_DOUBLE   reduce using rule 7 (line)
+    T_NL       reduce using rule 7 (line)
+    T_TINT     reduce using rule 7 (line)
+    T_TDOUBLE  reduce using rule 7 (line)
+    T_TBOOL    reduce using rule 7 (line)
+
+
+State 23
+
+   11 expr: expr . T_PLUS expr
+   11     | expr T_PLUS expr .
+   12     | expr . T_MULT expr
+   13     | expr . error
+
+    error   shift, and go to state 16
+    T_MULT  shift, and go to state 18
+
+    $end       reduce using rule 11 (expr)
+    T_ID       reduce using rule 11 (expr)
+    T_INT      reduce using rule 11 (expr)
+    T_DOUBLE   reduce using rule 11 (expr)
+    T_PLUS     reduce using rule 11 (expr)
+    T_NL       reduce using rule 11 (expr)
+    T_TINT     reduce using rule 11 (expr)
+    T_TDOUBLE  reduce using rule 11 (expr)
+    T_TBOOL    reduce using rule 11 (expr)
+
+
+State 24
+
+   11 expr: expr . T_PLUS expr
+   12     | expr . T_MULT expr
+   12     | expr T_MULT expr .
+   13     | expr . error
+
+    error  shift, and go to state 16
+
+    $end       reduce using rule 12 (expr)
+    T_ID       reduce using rule 12 (expr)
+    T_INT      reduce using rule 12 (expr)
+    T_DOUBLE   reduce using rule 12 (expr)
+    T_PLUS     reduce using rule 12 (expr)
+    T_MULT     reduce using rule 12 (expr)
+    T_NL       reduce using rule 12 (expr)
+    T_TINT     reduce using rule 12 (expr)
+    T_TDOUBLE  reduce using rule 12 (expr)
+    T_TBOOL    reduce using rule 12 (expr)
+
+
+State 25
+
+   14 var: T_ID .
+
+    $default  reduce using rule 14 (var)
+
+
+State 26
+
+    6 line: type T_DEF var . T_NL
+   15 var: var . T_VIRGULA T_ID
+
+    T_NL       shift, and go to state 27
+    T_VIRGULA  shift, and go to state 28
+
+
+State 27
+
+    6 line: type T_DEF var T_NL .
+
+    $default  reduce using rule 6 (line)
+
+
+State 28
+
+   15 var: var T_VIRGULA . T_ID
+
+    T_ID  shift, and go to state 29
+
+
+State 29
+
+   15 var: var T_VIRGULA T_ID .
+
+    $default  reduce using rule 15 (var)

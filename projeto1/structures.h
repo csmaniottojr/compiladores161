@@ -31,7 +31,7 @@ namespace AST {class Node;}
 namespace Structures {
 
 	enum Kinds {kVariable};
-	enum Types {tInteger, tDouble};
+	enum Types {tInteger, tDouble, tBool};
 
 
 

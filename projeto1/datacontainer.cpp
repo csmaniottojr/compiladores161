@@ -61,6 +61,7 @@ bool DataContainer::operator==( const DataContainer &other ) const {
 		}
 	}
 	return false;
+	
 }
 //Addition=======================================
 DataContainer DataContainer::operator+( DataContainer &other ) {

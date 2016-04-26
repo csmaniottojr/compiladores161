@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include "structures.h"
 #include "datacontainer.h"
 
@@ -39,7 +40,7 @@ namespace AST {
 	public:
 		virtual ~Node() {}
 		virtual void printTree() {}
-		virtual DataContainer computeTree() {return DataContainer(0);}
+		virtual DataContainer computeTree() {return DataContainer( 0 );}
 	};
 
 	class Integer : public Node {
@@ -49,7 +50,13 @@ namespace AST {
 		void printTree();//Just prints the value :)
 		DataContainer computeTree();//Just pops the value :)
 	};
-
+	class Double : public Node {
+	public:
+		double value;
+		Double( double value ) : value( value ) {}
+		void printTree();
+		DataContainer computeTree();
+	};
 	class BinOp : public Node {
 	public:
 		Operation op;//The operation to be executed
