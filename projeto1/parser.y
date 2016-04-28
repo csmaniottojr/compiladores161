@@ -36,7 +36,9 @@
 %token <identifier> T_ID
 %token <integer> T_INT
 %token <ddouble> T_DOUBLE
-%token T_PLUS T_MULT T_NL T_ATRIB
+%token T_PLUS T_MULT T_NL T_ATRIB T_MINUS T_DIV T_IGUAL T_DIFERENTE T_MAIOR T_MENOR
+%token T_MAIOR_IGUAL T_MENOR_IGUAL T_NOT T_PAREN_L T_PAREN_R T_AND T_OR 
+%token T_TRUE T_FALSE
 %token T_TINT T_TDOUBLE T_TBOOL
 %token T_VIRGULA T_DEF
 

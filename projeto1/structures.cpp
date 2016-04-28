@@ -39,7 +39,7 @@ Structures::Symbol::Symbol() {
  */
 //SymbolTable======================================================================================
 //===============================================
-AST::Node *Structures::SymbolTable::insertVariable ( std::__cxx11::string idName, AST::Node *nextVar ) {
+AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::Node *nextVar ) {
 	if ( this->symbolMap.find( idName ) == this->symbolMap.end() ) {
 		int initialValue = 0;
 		Structures::Symbol newSymbol( Kinds::kVariable,Types::tInteger,DataContainer( initialValue ),false );
@@ -67,7 +67,7 @@ AST::Node *Structures::SymbolTable::getIdentifierValue( std::string id ) {
 	return new AST::Variable( id, NULL );
 }
 //===============================================
-AST::Node *Structures::SymbolTable::assignVariable( std::__cxx11::string id ) {
+AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
 	if( !containsIdentifier( id ) ) {
 		yyerror( "Variable \"%s\" used but not defined!",id.c_str() );
 	}

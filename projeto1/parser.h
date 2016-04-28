@@ -59,11 +59,26 @@ extern int yydebug;
     T_MULT = 262,
     T_NL = 263,
     T_ATRIB = 264,
-    T_TINT = 265,
-    T_TDOUBLE = 266,
-    T_TBOOL = 267,
-    T_VIRGULA = 268,
-    T_DEF = 269
+    T_MINUS = 265,
+    T_DIV = 266,
+    T_IGUAL = 267,
+    T_DIFERENTE = 268,
+    T_MAIOR = 269,
+    T_MENOR = 270,
+    T_MAIOR_IGUAL = 271,
+    T_MENOR_IGUAL = 272,
+    T_NOT = 273,
+    T_PAREN_L = 274,
+    T_PAREN_R = 275,
+    T_AND = 276,
+    T_OR = 277,
+    T_TRUE = 278,
+    T_FALSE = 279,
+    T_TINT = 280,
+    T_TDOUBLE = 281,
+    T_TBOOL = 282,
+    T_VIRGULA = 283,
+    T_DEF = 284
   };
 #endif
 
@@ -81,7 +96,7 @@ union YYSTYPE
 	AST::Block *block;
 
 
-#line 85 "parser.h" /* yacc.c:1909  */
+#line 100 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

@@ -20,16 +20,29 @@
 
 class DataContainer {
 public:
-	enum DataTypes {tInteger, tDouble};
+	enum DataTypes {tInteger, tDouble, tBool};
 	DataContainer(){this->type = tInteger; int zero = 0; this->data = &zero;};
         DataContainer( int value );
 	DataContainer( double value );
+	DataContainer(bool value);
 	~DataContainer();
 	void insertData( int &newDdata );
 	void insertData( double &newDdata );
+	void insertData( bool &newData);
 	DataTypes getType() const;
 	DataContainer operator+ ( DataContainer &other );
 	DataContainer operator* ( DataContainer &other );
+	DataContainer operator- ( DataContainer &other );
+	DataContainer operator/ ( DataContainer &other );
+	DataContainer operator> ( DataContainer &other );
+	DataContainer operator< ( DataContainer &other );
+	DataContainer operator>= ( DataContainer &other );
+	DataContainer operator<= ( DataContainer &other );
+	DataContainer operator== ( DataContainer &other );
+	DataContainer operator!= ( DataContainer &other );
+	DataContainer operator&& ( DataContainer &other );
+	DataContainer operator|| ( DataContainer &other );
+	DataContainer operator! ();
 	bool operator==( const DataContainer &other ) const;
 	void *data;
         friend std::ostream &operator<< ( std::ostream &out,const DataContainer &dataContainer );
