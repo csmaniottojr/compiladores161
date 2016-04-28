@@ -24,6 +24,10 @@ DataContainer::DataContainer( double value ) {
 DataContainer::DataContainer( int value ) {
 	insertData( value );
 }
+
+DataContainer::DataContainer( bool value ) {
+	insertData( value );
+}
 DataContainer::~DataContainer() {
 //TODO Dá muito pau, memory leak acontece nas melhores familias!
 // 	switch( type ) {
