@@ -63,9 +63,11 @@ bool DataContainer::operator==( const DataContainer &other ) const {
 			return ( *thisValue == *otherValue );
 			break;
 		}
+		case  DataContainer::tBool: {
+			return ( *( bool * )this->data == *( bool * )other.data );
+		}
 	}
 	return false;
-	
 }
 //Addition=======================================
 DataContainer DataContainer::operator+( DataContainer &other ) {
@@ -85,6 +87,10 @@ DataContainer DataContainer::operator+( DataContainer &other ) {
 					return DataContainer( *thisValue + *otherValue );
 					break;
 				}
+				case DataContainer::tBool: {
+					INCOMPATIBLE_TYPES_OPERATION_SUM( this->type,other.type );
+					break;
+				}
 			}//Int + *
 			break;
 		}
@@ -102,7 +108,15 @@ DataContainer DataContainer::operator+( DataContainer &other ) {
 					return DataContainer( *thisValue + *otherValue );
 					break;
 				}
+				case DataContainer::tBool: {
+					INCOMPATIBLE_TYPES_OPERATION_SUM( this->type,other.type );
+					break;
+				}
 			}//Double *
+			break;
+		}
+		case DataContainer::tBool: {
+			INCOMPATIBLE_TYPES_OPERATION_SUM( this->getType(),other.getType() );
 			break;
 		}
 	}
@@ -124,6 +138,10 @@ DataContainer DataContainer::operator*( DataContainer &other ) {
 					return DataContainer( *thisValue * *otherValue );
 					break;
 				}
+				case DataContainer::tBool: {
+					INCOMPATIBLE_TYPES_OPERATION_MULT( this->getType(),other.getType() );
+					break;
+				}
 			}//Int + *
 		}
 		case DataContainer::tDouble: {
@@ -139,7 +157,15 @@ DataContainer DataContainer::operator*( DataContainer &other ) {
 					double *otherValue = ( double * )other.data;
 					return DataContainer( *thisValue * *otherValue );
 				}
+				case DataContainer::tBool: {
+					INCOMPATIBLE_TYPES_OPERATION_MULT( this->getType(),other.getType() );
+					break;
+				}
 			}//Double *
+		}
+		case DataContainer::tBool: {
+			INCOMPATIBLE_TYPES_OPERATION_MULT( this->getType(),other.getType() );
+			break;
 		}
 	}
 }
@@ -161,6 +187,10 @@ DataContainer DataContainer::operator-( DataContainer &other ) {
 					return DataContainer( *thisValue - *otherValue );
 					break;
 				}
+				case DataContainer::tBool: {
+					INCOMPATIBLE_TYPES_OPERATION_SUB( this->getType(),other.getType() );
+					break;
+				}
 			}//Int + *
 		}
 		case DataContainer::tDouble: {
@@ -176,7 +206,15 @@ DataContainer DataContainer::operator-( DataContainer &other ) {
 					double *otherValue = ( double * )other.data;
 					return DataContainer( *thisValue - *otherValue );
 				}
+				case DataContainer::tBool: {
+					INCOMPATIBLE_TYPES_OPERATION_SUB( this->getType(),other.getType() );
+					break;
+				}
 			}//Double *
+		}
+		case DataContainer::tBool: {
+			INCOMPATIBLE_TYPES_OPERATION_SUB( this->getType(),other.getType() );
+			break;
 		}
 	}
 }
@@ -198,6 +236,10 @@ DataContainer DataContainer::operator/( DataContainer &other ) {
 					return DataContainer( *thisValue / *otherValue );
 					break;
 				}
+				case DataContainer::tBool: {
+					INCOMPATIBLE_TYPES_OPERATION_DIV( this->getType(),other.getType() );
+					break;
+				}
 			}//Int + *
 		}
 		case DataContainer::tDouble: {
@@ -213,7 +255,15 @@ DataContainer DataContainer::operator/( DataContainer &other ) {
 					double *otherValue = ( double * )other.data;
 					return DataContainer( *thisValue / *otherValue );
 				}
+				case DataContainer::tBool: {
+					INCOMPATIBLE_TYPES_OPERATION_DIV( this->getType(),other.getType() );
+					break;
+				}
 			}//Double *
+		}
+		case DataContainer::tBool: {
+			INCOMPATIBLE_TYPES_OPERATION_DIV( this->getType(),other.getType() );
+			break;
 		}
 	}
 }
@@ -346,7 +396,7 @@ DataContainer DataContainer::operator<=( DataContainer &other ) {
 					return DataContainer( *thisValue <= *otherValue );
 					break;
 				}
-			}//Int + *
+			}//Int <= *
 		}
 		case DataContainer::tDouble: {
 			switch ( other.type ) {
@@ -361,7 +411,7 @@ DataContainer DataContainer::operator<=( DataContainer &other ) {
 					double *otherValue = ( double * )other.data;
 					return DataContainer( *thisValue <= *otherValue );
 				}
-			}//Double *
+			}//Double <=  *
 		}
 	}
 }
@@ -400,12 +450,11 @@ DataContainer DataContainer::operator==( DataContainer &other ) {
 				}
 			}//Double *
 		}
-
-		case DataContainer::tBool:{
-			if(other.type == DataContainer::tBool){
-				bool *thisValue = (bool *) this->data;
-				bool *otherValue = (bool *) other.data;
-				return DataContainer(*thisValue == *otherValue );
+		case DataContainer::tBool: {
+			if( other.type == DataContainer::tBool ) {
+				bool *thisValue = ( bool * ) this->data;
+				bool *otherValue = ( bool * ) other.data;
+				return DataContainer( *thisValue == *otherValue );
 			}
 		}
 	}
@@ -445,12 +494,11 @@ DataContainer DataContainer::operator!=( DataContainer &other ) {
 				}
 			}//Double *
 		}
-
-		case DataContainer::tBool:{
-			if(other.type == DataContainer::tBool){
-				bool *thisValue = (bool *) this->data;
-				bool *otherValue = (bool *) other.data;
-				return DataContainer(*thisValue != *otherValue );
+		case DataContainer::tBool: {
+			if( other.type == DataContainer::tBool ) {
+				bool *thisValue = ( bool * ) this->data;
+				bool *otherValue = ( bool * ) other.data;
+				return DataContainer( *thisValue != *otherValue );
 			}
 		}
 	}
@@ -459,29 +507,26 @@ DataContainer DataContainer::operator!=( DataContainer &other ) {
 
 //and=================================
 DataContainer DataContainer::operator&&( DataContainer &other ) {
-	
-	if(this->type == DataContainer::tBool && other.type == DataContainer::tBool){
-		bool *thisValue = (bool *) this->data;
-		bool *otherValue = (bool *) other.data;
-		return DataContainer(*thisValue && *otherValue );
+	if( this->type == DataContainer::tBool && other.type == DataContainer::tBool ) {
+		bool *thisValue = ( bool * ) this->data;
+		bool *otherValue = ( bool * ) other.data;
+		return DataContainer( *thisValue && *otherValue );
 	}
 }
 
 //or=================================
 DataContainer DataContainer::operator||( DataContainer &other ) {
-	
-	if(this->type == DataContainer::tBool && other.type == DataContainer::tBool){
-		bool *thisValue = (bool *) this->data;
-		bool *otherValue = (bool *) other.data;
-		return DataContainer(*thisValue || *otherValue );
+	if( this->type == DataContainer::tBool && other.type == DataContainer::tBool ) {
+		bool *thisValue = ( bool * ) this->data;
+		bool *otherValue = ( bool * ) other.data;
+		return DataContainer( *thisValue || *otherValue );
 	}
 }
 
 //not=================================
 DataContainer DataContainer::operator!() {
-	
-	if(this->type == DataContainer::tBool){
-		bool *thisValue = (bool *) this->data;
+	if( this->type == DataContainer::tBool ) {
+		bool *thisValue = ( bool * ) this->data;
 		return DataContainer( ! *thisValue );
 	}
 }
@@ -491,21 +536,20 @@ DataContainer DataContainer::operator!() {
 void DataContainer::insertData( int &newData ) {
 	this->type = DataContainer::tInteger;
 	//std::cout<<"[DEBUG][DataContainer] Vai criar int " << newData << std::endl;
-	this->data = new int(newData);
+	this->data = new int( newData );
 	//std::cout<<"[DEBUG][DataContainer] ctiou int " << *(int*)data << std::endl;
-	
 }
 //Double=========================================
 void DataContainer::insertData( double &newData ) {
 	this->type = DataContainer::tDouble;
 	//std::cout<<"[DEBUG][DataContainer] Vai criar double " << data << std::endl;
-	this->data = new double(newData);
+	this->data = new double( newData );
 }
 //Bool=========================================
 void DataContainer::insertData( bool &newData ) {
 	this->type = DataContainer::tBool;
-	//std::cout<<"[DEBUG][DataContainer] Vai criar double " << data << std::endl;
-	this->data = new bool(newData);
+	//std::cout<<"[DEBUG][DataContainer] Vai criar bool " << data << std::endl;
+	this->data = new bool( newData );
 }
 //Information======================================================================================
 DataContainer::DataTypes DataContainer::getType() const {

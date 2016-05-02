@@ -49,7 +49,6 @@ AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::No
 	} else {
 		yyerror( "Variable redefinition! [%s]",idName.c_str() );
 	}
-	
 	return new AST::Variable( idName,nextVar );
 }
 //===============================================

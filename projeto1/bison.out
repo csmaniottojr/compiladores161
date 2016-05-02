@@ -1,4 +1,4 @@
-Terminais não utilizados na gramática
+Terminals unused in grammar
 
    T_MINUS
    T_DIV
@@ -17,7 +17,7 @@ Terminais não utilizados na gramática
    T_FALSE
 
 
-Gramática
+Grammar
 
     0 $accept: program $end
 
@@ -46,7 +46,7 @@ Gramática
    18     | T_TBOOL
 
 
-Terminais, com as regras onde eles aparecem
+Terminals, with rules where they appear
 
 $end (0) 0
 error (256) 13
@@ -79,321 +79,321 @@ T_VIRGULA (283) 15
 T_DEF (284) 6
 
 
-Não-terminais com as regras onde eles aparecem
+Nonterminals, with rules where they appear
 
 $accept (30)
-    à esquerda: 0
+    on left: 0
 program (31)
-    à esquerda: 1, à direita: 0
+    on left: 1, on right: 0
 lines (32)
-    à esquerda: 2 3, à direita: 1 3
+    on left: 2 3, on right: 1 3
 line (33)
-    à esquerda: 4 5 6 7, à direita: 2 3
+    on left: 4 5 6 7, on right: 2 3
 expr (34)
-    à esquerda: 8 9 10 11 12 13, à direita: 5 7 11 12 13
+    on left: 8 9 10 11 12 13, on right: 5 7 11 12 13
 var (35)
-    à esquerda: 14 15, à direita: 6 15
+    on left: 14 15, on right: 6 15
 type (36)
-    à esquerda: 16 17 18, à direita: 6
+    on left: 16 17 18, on right: 6
 
 
-Estado0
+State 0
 
     0 $accept: . program $end
 
-    T_ID       deslocar, e ir ao estado 1
-    T_INT      deslocar, e ir ao estado 2
-    T_DOUBLE   deslocar, e ir ao estado 3
-    T_NL       deslocar, e ir ao estado 4
-    T_TINT     deslocar, e ir ao estado 5
-    T_TDOUBLE  deslocar, e ir ao estado 6
-    T_TBOOL    deslocar, e ir ao estado 7
+    T_ID       shift, and go to state 1
+    T_INT      shift, and go to state 2
+    T_DOUBLE   shift, and go to state 3
+    T_NL       shift, and go to state 4
+    T_TINT     shift, and go to state 5
+    T_TDOUBLE  shift, and go to state 6
+    T_TBOOL    shift, and go to state 7
 
-    program  ir ao estado 8
-    lines    ir ao estado 9
-    line     ir ao estado 10
-    expr     ir ao estado 11
-    type     ir ao estado 12
+    program  go to state 8
+    lines    go to state 9
+    line     go to state 10
+    expr     go to state 11
+    type     go to state 12
 
 
-Estado1
+State 1
 
     7 line: T_ID . T_ATRIB expr
    10 expr: T_ID .
 
-    T_ATRIB  deslocar, e ir ao estado 13
+    T_ATRIB  shift, and go to state 13
 
-    $padrão  reduzir usando a regra 10 (expr)
+    $default  reduce using rule 10 (expr)
 
 
-Estado2
+State 2
 
     8 expr: T_INT .
 
-    $padrão  reduzir usando a regra 8 (expr)
+    $default  reduce using rule 8 (expr)
 
 
-Estado3
+State 3
 
     9 expr: T_DOUBLE .
 
-    $padrão  reduzir usando a regra 9 (expr)
+    $default  reduce using rule 9 (expr)
 
 
-Estado4
+State 4
 
     4 line: T_NL .
 
-    $padrão  reduzir usando a regra 4 (line)
+    $default  reduce using rule 4 (line)
 
 
-Estado5
+State 5
 
    17 type: T_TINT .
 
-    $padrão  reduzir usando a regra 17 (type)
+    $default  reduce using rule 17 (type)
 
 
-Estado6
+State 6
 
    16 type: T_TDOUBLE .
 
-    $padrão  reduzir usando a regra 16 (type)
+    $default  reduce using rule 16 (type)
 
 
-Estado7
+State 7
 
    18 type: T_TBOOL .
 
-    $padrão  reduzir usando a regra 18 (type)
+    $default  reduce using rule 18 (type)
 
 
-Estado8
+State 8
 
     0 $accept: program . $end
 
-    $end  deslocar, e ir ao estado 14
+    $end  shift, and go to state 14
 
 
-Estado9
+State 9
 
     1 program: lines .
     3 lines: lines . line
 
-    T_ID       deslocar, e ir ao estado 1
-    T_INT      deslocar, e ir ao estado 2
-    T_DOUBLE   deslocar, e ir ao estado 3
-    T_NL       deslocar, e ir ao estado 4
-    T_TINT     deslocar, e ir ao estado 5
-    T_TDOUBLE  deslocar, e ir ao estado 6
-    T_TBOOL    deslocar, e ir ao estado 7
+    T_ID       shift, and go to state 1
+    T_INT      shift, and go to state 2
+    T_DOUBLE   shift, and go to state 3
+    T_NL       shift, and go to state 4
+    T_TINT     shift, and go to state 5
+    T_TDOUBLE  shift, and go to state 6
+    T_TBOOL    shift, and go to state 7
 
-    $padrão  reduzir usando a regra 1 (program)
+    $default  reduce using rule 1 (program)
 
-    line  ir ao estado 15
-    expr  ir ao estado 11
-    type  ir ao estado 12
+    line  go to state 15
+    expr  go to state 11
+    type  go to state 12
 
 
-Estado10
+State 10
 
     2 lines: line .
 
-    $padrão  reduzir usando a regra 2 (lines)
+    $default  reduce using rule 2 (lines)
 
 
-Estado11
+State 11
 
     5 line: expr . T_NL
    11 expr: expr . T_PLUS expr
    12     | expr . T_MULT expr
    13     | expr . error
 
-    error   deslocar, e ir ao estado 16
-    T_PLUS  deslocar, e ir ao estado 17
-    T_MULT  deslocar, e ir ao estado 18
-    T_NL    deslocar, e ir ao estado 19
+    error   shift, and go to state 16
+    T_PLUS  shift, and go to state 17
+    T_MULT  shift, and go to state 18
+    T_NL    shift, and go to state 19
 
 
-Estado12
+State 12
 
     6 line: type . T_DEF var T_NL
 
-    T_DEF  deslocar, e ir ao estado 20
+    T_DEF  shift, and go to state 20
 
 
-Estado13
+State 13
 
     7 line: T_ID T_ATRIB . expr
 
-    T_ID      deslocar, e ir ao estado 21
-    T_INT     deslocar, e ir ao estado 2
-    T_DOUBLE  deslocar, e ir ao estado 3
+    T_ID      shift, and go to state 21
+    T_INT     shift, and go to state 2
+    T_DOUBLE  shift, and go to state 3
 
-    expr  ir ao estado 22
+    expr  go to state 22
 
 
-Estado14
+State 14
 
     0 $accept: program $end .
 
-    $padrão  aceitar
+    $default  accept
 
 
-Estado15
+State 15
 
     3 lines: lines line .
 
-    $padrão  reduzir usando a regra 3 (lines)
+    $default  reduce using rule 3 (lines)
 
 
-Estado16
+State 16
 
    13 expr: expr error .
 
-    $padrão  reduzir usando a regra 13 (expr)
+    $default  reduce using rule 13 (expr)
 
 
-Estado17
+State 17
 
    11 expr: expr T_PLUS . expr
 
-    T_ID      deslocar, e ir ao estado 21
-    T_INT     deslocar, e ir ao estado 2
-    T_DOUBLE  deslocar, e ir ao estado 3
+    T_ID      shift, and go to state 21
+    T_INT     shift, and go to state 2
+    T_DOUBLE  shift, and go to state 3
 
-    expr  ir ao estado 23
+    expr  go to state 23
 
 
-Estado18
+State 18
 
    12 expr: expr T_MULT . expr
 
-    T_ID      deslocar, e ir ao estado 21
-    T_INT     deslocar, e ir ao estado 2
-    T_DOUBLE  deslocar, e ir ao estado 3
+    T_ID      shift, and go to state 21
+    T_INT     shift, and go to state 2
+    T_DOUBLE  shift, and go to state 3
 
-    expr  ir ao estado 24
+    expr  go to state 24
 
 
-Estado19
+State 19
 
     5 line: expr T_NL .
 
-    $padrão  reduzir usando a regra 5 (line)
+    $default  reduce using rule 5 (line)
 
 
-Estado20
+State 20
 
     6 line: type T_DEF . var T_NL
 
-    T_ID  deslocar, e ir ao estado 25
+    T_ID  shift, and go to state 25
 
-    var  ir ao estado 26
+    var  go to state 26
 
 
-Estado21
+State 21
 
    10 expr: T_ID .
 
-    $padrão  reduzir usando a regra 10 (expr)
+    $default  reduce using rule 10 (expr)
 
 
-Estado22
+State 22
 
     7 line: T_ID T_ATRIB expr .
    11 expr: expr . T_PLUS expr
    12     | expr . T_MULT expr
    13     | expr . error
 
-    error   deslocar, e ir ao estado 16
-    T_PLUS  deslocar, e ir ao estado 17
-    T_MULT  deslocar, e ir ao estado 18
+    error   shift, and go to state 16
+    T_PLUS  shift, and go to state 17
+    T_MULT  shift, and go to state 18
 
-    $end       reduzir usando a regra 7 (line)
-    T_ID       reduzir usando a regra 7 (line)
-    T_INT      reduzir usando a regra 7 (line)
-    T_DOUBLE   reduzir usando a regra 7 (line)
-    T_NL       reduzir usando a regra 7 (line)
-    T_TINT     reduzir usando a regra 7 (line)
-    T_TDOUBLE  reduzir usando a regra 7 (line)
-    T_TBOOL    reduzir usando a regra 7 (line)
+    $end       reduce using rule 7 (line)
+    T_ID       reduce using rule 7 (line)
+    T_INT      reduce using rule 7 (line)
+    T_DOUBLE   reduce using rule 7 (line)
+    T_NL       reduce using rule 7 (line)
+    T_TINT     reduce using rule 7 (line)
+    T_TDOUBLE  reduce using rule 7 (line)
+    T_TBOOL    reduce using rule 7 (line)
 
 
-Estado23
+State 23
 
    11 expr: expr . T_PLUS expr
    11     | expr T_PLUS expr .
    12     | expr . T_MULT expr
    13     | expr . error
 
-    error   deslocar, e ir ao estado 16
-    T_MULT  deslocar, e ir ao estado 18
+    error   shift, and go to state 16
+    T_MULT  shift, and go to state 18
 
-    $end       reduzir usando a regra 11 (expr)
-    T_ID       reduzir usando a regra 11 (expr)
-    T_INT      reduzir usando a regra 11 (expr)
-    T_DOUBLE   reduzir usando a regra 11 (expr)
-    T_PLUS     reduzir usando a regra 11 (expr)
-    T_NL       reduzir usando a regra 11 (expr)
-    T_TINT     reduzir usando a regra 11 (expr)
-    T_TDOUBLE  reduzir usando a regra 11 (expr)
-    T_TBOOL    reduzir usando a regra 11 (expr)
+    $end       reduce using rule 11 (expr)
+    T_ID       reduce using rule 11 (expr)
+    T_INT      reduce using rule 11 (expr)
+    T_DOUBLE   reduce using rule 11 (expr)
+    T_PLUS     reduce using rule 11 (expr)
+    T_NL       reduce using rule 11 (expr)
+    T_TINT     reduce using rule 11 (expr)
+    T_TDOUBLE  reduce using rule 11 (expr)
+    T_TBOOL    reduce using rule 11 (expr)
 
 
-Estado24
+State 24
 
    11 expr: expr . T_PLUS expr
    12     | expr . T_MULT expr
    12     | expr T_MULT expr .
    13     | expr . error
 
-    error  deslocar, e ir ao estado 16
+    error  shift, and go to state 16
 
-    $end       reduzir usando a regra 12 (expr)
-    T_ID       reduzir usando a regra 12 (expr)
-    T_INT      reduzir usando a regra 12 (expr)
-    T_DOUBLE   reduzir usando a regra 12 (expr)
-    T_PLUS     reduzir usando a regra 12 (expr)
-    T_MULT     reduzir usando a regra 12 (expr)
-    T_NL       reduzir usando a regra 12 (expr)
-    T_TINT     reduzir usando a regra 12 (expr)
-    T_TDOUBLE  reduzir usando a regra 12 (expr)
-    T_TBOOL    reduzir usando a regra 12 (expr)
+    $end       reduce using rule 12 (expr)
+    T_ID       reduce using rule 12 (expr)
+    T_INT      reduce using rule 12 (expr)
+    T_DOUBLE   reduce using rule 12 (expr)
+    T_PLUS     reduce using rule 12 (expr)
+    T_MULT     reduce using rule 12 (expr)
+    T_NL       reduce using rule 12 (expr)
+    T_TINT     reduce using rule 12 (expr)
+    T_TDOUBLE  reduce using rule 12 (expr)
+    T_TBOOL    reduce using rule 12 (expr)
 
 
-Estado25
+State 25
 
    14 var: T_ID .
 
-    $padrão  reduzir usando a regra 14 (var)
+    $default  reduce using rule 14 (var)
 
 
-Estado26
+State 26
 
     6 line: type T_DEF var . T_NL
    15 var: var . T_VIRGULA T_ID
 
-    T_NL       deslocar, e ir ao estado 27
-    T_VIRGULA  deslocar, e ir ao estado 28
+    T_NL       shift, and go to state 27
+    T_VIRGULA  shift, and go to state 28
 
 
-Estado27
+State 27
 
     6 line: type T_DEF var T_NL .
 
-    $padrão  reduzir usando a regra 6 (line)
+    $default  reduce using rule 6 (line)
 
 
-Estado28
+State 28
 
    15 var: var T_VIRGULA . T_ID
 
-    T_ID  deslocar, e ir ao estado 29
+    T_ID  shift, and go to state 29
 
 
-Estado29
+State 29
 
    15 var: var T_VIRGULA T_ID .
 
-    $padrão  reduzir usando a regra 15 (var)
+    $default  reduce using rule 15 (var)
