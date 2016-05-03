@@ -13,14 +13,19 @@ void Double::printTree() {
 	std::cout << value;
 	return;
 }
+//Boolean
+void Boolean::printTree() {
+	std::string result = ( value?"true":"false" );
+}
+
 
 //Binary Operation
 void BinOp::printTree() {
 	left->printTree();
 	switch( op ) {
-		case plus: std::cout << " + "; break;
-		case mult: std::cout << " * "; break;
-		case AST::assign: std::cout << " = "; break;
+		case oplus: std::cout << " + "; break;
+		case omult: std::cout << " * "; break;
+		case AST::oassign: std::cout << " = "; break;
 	}
 	right->printTree();
 	return;
@@ -53,20 +58,24 @@ DataContainer Double::computeTree() {
 	return DataContainer( value );
 }
 
+DataContainer Boolean::computeTree() {
+	return DataContainer( value );
+}
+
 //Binary Operation
 DataContainer BinOp::computeTree() {
 	DataContainer lvalue = left->computeTree();
 	DataContainer rvalue = right->computeTree();
 //	std::cout << "[Debug][AST] Operacao com " << *(int*)lvalue.data << " e " << *(int*)rvalue.data<<std::endl;
 	switch( op ) {
-		case plus: {
+		case oplus: {
 			DataContainer value = lvalue + rvalue; return value; break;
 		}
-		case mult: {
+		case omult: {
 			DataContainer value = lvalue * rvalue; return value; break;
 		}
 		/*Syntax: var assign expression*/
-		case AST::assign: {
+		case AST::oassign: {
 			Variable *var = dynamic_cast<Variable *>( left );
 			simbolTable->symbolMap[var->id].value= rvalue;
 			DataContainer value = rvalue;

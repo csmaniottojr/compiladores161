@@ -50,25 +50,21 @@ private:
 	void INCOMPATIBLE_TYPES_OPERATION_SUM( DataTypes type1,DataTypes type2 ) {
 #define str(x) #x
 		std::cerr<<"Can't sum a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
-		exit( -1 );
 #undef str
 	};
 	void INCOMPATIBLE_TYPES_OPERATION_MULT( DataTypes type1,DataTypes type2 ) {
 #define str(x) #x
 		std::cerr<<"Can't multiply a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
-		exit( -1 );
 #undef str
 	};
 	void INCOMPATIBLE_TYPES_OPERATION_DIV( DataTypes type1,DataTypes type2 ) {
 #define str(x) #x
 		std::cerr<<"Can't divide a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
-		exit( -1 );
 #undef str
 	};
 	void INCOMPATIBLE_TYPES_OPERATION_SUB( DataTypes type1,DataTypes type2 ) {
 #define str(x) #x
 		std::cerr<<"Can't subtract a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
-		exit( -1 );
 #undef str
 	};
 	DataTypes type;

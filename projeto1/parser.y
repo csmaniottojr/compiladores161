@@ -28,6 +28,7 @@
 	double ddouble;
 	AST::Node *node;
 	AST::Block *block;
+	bool boolean;
 
 }
 
@@ -80,15 +81,15 @@ line
 | expr T_NL /*$$ = $1 when nothing is said*/
 |type T_DEF var T_NL {$$ = $3;} /*Variable definitions*/
 | T_ID T_ATRIB expr {  	AST::Node* node = simbolTable->assignVariable($1);
-			$$ = new AST::BinOp(node,AST::assign,$3); }
+			$$ = new AST::BinOp(node,AST::oassign,$3); }
 ;
 
 expr
 : T_INT { $$ = new AST::Integer($1); }
 | T_DOUBLE {$$ = new AST::Double($1);}
-| T_ID {$$= simbolTable->getIdentifierValue($1);}
-| expr T_PLUS expr { $$ = new AST::BinOp($1,AST::plus,$3); }
-| expr T_MULT expr { $$ = new AST::BinOp($1,AST::mult,$3);}
+| T_ID {$$ = simbolTable->getIdentifierValue($1);}
+| expr T_PLUS expr { $$ = new AST::BinOp($1,AST::oplus,$3); }
+| expr T_MULT expr { $$ = new AST::BinOp($1,AST::omult,$3);}
 | expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
 ;
 var /*list of declared vars.*/

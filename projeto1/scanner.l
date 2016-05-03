@@ -12,12 +12,14 @@
 
 digs [0-9]+
 
+digsd [0-9]*
+
 %%
 
 [ \t]		; //ignores spaces
 
 {digs}		{yylval.integer = std::atoi(yytext); return T_INT;}
-{digs}\.{digs}	{yylval.ddouble = std::atof(yytext); return T_DOUBLE;}
+{digsd}\.{digs}	{yylval.ddouble = std::atof(yytext); return T_DOUBLE;}		
 "+"		{return T_PLUS;}
 "-"		{return T_MINUS;}
 "*"		{return T_MULT;}

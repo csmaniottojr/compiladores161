@@ -30,7 +30,7 @@ extern Structures::SymbolTable *simbolTable;//Simbol Table, in Bison file
 namespace AST {
 
 //Binary operations
-	enum Operation { plus, mult, assign };
+	enum Operation { oplus, omult, oassign, oand,oor };
 
 	class Node;
 
@@ -57,6 +57,15 @@ namespace AST {
 		void printTree();
 		DataContainer computeTree();
 	};
+
+	class Boolean : public Node {
+	public:
+		bool value;
+		Boolean( bool value ) : value( value ) {}
+		void printTree();
+		DataContainer computeTree();
+	};
+
 	class BinOp : public Node {
 	public:
 		Operation op;//The operation to be executed
