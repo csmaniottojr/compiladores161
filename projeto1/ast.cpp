@@ -74,6 +74,12 @@ DataContainer BinOp::computeTree() {
 		case omult: {
 			DataContainer value = lvalue * rvalue; return value; break;
 		}
+		case AST::oand: {
+			DataContainer value = lvalue and rvalue; return value; break;
+		}
+		case AST::oor: {
+			DataContainer value = lvalue or rvalue; return value; break;
+		}
 		/*Syntax: var assign expression*/
 		case AST::oassign: {
 			Variable *var = dynamic_cast<Variable *>( left );
