@@ -28,6 +28,7 @@
 	double ddouble;
 	AST::Node *node;
 	AST::Block *block;
+	AST::Operation *operation;
 	bool boolean;
 
 }
@@ -50,6 +51,7 @@
  */
 %type <node> expr line var
 %type <block> lines program
+%type <operation> op
 //%type <int> exprVar
 
 
@@ -88,8 +90,7 @@ expr
 : T_INT { $$ = new AST::Integer($1); }
 | T_DOUBLE {$$ = new AST::Double($1);}
 | T_ID {$$ = simbolTable->getIdentifierValue($1);}
-| expr T_PLUS expr { $$ = new AST::BinOp($1,AST::oplus,$3); }
-| expr T_MULT expr { $$ = new AST::BinOp($1,AST::omult,$3);}
+| expr op expr { $$ = new AST::BinOp($1,$2,$3); }
 | expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
 ;
 var /*list of declared vars.*/
@@ -102,6 +103,20 @@ type
 |T_TINT
 |T_TBOOL
 
+op
+: T_PLUS {$$ = AST::oplus;}
+| T_MULT {$$ = AST::omult;}
+| T_MINUS {$$ = AST::ominus;}
+| T_DIV {$$ = AST::odiv;}
+| T_IGUAL {$$ = AST::oequal;}
+| T_DIFERENTE {$$ = AST::odifferent;}
+| T_MAIOR {$$ = AST::ogreater;}
+| T_MENOR {$$ = AST::oless;}
+| T_MAIOR_IGUAL {$$ = AST::ogreatereq;}
+| T_MENOR_IGUAL {$$ = AST::olesseq;}
+| T_AND {$$ = AST::oor;}
+| T_OR {$$ = AST::oand;}
+;
 
 
 
