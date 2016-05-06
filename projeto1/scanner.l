@@ -16,7 +16,7 @@ digsd [0-9]*
 
 %%
 
-[ \t]		; //ignores spaces
+[\n \t]		; //ignores spaces
 
 {digs}		{yylval.integer = std::atoi(yytext); return T_INT;}
 {digsd}\.{digs}	{yylval.ddouble = std::atof(yytext); return T_DOUBLE;}		
@@ -44,7 +44,7 @@ digsd [0-9]*
 "TRUE"		{return T_TRUE;}
 "FALSE"		{return T_FALSE;}
 ";"		{return T_NL;}
-[a-z][a-z0-1]* { yylval.identifier = strdup(yytext); return T_ID;} /*Copy the string, so are diferent pointers!*/
+[a-z][a-z0-1]*  {yylval.identifier = strdup(yytext); return T_ID;} /*Copy the string, so are diferent pointers!*/
 .		{yyerror("Unknown token! %c\n", *yytext);} /*complains about every unknown character like a bitch*/
 
 %%

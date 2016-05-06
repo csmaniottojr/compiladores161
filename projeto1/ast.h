@@ -86,9 +86,11 @@ namespace AST {
 
 	class Variable : public Node {
 	public:
+		enum use {atrib,ini,read};
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
-		Variable( std::string id,  Node *next ) :id( id ), next( next ) {} //Default Constructor
+		use useType;
+		Variable( std::string id,  Node *next, use useType ) :id( id ), next( next ),useType( useType )  {} //Default Constructor
 		void printTree();//Print the node infos
 		DataContainer computeTree();//Compute the node infos
 

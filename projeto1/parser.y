@@ -80,9 +80,9 @@ lines
 
 line
 : T_NL { $$ = NULL; } /*nothing here to be used */
-| expr T_NL /*$$ = $1 when nothing is said*/
+// |expr T_NL /*$$ = $1 when nothing is said*/
 |type T_DEF var T_NL {$$ = $3;} /*Variable definitions*/
-| T_ID T_ATRIB expr {  	AST::Node* node = simbolTable->assignVariable($1);
+|T_ID T_ATRIB expr T_NL {  	AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::oassign,$3); }
 ;
 

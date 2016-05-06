@@ -43,8 +43,20 @@ void Block::printTree() {
 void Variable::printTree() {
 	if( next != nullptr ) {
 		next->printTree();
+		std::cout << ", ";
+	} else {
+		std::string message = "sem mensagem, shora boy ";
+		switch ( this->useType ) {
+			case AST::Variable::atrib: {message = "atribuicao de variavel "; break;}
+			case AST::Variable::ini: {message = "inicializacao de variavel "; break;}
+			case AST::Variable::read: {
+				//message="leitura de variavel "
+				message = "";  break;
+			}
+		}
+		std::cout<<message;
 	}
-	std::cout << this->id;
+	std::cout << this->id ;
 	return;
 }
 
@@ -97,7 +109,7 @@ DataContainer Block::computeTree() {
 	;
 	for ( Node *line: lines ) {
 		DataContainer value = line->computeTree();
-		std::cout << "Computed " << value << std::endl;
+		//std::cout << "Computed " << value << std::endl;
 	}
 	return 0;
 }
