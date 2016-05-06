@@ -30,7 +30,7 @@ extern Structures::SymbolTable *simbolTable;//Simbol Table, in Bison file
 namespace AST {
 
 //Binary operations
-	enum Operation { oplus, omult, oassign, oand,oor,ominus,odiv,oequal,ogreater,oless,ogreatereq,olesseq };
+	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent };
 
 	class Node;
 

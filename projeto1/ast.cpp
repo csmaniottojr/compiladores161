@@ -5,17 +5,18 @@ using namespace AST;
 /* ================Print Methods================*/
 //Integer
 void Integer::printTree() {
-	std::cout << value;
+	std::cout << "inteiro "<< value;
 	return;
 }
 //Double
 void Double::printTree() {
-	std::cout << value;
+	std::cout << "real "<<value;
 	return;
 }
 //Boolean
 void Boolean::printTree() {
 	std::string result = ( value?"true":"false" );
+	std::cout << "booleano "<<result;
 }
 
 

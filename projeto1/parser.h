@@ -43,59 +43,62 @@ extern int yydebug;
 #line 17 "parser.y" /* yacc.c:1909  */
 
 #include "structures.h"
-
+	
 
 #line 49 "parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-enum yytokentype {
-	T_ID = 258,
-	T_INT = 259,
-	T_DOUBLE = 260,
-	T_PLUS = 261,
-	T_MULT = 262,
-	T_NL = 263,
-	T_ATRIB = 264,
-	T_MINUS = 265,
-	T_DIV = 266,
-	T_IGUAL = 267,
-	T_DIFERENTE = 268,
-	T_MAIOR = 269,
-	T_MENOR = 270,
-	T_MAIOR_IGUAL = 271,
-	T_MENOR_IGUAL = 272,
-	T_NOT = 273,
-	T_PAREN_L = 274,
-	T_PAREN_R = 275,
-	T_AND = 276,
-	T_OR = 277,
-	T_TRUE = 278,
-	T_FALSE = 279,
-	T_TINT = 280,
-	T_TDOUBLE = 281,
-	T_TBOOL = 282,
-	T_VIRGULA = 283,
-	T_DEF = 284
-};
+  enum yytokentype
+  {
+    T_ID = 258,
+    T_INT = 259,
+    T_DOUBLE = 260,
+    T_PLUS = 261,
+    T_MULT = 262,
+    T_NL = 263,
+    T_ATRIB = 264,
+    T_MINUS = 265,
+    T_DIV = 266,
+    T_IGUAL = 267,
+    T_DIFERENTE = 268,
+    T_MAIOR = 269,
+    T_MENOR = 270,
+    T_MAIOR_IGUAL = 271,
+    T_MENOR_IGUAL = 272,
+    T_NOT = 273,
+    T_PAREN_L = 274,
+    T_PAREN_R = 275,
+    T_AND = 276,
+    T_OR = 277,
+    T_TRUE = 278,
+    T_FALSE = 279,
+    T_TINT = 280,
+    T_TDOUBLE = 281,
+    T_TBOOL = 282,
+    T_VIRGULA = 283,
+    T_DEF = 284
+  };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE YYSTYPE;
-union YYSTYPE {
+union YYSTYPE
+{
 #line 25 "parser.y" /* yacc.c:1909  */
 
-	char *identifier;
+	char* identifier;
 	int integer;
 	double ddouble;
 	AST::Node *node;
 	AST::Block *block;
+	AST::Operation operation;
 	bool boolean;
 
 
-#line 101 "parser.h" /* yacc.c:1909  */
+#line 102 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -104,6 +107,6 @@ union YYSTYPE {
 
 extern YYSTYPE yylval;
 
-int yyparse ( void );
+int yyparse (void);
 
 #endif /* !YY_YY_PARSER_H_INCLUDED  */

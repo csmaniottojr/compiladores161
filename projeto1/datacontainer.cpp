@@ -77,7 +77,7 @@ DataContainer DataContainer::operator+( DataContainer &other ) {
 				case DataContainer::tInteger: { //Int Int
 					int *thisValue = ( int * )this->data;
 					int *otherValue = ( int * )other.data;
-					std::cout<<"[DEBUG][DataContainer] Vai somar " << *thisValue << " + " <<*otherValue<<std::endl;
+					//std::cout<<"[DEBUG][DataContainer] Vai somar " << *thisValue << " + " <<*otherValue<<std::endl;
 					return DataContainer( *thisValue + *otherValue );
 					break;
 				}
@@ -585,3 +585,10 @@ std::ostream &operator<< ( std::ostream &out,const DataContainer &dataContainer 
 	return out;
 };
 
+std::__cxx11::string DataContainer::typeToString() {
+	switch ( this->type ) {
+		case DataContainer::tBool: {return "booleanov"; break;}
+		case DataContainer::tDouble: {return "real"; break;}
+		case DataContainer::tInteger: {return "inteiro"; break;}
+	}
+}

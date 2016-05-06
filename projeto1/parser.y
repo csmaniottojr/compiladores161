@@ -28,7 +28,7 @@
 	double ddouble;
 	AST::Node *node;
 	AST::Block *block;
-	AST::Operation *operation;
+	AST::Operation operation;
 	bool boolean;
 
 }
@@ -93,6 +93,7 @@ expr
 | expr op expr { $$ = new AST::BinOp($1,$2,$3); }
 | expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
 ;
+
 var /*list of declared vars.*/
 : T_ID { $$ = simbolTable->insertVariable($1,NULL);}
 | var T_VIRGULA T_ID {$$= simbolTable->insertVariable($3,$1);} /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
@@ -102,6 +103,7 @@ type
 :T_TDOUBLE
 |T_TINT
 |T_TBOOL
+;
 
 op
 : T_PLUS {$$ = AST::oplus;}

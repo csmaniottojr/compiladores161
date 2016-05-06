@@ -25,6 +25,7 @@ public:
 	DataContainer( int value );
 	DataContainer( double value );
 	DataContainer( bool value );
+	std::string typeToString();
 	~DataContainer();
 	void insertData( int &newDdata );
 	void insertData( double &newDdata );
