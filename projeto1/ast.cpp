@@ -22,13 +22,15 @@ void Boolean::printTree() {
 
 //Binary Operation
 void BinOp::printTree() {
+	std::cout <<"(";
 	left->printTree();
 	switch( op ) {
-		case oplus: std::cout << " + "; break;
-		case omult: std::cout << " * "; break;
+		case oplus: std::cout << " soma "; break;
+		case omult: std::cout << " multiplicacao "; break;
 		case AST::oassign: std::cout << " = "; break;
 	}
 	right->printTree();
+	std::cout <<")";
 	return;
 }
 //Block
