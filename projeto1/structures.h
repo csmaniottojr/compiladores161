@@ -45,6 +45,7 @@ namespace Structures {
 		Symbol( Kinds kind, Types type, DataContainer value, bool initialized ):
 			kind( kind ), type( type ),value( value ),initialized( initialized ) {};
 		Symbol();
+		void updateValue( DataContainer value ) {this->value = value;};
 
 	};
 
@@ -56,7 +57,10 @@ namespace Structures {
 		AST::Node *insertVariable( std::string idName, AST::Node *nextVar );
 		AST::Node *assignVariable( std::string id );
 		bool containsIdentifier( std::string id );
-		AST::Node *getIdentifierValue( std::string id );
+		AST::Node *getIdentifier( std::string id );
+		DataContainer getIdentifierValue( std::string id );
+		void updateIdentifierValue( std::string id, DataContainer value );
+		bool jaAtribuiu = false;
 	};
 
 

@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "structures.h"
 
 using namespace AST;
 
@@ -49,16 +50,34 @@ void Variable::printTree() {
 	} else {
 		std::string message = "sem mensagem, shora boy ";
 		switch ( this->useType ) {
-			case AST::Variable::atrib: {message = "atribuicao de variavel "; break;}
-			case AST::Variable::ini: {message = "inicializacao de variavel "; break;}
+			case AST::Variable::atrib: {message = "atribuicao de variavel " + this->id ; break;}
+			case AST::Variable::ini: {message = "inicializacao de variavel " + this->id ; break;}
 			case AST::Variable::read: {
+				//std::cout<<"[ST  com "<<simbolTable->symbolMap.size()<<" atribuiu? "<<simbolTable->jaAtribuiu<<"]";
+				DataContainer thisValue = simbolTable->getIdentifierValue( this->id );
+				//DataContainer thisValue(4);
+				switch( thisValue.getType() ) {
+					case DataContainer::tBool: {
+						message = "booleano " + std::to_string( *( bool * )thisValue.data );
+						break;
+					}
+					case DataContainer::tDouble: {
+						message = "real " + std::to_string( *( double * )thisValue.data );
+					}
+					case DataContainer::tInteger: {
+						int dado = *( int * )thisValue.data;
+						//	std::cout << "leu dado " << dado << " ";
+						message = "inteiro " + std::to_string( dado );
+					}
+				};
 				//message="leitura de variavel "
-				message = "";  break;
+				//message = "";  break;
 			}
 		}
 		std::cout<<message;
+		return;
 	}
-	std::cout << this->id ;
+	std::cout << this->id;
 	return;
 }
 
@@ -98,8 +117,9 @@ DataContainer BinOp::computeTree() {
 		/*Syntax: var assign expression*/
 		case AST::oassign: {
 			Variable *var = dynamic_cast<Variable *>( left );
-			simbolTable->symbolMap[var->id].value= rvalue;
-			DataContainer value = rvalue;
+			simbolTable->updateIdentifierValue( var->id,rvalue );
+			//std::cout <<"valor de " << var->id <<" atualizado para " << simbolTable->symbolMap[var->id].value << "\n";
+			DataContainer value = simbolTable->getIdentifierValue( var->id );
 			return value;
 			break;
 		}
@@ -108,7 +128,7 @@ DataContainer BinOp::computeTree() {
 }
 //Block
 DataContainer Block::computeTree() {
-	;
+	std::cout<<"[Block com "<<lines.size()<<"]\n";
 	for ( Node *line: lines ) {
 		DataContainer value = line->computeTree();
 		//std::cout << "Computed " << value << std::endl;

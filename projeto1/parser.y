@@ -89,7 +89,7 @@ line
 expr
 : T_INT { $$ = new AST::Integer($1); }
 | T_DOUBLE {$$ = new AST::Double($1);}
-| T_ID {$$ = simbolTable->getIdentifierValue($1);}
+| T_ID {$$ = simbolTable->getIdentifier($1);}
 | expr op expr { $$ = new AST::BinOp($1,$2,$3); }
 | expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
 ;

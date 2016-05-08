@@ -41,39 +41,71 @@ Structures::Symbol::Symbol() {
 //===============================================
 //definir variavel
 AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::Node *nextVar ) {
-	if ( this->symbolMap.find( idName ) == this->symbolMap.end() ) {
-		int initialValue = 0;
-		Structures::Symbol newSymbol( Kinds::kVariable,Types::tInteger,DataContainer( initialValue ),false );
+	if ( ! containsIdentifier( idName ) )  {
+		Structures::Symbol newSymbol( Kinds::kVariable,Types::tInteger,DataContainer( 0 ),false );
 		std::pair<std::string,Structures::Symbol> newElement ( idName,newSymbol );
 		this->symbolMap.insert ( newElement );
 		//Aqui tinha um return ????
 	} else {
-		yyerror( "Variable redefinition! [%s]",idName.c_str() );
+		yyerror( "[Def]Variable redefinition! [%s]\n",idName.c_str() );
 	}
 	return new AST::Variable( idName,nextVar,AST::Variable::ini );
 }
 //===============================================
 bool Structures::SymbolTable::containsIdentifier( std::string idName ) {
-	return ( !( this->symbolMap.find( idName ) == this->symbolMap.end() ) );
+	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
+		//std::cout << "procurando "<<idName<<" comparando "<< it->first<<"\n";
+		if( it->first == idName ) {
+			return true;
+		}
+	}
+	return false;
 }
 //===============================================
-//Ler valor da variavel
-AST::Node *Structures::SymbolTable::getIdentifierValue( std::string id ) {
+//Ler variavel
+AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 	if( !containsIdentifier( id ) ) {
-		yyerror( "Variable \"%s\" used but not defined!",id.c_str() );
+		yyerror( "[read]Variable \"%s\" used but not defined!\n",id.c_str() );
 	}
-	if( !symbolMap[id].initialized ) {
-		yyerror( "Variable \"%s\" defined but not initilized!",id.c_str() );
+	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
+		if( it->first == id ) {
+			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
+			if( !it->second.initialized ) {
+				yyerror( "[read]Variable \"%s\" defined but not initilized!\n",id.c_str() );
+			}
+		}
 	}
 	return new AST::Variable( id, NULL, AST::Variable::read );
 }
 //===============================================
-//Atribuir valor a variavel
+//Atribuir  variavel
 AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
 	if( !containsIdentifier( id ) ) {
-		yyerror( "Variable \"%s\" used but not defined!",id.c_str() );
+		yyerror( "[assign]Variable \"%s\" used but not defined!\n",id.c_str() );
 	}
 	this->symbolMap[id].initialized=true;
 	return new AST::Variable( id,NULL,AST::Variable::atrib );
 }
-
+//===============================================
+//ler valor de variavel
+DataContainer Structures::SymbolTable::getIdentifierValue( std::__cxx11::string id ) {
+	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
+		if( it->first == id ) {
+			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
+			return it->second.value;
+		}
+	}
+	return DataContainer( 666 );
+}
+//===============================================
+//Atualizar valor de variavel
+void Structures::SymbolTable::updateIdentifierValue( std::__cxx11::string id, DataContainer value ) {
+	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
+		if( it->first == id ) {
+			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
+			it->second.updateValue( value );
+			std::cout <<"{"<< id << " agora vale "<<getIdentifierValue( id )<<"}"<<std::endl;
+			jaAtribuiu = true;
+		}
+	}
+}

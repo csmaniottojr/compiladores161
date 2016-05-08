@@ -21,7 +21,7 @@
 class DataContainer {
 public:
 	enum DataTypes {tInteger = 0, tDouble, tBool};
-	DataContainer() {this->type = tInteger; int zero = 0; this->data = &zero;};
+	DataContainer() {this->type = tInteger;  this->data = new int( 666 );};
 	DataContainer( int value );
 	DataContainer( double value );
 	DataContainer( bool value );
