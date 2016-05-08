@@ -2,7 +2,7 @@
 FLEX=flex
 BISON=bison
 CC=g++
-PARAM=-std=c++14
+PARAM=-std=c++11
 OUTPUT=myparse
 all: flex yacc clang
 clang:*.cpp *.h
