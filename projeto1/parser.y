@@ -30,6 +30,7 @@
 	AST::Block *block;
 	AST::Operation operation;
 	bool boolean;
+	Structures::Types type;
 
 }
 
@@ -52,6 +53,7 @@
 %type <node> expr line var
 %type <block> lines program
 %type <operation> op
+%type <type> type
 //%type <int> exprVar
 
 
@@ -81,7 +83,7 @@ lines
 line
 : T_NL { $$ = NULL; } /*nothing here to be used */
 // |expr T_NL /*$$ = $1 when nothing is said*/
-|type T_DEF var T_NL {$$ = $3;} /*Variable definitions*/
+|type T_DEF var T_NL {$$ = $3;simbolTable->updateTypes($3, $1);} /*Variable definitions*/
 |T_ID T_ATRIB expr T_NL {  	AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::oassign,$3); }
 ;
@@ -95,16 +97,17 @@ expr
 ;
 
 var /*list of declared vars.*/
-: T_ID { $$ = simbolTable->insertVariable($1,NULL);}
-| var T_VIRGULA T_ID {$$= simbolTable->insertVariable($3,$1);} /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
+: T_ID { $$ = simbolTable->insertVariable($1,NULL,Structures::Types::tInteger);}
+| var T_VIRGULA T_ID {$$= simbolTable->insertVariable($3,$1,Structures::Types::tInteger);} /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
 ;
 
 type
-:T_TDOUBLE
-|T_TINT
-|T_TBOOL
+:T_TDOUBLE 	{$$=Structures::Types::tDouble;}
+|T_TINT		{$$=Structures::Types::tInteger;}
+|T_TBOOL	{$$=Structures::Types::tBool;}
 ;
 
+//	enum Types {tInteger, tDouble, tBool};
 op
 : T_PLUS {$$ = AST::oplus;}
 | T_MULT {$$ = AST::omult;}

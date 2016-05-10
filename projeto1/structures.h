@@ -31,7 +31,7 @@ namespace AST {class Node;}
 namespace Structures {
 
 	enum Kinds {kVariable};
-	enum Types {tInteger, tDouble, tBool};
+	enum Types {tInteger= 0, tDouble, tBool};
 
 
 
@@ -46,6 +46,7 @@ namespace Structures {
 			kind( kind ), type( type ),value( value ),initialized( initialized ) {};
 		Symbol();
 		void updateValue( DataContainer value ) {this->value = value;};
+		void updateType  ( Types newType ) {this->type=newType;};
 
 	};
 
@@ -54,13 +55,15 @@ namespace Structures {
 		std::map<std::string , Symbol> symbolMap;
 		SymbolTable();
 
-		AST::Node *insertVariable( std::string idName, AST::Node *nextVar );
+		AST::Node *insertVariable( std::__cxx11::string idName, AST::Node *nextVar, Structures::Types tipo );
 		AST::Node *assignVariable( std::string id );
 		bool containsIdentifier( std::string id );
 		AST::Node *getIdentifier( std::string id );
 		DataContainer getIdentifierValue( std::string id );
 		void updateIdentifierValue( std::string id, DataContainer value );
+		void updateTypes( AST::Node *, Structures::Types tipo );
 		bool jaAtribuiu = false;
+		Types getidentifierType( std::__cxx11::string );
 	};
 
 

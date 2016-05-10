@@ -40,9 +40,9 @@ Structures::Symbol::Symbol() {
 //SymbolTable======================================================================================
 //===============================================
 //definir variavel
-AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::Node *nextVar ) {
+AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::Node *nextVar, Structures::Types tipo  ) {
 	if ( ! containsIdentifier( idName ) )  {
-		Structures::Symbol newSymbol( Kinds::kVariable,Types::tInteger,DataContainer( 0 ),false );
+		Structures::Symbol newSymbol( Kinds::kVariable,tipo,DataContainer( 0 ),false );
 		std::pair<std::string,Structures::Symbol> newElement ( idName,newSymbol );
 		this->symbolMap.insert ( newElement );
 		//Aqui tinha um return ????
@@ -51,6 +51,19 @@ AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::No
 	}
 	return new AST::Variable( idName,nextVar,AST::Variable::ini );
 }
+//===============================================
+void Structures::SymbolTable::updateTypes( AST::Node *nodo, Structures::Types tipo ) {
+	AST::Variable *thisvar = dynamic_cast<AST::Variable *>( nodo );
+	symbolMap.at( thisvar->id ).updateType( tipo );
+	if( thisvar->next != nullptr ) {
+		updateTypes( thisvar->next,tipo );
+	}
+}
+//===============================================
+Structures::Types Structures::SymbolTable::getidentifierType( std::__cxx11::string id ) {
+	return symbolMap.at( id ).type;
+}
+
 //===============================================
 bool Structures::SymbolTable::containsIdentifier( std::string idName ) {
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
@@ -104,7 +117,6 @@ void Structures::SymbolTable::updateIdentifierValue( std::__cxx11::string id, Da
 		if( it->first == id ) {
 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
 			it->second.updateValue( value );
-			std::cout <<"{"<< id << " agora vale "<<getIdentifierValue( id )<<"}"<<std::endl;
 			jaAtribuiu = true;
 		}
 	}

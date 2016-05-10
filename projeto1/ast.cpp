@@ -48,26 +48,25 @@ void Variable::printTree() {
 		next->printTree();
 		std::cout << ", ";
 	} else {
-		std::string message = "sem mensagem, shora boy ";
+		std::string message = "Tipo Fantasma " + this->id;
 		switch ( this->useType ) {
 			case AST::Variable::atrib: {message = "atribuicao de variavel " + this->id ; break;}
 			case AST::Variable::ini: {message = "inicializacao de variavel " + this->id ; break;}
 			case AST::Variable::read: {
 				//std::cout<<"[ST  com "<<simbolTable->symbolMap.size()<<" atribuiu? "<<simbolTable->jaAtribuiu<<"]";
-				DataContainer thisValue = simbolTable->getIdentifierValue( this->id );
 				//DataContainer thisValue(4);
-				switch( thisValue.getType() ) {
-					case DataContainer::tBool: {
-						message = "booleano " + std::to_string( *( bool * )thisValue.data );
+				switch( simbolTable->getidentifierType( this->id ) ) {
+					case Structures::tBool: {
+						message = "booleano "+ this->id;
 						break;
 					}
-					case DataContainer::tDouble: {
-						message = "real " + std::to_string( *( double * )thisValue.data );
+					case Structures::tDouble: {
+						message = "real " + this->id;
+						break;
 					}
-					case DataContainer::tInteger: {
-						int dado = *( int * )thisValue.data;
-						//	std::cout << "leu dado " << dado << " ";
-						message = "inteiro " + std::to_string( dado );
+					case Structures::tInteger: {
+						message = "inteiro " + this->id;
+						break;
 					}
 				};
 				//message="leitura de variavel "
