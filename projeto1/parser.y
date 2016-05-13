@@ -39,9 +39,9 @@
 %token <identifier> T_ID
 %token <integer> T_INT
 %token <ddouble> T_DOUBLE
+%token <boolean> T_TRUE T_FALSE
 %token T_PLUS T_MULT T_NL T_ATRIB T_MINUS T_DIV T_IGUAL T_DIFERENTE T_MAIOR T_MENOR
 %token T_MAIOR_IGUAL T_MENOR_IGUAL T_NOT T_PAREN_L T_PAREN_R T_AND T_OR 
-%token T_TRUE T_FALSE
 %token T_TINT T_TDOUBLE T_TBOOL
 %token T_VIRGULA T_DEF
 
@@ -90,7 +90,11 @@ line
 
 expr
 : T_INT { $$ = new AST::Integer($1); }
+| T_MINUS T_INT { $$ = new AST::Integer($2*-1); }
 | T_DOUBLE {$$ = new AST::Double($1);}
+| T_MINUS T_DOUBLE {$$ = new AST::Double($2*-1);}
+| T_TRUE {$$ = new AST::Boolean(true);}
+| T_FALSE {$$ = new AST::Boolean(false);}
 | T_ID {$$ = simbolTable->getIdentifier($1);}
 | expr op expr { $$ = new AST::BinOp($1,$2,$3); }
 | expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
