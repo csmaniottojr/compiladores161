@@ -1,4 +1,5 @@
-real: a,b,c;
+real: a,c;
+int: b;
 a := 1.5;
 b := 3.0;
 c := a+b+a;

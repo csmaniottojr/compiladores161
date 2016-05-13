@@ -60,7 +60,7 @@ void Structures::SymbolTable::updateTypes( AST::Node *nodo, Structures::Types ti
 	}
 }
 //===============================================
-Structures::Types Structures::SymbolTable::getidentifierType( std::__cxx11::string id ) {
+Structures::Types Structures::SymbolTable::getidentifierType( std::string id ) {
 	return symbolMap.at( id ).type;
 }
 
@@ -101,7 +101,7 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
 }
 //===============================================
 //ler valor de variavel
-DataContainer Structures::SymbolTable::getIdentifierValue( std::__cxx11::string id ) {
+DataContainer Structures::SymbolTable::getIdentifierValue( std::string id ) {
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
@@ -112,7 +112,8 @@ DataContainer Structures::SymbolTable::getIdentifierValue( std::__cxx11::string 
 }
 //===============================================
 //Atualizar valor de variavel
-void Structures::SymbolTable::updateIdentifierValue( std::__cxx11::string id, DataContainer value ) {
+void Structures::SymbolTable::updateIdentifierValue( std::
+string id, DataContainer value ) {
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";

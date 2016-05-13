@@ -585,7 +585,7 @@ std::ostream &operator<< ( std::ostream &out,const DataContainer &dataContainer 
 	return out;
 };
 
-std::__cxx11::string DataContainer::typeToString() {
+std::string DataContainer::typeToString() {
 	switch ( this->type ) {
 		case DataContainer::tBool: {return "booleanov"; break;}
 		case DataContainer::tDouble: {return "real"; break;}

@@ -55,7 +55,7 @@ namespace Structures {
 		std::map<std::string , Symbol> symbolMap;
 		SymbolTable();
 
-		AST::Node *insertVariable( std::__cxx11::string idName, AST::Node *nextVar, Structures::Types tipo );
+		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo );
 		AST::Node *assignVariable( std::string id );
 		bool containsIdentifier( std::string id );
 		AST::Node *getIdentifier( std::string id );
@@ -63,7 +63,7 @@ namespace Structures {
 		void updateIdentifierValue( std::string id, DataContainer value );
 		void updateTypes( AST::Node *, Structures::Types tipo );
 		bool jaAtribuiu = false;
-		Types getidentifierType( std::__cxx11::string );
+		Types getidentifierType( std::string id );
 	};
 
 
