@@ -20,7 +20,7 @@
 
 class DataContainer {
 public:
-	enum DataTypes {tInteger = 0, tDouble, tBool};
+	enum DataTypes {tInteger = 0, tDouble, tBool,tIntegerArr};
 	DataContainer() {this->type = tInteger;  this->data = new int( 666 );};
 	DataContainer( int value );
 	DataContainer( double value );

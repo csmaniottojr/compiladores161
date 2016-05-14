@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -152,7 +152,7 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE YYSTYPE;
+
 union YYSTYPE
 {
 #line 25 "parser.y" /* yacc.c:355  */
@@ -169,6 +169,8 @@ union YYSTYPE
 
 #line 171 "parser.cpp" /* yacc.c:355  */
 };
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -182,7 +184,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 186 "parser.cpp" /* yacc.c:358  */
+#line 188 "parser.cpp" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -1289,198 +1291,198 @@ yyreduce:
         case 2:
 #line 74 "parser.y" /* yacc.c:1646  */
     { programRoot = (yyvsp[0].block); }
-#line 1293 "parser.cpp" /* yacc.c:1646  */
+#line 1295 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 3:
 #line 79 "parser.y" /* yacc.c:1646  */
     { (yyval.block) = new AST::Block(); (yyval.block)->lines.push_back((yyvsp[0].node)); }
-#line 1299 "parser.cpp" /* yacc.c:1646  */
+#line 1301 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 4:
 #line 80 "parser.y" /* yacc.c:1646  */
     { if((yyvsp[0].node) != NULL) (yyvsp[-1].block)->lines.push_back((yyvsp[0].node)); }
-#line 1305 "parser.cpp" /* yacc.c:1646  */
+#line 1307 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 5:
 #line 84 "parser.y" /* yacc.c:1646  */
     { (yyval.node) = NULL; }
-#line 1311 "parser.cpp" /* yacc.c:1646  */
+#line 1313 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 6:
 #line 86 "parser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[-1].node);simbolTable->updateTypes((yyvsp[-1].node), (yyvsp[-3].type));}
-#line 1317 "parser.cpp" /* yacc.c:1646  */
+#line 1319 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 7:
 #line 87 "parser.y" /* yacc.c:1646  */
-    {  	AST::Node* node = simbolTable->assignVariable((yyvsp[-3].identifier));
+    {AST::Node* node = simbolTable->assignVariable((yyvsp[-3].identifier));
 			(yyval.node) = new AST::BinOp(node,AST::oassign,(yyvsp[-1].node)); }
-#line 1324 "parser.cpp" /* yacc.c:1646  */
+#line 1326 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 8:
 #line 92 "parser.y" /* yacc.c:1646  */
     { (yyval.node) = new AST::Integer((yyvsp[0].integer)); }
-#line 1330 "parser.cpp" /* yacc.c:1646  */
+#line 1332 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 9:
 #line 93 "parser.y" /* yacc.c:1646  */
     { (yyval.node) = new AST::Integer((yyvsp[0].integer)*-1); }
-#line 1336 "parser.cpp" /* yacc.c:1646  */
+#line 1338 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 10:
 #line 94 "parser.y" /* yacc.c:1646  */
     {(yyval.node) = new AST::Double((yyvsp[0].ddouble));}
-#line 1342 "parser.cpp" /* yacc.c:1646  */
+#line 1344 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 11:
 #line 95 "parser.y" /* yacc.c:1646  */
     {(yyval.node) = new AST::Double((yyvsp[0].ddouble)*-1);}
-#line 1348 "parser.cpp" /* yacc.c:1646  */
+#line 1350 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 12:
 #line 96 "parser.y" /* yacc.c:1646  */
     {(yyval.node) = new AST::Boolean(true);}
-#line 1354 "parser.cpp" /* yacc.c:1646  */
+#line 1356 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 13:
 #line 97 "parser.y" /* yacc.c:1646  */
     {(yyval.node) = new AST::Boolean(false);}
-#line 1360 "parser.cpp" /* yacc.c:1646  */
+#line 1362 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 14:
 #line 98 "parser.y" /* yacc.c:1646  */
     {(yyval.node) = simbolTable->getIdentifier((yyvsp[0].identifier));}
-#line 1366 "parser.cpp" /* yacc.c:1646  */
+#line 1368 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 15:
 #line 99 "parser.y" /* yacc.c:1646  */
-    { (yyval.node) = new AST::BinOp((yyvsp[-2].node),(yyvsp[-1].operation),(yyvsp[0].node)); }
-#line 1372 "parser.cpp" /* yacc.c:1646  */
+    { (yyval.node) = new AST::BinOp((yyvsp[-2].node),(yyvsp[-1].operation),(yyvsp[0].node)); std::cout << "[Criando BinOp (" << AST::TypesString[(yyvsp[-2].node)->type]<< " " << AST::TypesString[(yyvsp[0].node)->type] << ") ]";}
+#line 1374 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 16:
 #line 100 "parser.y" /* yacc.c:1646  */
     { yyerrok; (yyval.node) = (yyvsp[-1].node); }
-#line 1378 "parser.cpp" /* yacc.c:1646  */
+#line 1380 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 17:
 #line 104 "parser.y" /* yacc.c:1646  */
     { (yyval.node) = simbolTable->insertVariable((yyvsp[0].identifier),NULL,Structures::Types::tInteger);}
-#line 1384 "parser.cpp" /* yacc.c:1646  */
+#line 1386 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 18:
 #line 105 "parser.y" /* yacc.c:1646  */
     {(yyval.node)= simbolTable->insertVariable((yyvsp[0].identifier),(yyvsp[-2].node),Structures::Types::tInteger);}
-#line 1390 "parser.cpp" /* yacc.c:1646  */
+#line 1392 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 19:
 #line 109 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=Structures::Types::tDouble;}
-#line 1396 "parser.cpp" /* yacc.c:1646  */
+#line 1398 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 20:
 #line 110 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=Structures::Types::tInteger;}
-#line 1402 "parser.cpp" /* yacc.c:1646  */
+#line 1404 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 21:
 #line 111 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=Structures::Types::tBool;}
-#line 1408 "parser.cpp" /* yacc.c:1646  */
+#line 1410 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 22:
 #line 116 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::oplus;}
-#line 1414 "parser.cpp" /* yacc.c:1646  */
+#line 1416 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 23:
 #line 117 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::omult;}
-#line 1420 "parser.cpp" /* yacc.c:1646  */
+#line 1422 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 24:
 #line 118 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::ominus;}
-#line 1426 "parser.cpp" /* yacc.c:1646  */
+#line 1428 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 25:
 #line 119 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::odiv;}
-#line 1432 "parser.cpp" /* yacc.c:1646  */
+#line 1434 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 26:
 #line 120 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::oequal;}
-#line 1438 "parser.cpp" /* yacc.c:1646  */
+#line 1440 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 27:
 #line 121 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::odifferent;}
-#line 1444 "parser.cpp" /* yacc.c:1646  */
+#line 1446 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 28:
 #line 122 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::ogreater;}
-#line 1450 "parser.cpp" /* yacc.c:1646  */
+#line 1452 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 29:
 #line 123 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::oless;}
-#line 1456 "parser.cpp" /* yacc.c:1646  */
+#line 1458 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 30:
 #line 124 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::ogreatereq;}
-#line 1462 "parser.cpp" /* yacc.c:1646  */
+#line 1464 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 31:
 #line 125 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::olesseq;}
-#line 1468 "parser.cpp" /* yacc.c:1646  */
+#line 1470 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 32:
 #line 126 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::oor;}
-#line 1474 "parser.cpp" /* yacc.c:1646  */
+#line 1476 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 33:
 #line 127 "parser.y" /* yacc.c:1646  */
     {(yyval.operation) = AST::oand;}
-#line 1480 "parser.cpp" /* yacc.c:1646  */
+#line 1482 "parser.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 1484 "parser.cpp" /* yacc.c:1646  */
+#line 1486 "parser.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

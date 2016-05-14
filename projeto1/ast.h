@@ -21,6 +21,7 @@
 #include <string>
 #include "structures.h"
 #include "datacontainer.h"
+#define N_TYPES 3
 
 extern void yyerror( const char *s, ... ); //The error funtion in Bison file
 namespace Structures {class SymbolTable;};
@@ -31,7 +32,9 @@ namespace AST {
 
 //Binary operations
 	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent };
-
+	enum Types { tInt,tReal, tBool,undefined};
+	static std::string TypesString [4]= {"Inteiro", "Real","Booleano","Indefinido"};
+	static std::string tipoOperacoes[4] = {"inteira", "real", "booleana","Indefinida"};
 	class Node;
 
 	typedef std::vector<Node *> NodeList; //List of nodes
@@ -41,19 +44,20 @@ namespace AST {
 		virtual ~Node() {}
 		virtual void printTree() {}
 		virtual DataContainer computeTree() {return DataContainer( 0 );}
+		Types type;
 	};
 
 	class Integer : public Node {
 	public:
 		int value; //Value of the integer.
-		Integer( int value ) : value( value ) {  } //Default Constructor
+		Integer( int value ) : value( value ) {type = tInt;  } //Default Constructor
 		void printTree();//Just prints the value :)
 		DataContainer computeTree();//Just pops the value :)
 	};
 	class Double : public Node {
 	public:
 		double value;
-		Double( double value ) : value( value ) {}
+		Double( double value ) : value( value ) {type = tReal;}
 		void printTree();
 		DataContainer computeTree();
 	};
@@ -61,19 +65,23 @@ namespace AST {
 	class Boolean : public Node {
 	public:
 		bool value;
-		Boolean( bool value ) : value( value ) {}
+		Boolean( bool value ) : value( value ) {type = tBool;}
 		void printTree();
 		DataContainer computeTree();
 	};
+
+
 
 	class BinOp : public Node {
 	public:
 		Operation op;//The operation to be executed
 		Node *left;//the left operand
 		Node *right;//The right operand
-		BinOp( Node *left, Operation op, Node *right ) : left( left ), right( right ), op( op ) { } //Default Contructor
+		
+		BinOp( Node *left, Operation op, Node *right ) : left( left ), right( right ), op( op ) { this->type = undefined;} //Default Contructor
 		void printTree();//Print the tree (right->tree << [operation] << left.tree)
 		DataContainer computeTree();//Returns (left.computeTree [operation] right.computeTree)
+		void computeType();
 	};
 
 	class Block : public Node {
@@ -90,7 +98,8 @@ namespace AST {
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
-		Variable( std::string id,  Node *next, use useType ) :id( id ), next( next ),useType( useType )  {} //Default Constructor
+		
+		Variable( std::string id,  Node *next, use useType,Types type ) :id( id ), next( next ),useType( useType )  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
 		DataContainer computeTree();//Compute the node infos
 

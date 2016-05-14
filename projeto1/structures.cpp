@@ -49,17 +49,20 @@ AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::No
 	} else {
 		yyerror( "[Def]Variable redefinition! [%s]\n",idName.c_str() );
 	}
-	return new AST::Variable( idName,nextVar,AST::Variable::ini );
+	return new AST::Variable( idName,nextVar,AST::Variable::ini,( AST::Types )tipo );
 }
 //===============================================
+//Mudar recursivamente o tipo de uma lista de variaveis
 void Structures::SymbolTable::updateTypes( AST::Node *nodo, Structures::Types tipo ) {
 	AST::Variable *thisvar = dynamic_cast<AST::Variable *>( nodo );
+	thisvar->type = ( AST::Types ) tipo;
 	symbolMap.at( thisvar->id ).updateType( tipo );
 	if( thisvar->next != nullptr ) {
 		updateTypes( thisvar->next,tipo );
 	}
 }
 //===============================================
+//Obter tipo da variavel
 Structures::Types Structures::SymbolTable::getidentifierType( std::string id ) {
 	return symbolMap.at( id ).type;
 }
@@ -77,6 +80,7 @@ bool Structures::SymbolTable::containsIdentifier( std::string idName ) {
 //===============================================
 //Ler variavel
 AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
+	Types symbolType;
 	if( !containsIdentifier( id ) ) {
 		yyerror( "[read]Variable \"%s\" used but not defined!\n",id.c_str() );
 	}
@@ -86,9 +90,12 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 			if( !it->second.initialized ) {
 				yyerror( "[read]Variable \"%s\" defined but not initilized!\n",id.c_str() );
 			}
+			
+			symbolType = it->second.type;
+			//std::cout<<"[usou " << id <<" "<< AST::TypesString[(int)symbolType]<< "]";
 		}
 	}
-	return new AST::Variable( id, NULL, AST::Variable::read );
+	return new AST::Variable( id, NULL, AST::Variable::read , ( AST::Types )symbolType );
 }
 //===============================================
 //Atribuir  variavel
@@ -97,7 +104,8 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
 		yyerror( "[assign]Variable \"%s\" used but not defined!\n",id.c_str() );
 	}
 	this->symbolMap[id].initialized=true;
-	return new AST::Variable( id,NULL,AST::Variable::atrib );
+	//std::cout << "[atribuindo " << id << " " << AST::TypesString[(int)this->symbolMap.at(id).type]<< "]";
+	return new AST::Variable( id,NULL,AST::Variable::atrib,( AST::Types )this->symbolMap[id].type );
 }
 //===============================================
 //ler valor de variavel
@@ -112,8 +120,7 @@ DataContainer Structures::SymbolTable::getIdentifierValue( std::string id ) {
 }
 //===============================================
 //Atualizar valor de variavel
-void Structures::SymbolTable::updateIdentifierValue( std::
-string id, DataContainer value ) {
+void Structures::SymbolTable::updateIdentifierValue( std::string id, DataContainer value ) {
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";

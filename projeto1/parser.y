@@ -84,7 +84,7 @@ line
 : T_NL { $$ = NULL; } /*nothing here to be used */
 // |expr T_NL /*$$ = $1 when nothing is said*/
 |type T_DEF var T_NL {$$ = $3;simbolTable->updateTypes($3, $1);} /*Variable definitions*/
-|T_ID T_ATRIB expr T_NL {  	AST::Node* node = simbolTable->assignVariable($1);
+|T_ID T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::oassign,$3); }
 ;
 
@@ -96,7 +96,7 @@ expr
 | T_TRUE {$$ = new AST::Boolean(true);}
 | T_FALSE {$$ = new AST::Boolean(false);}
 | T_ID {$$ = simbolTable->getIdentifier($1);}
-| expr op expr { $$ = new AST::BinOp($1,$2,$3); }
+| expr op expr { $$ = new AST::BinOp($1,$2,$3); std::cout << "[Criando BinOp (" << AST::TypesString[$1->type]<< " " << AST::TypesString[$3->type] << ") ]";}
 | expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
 ;
 
