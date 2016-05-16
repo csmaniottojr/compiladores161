@@ -110,9 +110,9 @@ namespace AST {
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
-		AST::Node * tamanho;
+		int tamanho;
 		
-		Array( std::string id,  Node *next, use useType,Types type, AST::Node * tamanho ) :id( id ), next( next ),useType( useType ),tamanho(tamanho)  {this->type = type;} //Default Constructor
+		Array( std::string id,  Node *next, use useType,Types type, int tamanho ) :id( id ), next( next ),useType( useType ),tamanho(tamanho)  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
 
 

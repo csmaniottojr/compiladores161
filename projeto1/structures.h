@@ -31,7 +31,7 @@ namespace AST {class Node;}
 namespace Structures {
 
 	enum Kinds {kVariable};
-	enum Types {tInteger= 0, tDouble, tBool};
+	enum Types {tInteger= 0, tDouble, tBool, undefined};
 
 
 
@@ -58,7 +58,7 @@ namespace Structures {
 		SymbolTable();
 
 		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo);
-		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo, AST::Node * tamanho);
+		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo, int tamanho);
 		AST::Node *assignVariable( std::string id );
 		AST::Node *assignVariable( std::string id, AST::Node * indice );
 		bool containsIdentifier( std::string id );

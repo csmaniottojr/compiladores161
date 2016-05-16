@@ -20,7 +20,7 @@ Gramática
     4 line: T_NL
     5     | type T_DEF var T_NL
     6     | T_ID T_ATRIB expr T_NL
-    7     | type T_COLCH_L value T_COLCH_R T_DEF T_ID T_NL
+    7     | type T_COLCH_L T_INT T_COLCH_R T_DEF T_ID T_NL
     8     | T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL
 
     9 expr: value
@@ -62,7 +62,7 @@ Terminais, com as regras onde eles aparecem
 $end (0) 0
 error (256) 13
 T_ID (258) 6 7 8 10 11 14 15
-T_INT (259) 16 17
+T_INT (259) 7 16 17
 T_DOUBLE (260) 18 19
 T_TRUE (261) 20
 T_FALSE (262) 21
@@ -107,7 +107,7 @@ expr (36)
 var (37)
     à esquerda: 14 15, à direita: 5 15
 value (38)
-    à esquerda: 16 17 18 19 20 21, à direita: 7 8 9 11
+    à esquerda: 16 17 18 19 20 21, à direita: 8 9 11
 type (39)
     à esquerda: 22 23 24, à direita: 5 7
 op (40)
@@ -201,7 +201,7 @@ Estado8
 Estado9
 
     5 line: type . T_DEF var T_NL
-    7     | type . T_COLCH_L value T_COLCH_R T_DEF T_ID T_NL
+    7     | type . T_COLCH_L T_INT T_COLCH_R T_DEF T_ID T_NL
 
     T_COLCH_L  deslocar, e ir ao estado 14
     T_DEF      deslocar, e ir ao estado 15
@@ -251,15 +251,9 @@ Estado13
 
 Estado14
 
-    7 line: type T_COLCH_L . value T_COLCH_R T_DEF T_ID T_NL
+    7 line: type T_COLCH_L . T_INT T_COLCH_R T_DEF T_ID T_NL
 
-    T_INT     deslocar, e ir ao estado 17
-    T_DOUBLE  deslocar, e ir ao estado 18
-    T_TRUE    deslocar, e ir ao estado 19
-    T_FALSE   deslocar, e ir ao estado 20
-    T_MINUS   deslocar, e ir ao estado 21
-
-    value  ir ao estado 25
+    T_INT  deslocar, e ir ao estado 25
 
 
 Estado15
@@ -358,7 +352,7 @@ Estado24
 
 Estado25
 
-    7 line: type T_COLCH_L value . T_COLCH_R T_DEF T_ID T_NL
+    7 line: type T_COLCH_L T_INT . T_COLCH_R T_DEF T_ID T_NL
 
     T_COLCH_R  deslocar, e ir ao estado 47
 
@@ -528,7 +522,7 @@ Estado46
 
 Estado47
 
-    7 line: type T_COLCH_L value T_COLCH_R . T_DEF T_ID T_NL
+    7 line: type T_COLCH_L T_INT T_COLCH_R . T_DEF T_ID T_NL
 
     T_DEF  deslocar, e ir ao estado 53
 
@@ -609,7 +603,7 @@ Estado52
 
 Estado53
 
-    7 line: type T_COLCH_L value T_COLCH_R T_DEF . T_ID T_NL
+    7 line: type T_COLCH_L T_INT T_COLCH_R T_DEF . T_ID T_NL
 
     T_ID  deslocar, e ir ao estado 57
 
@@ -654,7 +648,7 @@ Estado56
 
 Estado57
 
-    7 line: type T_COLCH_L value T_COLCH_R T_DEF T_ID . T_NL
+    7 line: type T_COLCH_L T_INT T_COLCH_R T_DEF T_ID . T_NL
 
     T_NL  deslocar, e ir ao estado 59
 
@@ -668,6 +662,6 @@ Estado58
 
 Estado59
 
-    7 line: type T_COLCH_L value T_COLCH_R T_DEF T_ID T_NL .
+    7 line: type T_COLCH_L T_INT T_COLCH_R T_DEF T_ID T_NL .
 
     $padrão  reduzir usando a regra 7 (line)

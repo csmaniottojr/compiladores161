@@ -85,7 +85,7 @@ line
 |type T_DEF var T_NL {$$ = $3;simbolTable->updateTypes($3, $1);} /*Variable definitions*/
 |T_ID T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::oassign,$3); }
-|type T_COLCH_L value T_COLCH_R T_DEF T_ID T_NL {$$= simbolTable->insertVariable($6,NULL,$1,$3);}/*Array definitions*/
+|type T_COLCH_L T_INT T_COLCH_R T_DEF T_ID T_NL {$$= simbolTable->insertVariable($6,NULL,$1,$3);}/*Array definitions*/
 |T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1,$3);
 			$$ = new AST::BinOp(node,AST::oassign,$6); }
 ;

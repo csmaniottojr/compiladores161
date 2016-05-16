@@ -128,6 +128,10 @@ void Variable::printTree() {
 						message = "inteiro " + this->id;
 						break;
 					}
+					case Structures::undefined: {
+						message = "indefinido " + this->id;
+						break;
+					}
 				};
 				//message="leitura de variavel "
 				//message = "";  break;
@@ -148,12 +152,12 @@ void Array::printTree() {
 		std::string message = "Tipo Fantasma " + this->id;
 		switch ( this->useType ) {
 			
-			case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "; break;}
+			case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "+std::to_string(tamanho) + ": "+id; break;}
 			
 		}
 		std::cout<<message;
-		this->tamanho->printTree();
-		std::cout<<": " <<this->id;
+		
+		
 		return;
 	}
 	std::cout << this->id;

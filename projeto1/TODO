@@ -1,15 +1,8 @@
-V0.1 = Soma de inteiros; [OK]
-V0.2 = Multiplicacao e Debug; [OK]
-V0.2.1 = Definicao de variaveis;[OK]
-ºdef a
-ºdef wee
-ºdef bla, wee, alce
--> Guardar em uma tabela de simbolos!
+erros tratados até o momento:
 
-V0.2.2 = Uso de variaveis em expressoes;[OK]
-V0.3 = atribuicao;[OK]
-v0.4 = Def de tipos
-V0.5 = Definicao de escopos {}
-V0.6 = Prototipo de funcoes
-V0.6.1 = Def de funcoes;
-V0.6.2 = Uso de funcoes;
+v1.0
+1,2,3,4,5
+
+
+v1.1
+7, 8(parcial), 9 (detecta erro de sintaxe e dá segfault, 11,12
