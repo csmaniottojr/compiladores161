@@ -36,6 +36,8 @@ digsd [0-9]*
 ":"		{return T_DEF;}
 "("		{return T_PAREN_L;}
 ")"		{return T_PAREN_R;}
+"["		{return T_COLCH_L;}
+"]"		{return T_COLCH_R;}
 "int"		{return T_TINT;}
 "real"		{return T_TDOUBLE;}
 "bool"		{return T_TBOOL;}

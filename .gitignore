@@ -1,0 +1,13 @@
+*~
+*.out
+*.output
+*.o
+*.gch
+/projeto1/myparse
+projeto1/parser.cpp
+projeto1/parser.h
+projeto1/scanner.cpp
+projeto1/projeto1.kdev4
+
+
+

@@ -41,7 +41,7 @@
 %token <ddouble> T_DOUBLE
 %token <boolean> T_TRUE T_FALSE
 %token T_PLUS T_MULT T_NL T_ATRIB T_MINUS T_DIV T_IGUAL T_DIFERENTE T_MAIOR T_MENOR
-%token T_MAIOR_IGUAL T_MENOR_IGUAL T_NOT T_PAREN_L T_PAREN_R T_AND T_OR 
+%token T_MAIOR_IGUAL T_MENOR_IGUAL T_NOT T_PAREN_L T_PAREN_R T_AND T_OR T_COLCH_L T_COLCH_R
 %token T_TINT T_TDOUBLE T_TBOOL
 %token T_VIRGULA T_DEF
 
@@ -50,7 +50,7 @@
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <node> expr line var
+%type <node> expr line var value
 %type <block> lines program
 %type <operation> op
 %type <type> type
@@ -82,20 +82,18 @@ lines
 
 line
 : T_NL { $$ = NULL; } /*nothing here to be used */
-// |expr T_NL /*$$ = $1 when nothing is said*/
 |type T_DEF var T_NL {$$ = $3;simbolTable->updateTypes($3, $1);} /*Variable definitions*/
 |T_ID T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::oassign,$3); }
+|type T_COLCH_L value T_COLCH_R T_DEF T_ID T_NL {$$= simbolTable->insertVariable($6,NULL,$1,$3);}/*Array definitions*/
+|T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1,$3);
+			$$ = new AST::BinOp(node,AST::oassign,$6); }
 ;
 
 expr
-: T_INT { $$ = new AST::Integer($1); }
-| T_MINUS T_INT { $$ = new AST::Integer($2*-1); }
-| T_DOUBLE {$$ = new AST::Double($1);}
-| T_MINUS T_DOUBLE {$$ = new AST::Double($2*-1);}
-| T_TRUE {$$ = new AST::Boolean(true);}
-| T_FALSE {$$ = new AST::Boolean(false);}
+: value {$$ = $1;}
 | T_ID {$$ = simbolTable->getIdentifier($1);}
+| T_ID T_COLCH_L value T_COLCH_R {$$ = simbolTable->getIdentifier($1,$3);}
 | expr op expr { $$ = new AST::BinOp($1,$2,$3); std::cout << "[Criando BinOp (" << AST::TypesString[$1->type]<< " " << AST::TypesString[$3->type] << ") ]";}
 | expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
 ;
@@ -103,6 +101,17 @@ expr
 var /*list of declared vars.*/
 : T_ID { $$ = simbolTable->insertVariable($1,NULL,Structures::Types::tInteger);}
 | var T_VIRGULA T_ID {$$= simbolTable->insertVariable($3,$1,Structures::Types::tInteger);} /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
+;
+
+
+
+value
+: T_INT { $$ = new AST::Integer($1); }
+| T_MINUS T_INT { $$ = new AST::Integer($2*-1); }
+| T_DOUBLE {$$ = new AST::Double($1);}
+| T_MINUS T_DOUBLE {$$ = new AST::Double($2*-1);}
+| T_TRUE {$$ = new AST::Boolean(true);}
+| T_FALSE {$$ = new AST::Boolean(false);}
 ;
 
 type
@@ -126,8 +135,6 @@ op
 | T_AND {$$ = AST::oor;}
 | T_OR {$$ = AST::oand;}
 ;
-
-
 
 %%
 

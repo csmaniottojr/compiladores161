@@ -46,490 +46,490 @@ DataContainer::~DataContainer() {
 
 //Operations=======================================================================================
 //Equalty========================================
-bool DataContainer::operator==( const DataContainer &other ) const {
-	if( this->type != other.type ) {
-		return false;
-	}
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			int *thisValue = ( int * )this->data;
-			int *otherValue = ( int * )other.data;
-			return ( *thisValue == *otherValue );
-			break;
-		}
-		case DataContainer::tDouble: {
-			double *thisValue = ( double * )this->data;
-			double *otherValue = ( double * )other.data;
-			return ( *thisValue == *otherValue );
-			break;
-		}
-		case  DataContainer::tBool: {
-			return ( *( bool * )this->data == *( bool * )other.data );
-		}
-	}
-	return false;
-}
-//Addition=======================================
-DataContainer DataContainer::operator+( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					//std::cout<<"[DEBUG][DataContainer] Vai somar " << *thisValue << " + " <<*otherValue<<std::endl;
-					return DataContainer( *thisValue + *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue + *otherValue );
-					break;
-				}
-				case DataContainer::tBool: {
-					INCOMPATIBLE_TYPES_OPERATION_SUM( this->type,other.type );
-					break;
-				}
-			}//Int + *
-			break;
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue + *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue + *otherValue );
-					break;
-				}
-				case DataContainer::tBool: {
-					INCOMPATIBLE_TYPES_OPERATION_SUM( this->type,other.type );
-					break;
-				}
-			}//Double *
-			break;
-		}
-		case DataContainer::tBool: {
-			INCOMPATIBLE_TYPES_OPERATION_SUM( this->getType(),other.getType() );
-			break;
-		}
-	}
-}
-//Multiplication=================================
-DataContainer DataContainer::operator*( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					return DataContainer( *thisValue * *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue * *otherValue );
-					break;
-				}
-				case DataContainer::tBool: {
-					INCOMPATIBLE_TYPES_OPERATION_MULT( this->getType(),other.getType() );
-					break;
-				}
-			}//Int + *
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue * *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: {//Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue * *otherValue );
-				}
-				case DataContainer::tBool: {
-					INCOMPATIBLE_TYPES_OPERATION_MULT( this->getType(),other.getType() );
-					break;
-				}
-			}//Double *
-		}
-		case DataContainer::tBool: {
-			INCOMPATIBLE_TYPES_OPERATION_MULT( this->getType(),other.getType() );
-			break;
-		}
-	}
-}
+// bool DataContainer::operator==( const DataContainer &other ) const {
+// 	if( this->type != other.type ) {
+// 		return false;
+// 	}
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			int *thisValue = ( int * )this->data;
+// 			int *otherValue = ( int * )other.data;
+// 			return ( *thisValue == *otherValue );
+// 			break;
+// 		}
+// 		case DataContainer::tDouble: {
+// 			double *thisValue = ( double * )this->data;
+// 			double *otherValue = ( double * )other.data;
+// 			return ( *thisValue == *otherValue );
+// 			break;
+// 		}
+// 		case  DataContainer::tBool: {
+// 			return ( *( bool * )this->data == *( bool * )other.data );
+// 		}
+// 	}
+// 	return false;
+// }
+// //Addition=======================================
+// DataContainer DataContainer::operator+( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					//std::cout<<"[DEBUG][DataContainer] Vai somar " << *thisValue << " + " <<*otherValue<<std::endl;
+// 					return DataContainer( *thisValue + *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue + *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tBool: {
+// 					INCOMPATIBLE_TYPES_OPERATION_SUM( this->type,other.type );
+// 					break;
+// 				}
+// 			}//Int + *
+// 			break;
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue + *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue + *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tBool: {
+// 					INCOMPATIBLE_TYPES_OPERATION_SUM( this->type,other.type );
+// 					break;
+// 				}
+// 			}//Double *
+// 			break;
+// 		}
+// 		case DataContainer::tBool: {
+// 			INCOMPATIBLE_TYPES_OPERATION_SUM( this->getType(),other.getType() );
+// 			break;
+// 		}
+// 	}
+// }
+// //Multiplication=================================
+// DataContainer DataContainer::operator*( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					return DataContainer( *thisValue * *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue * *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tBool: {
+// 					INCOMPATIBLE_TYPES_OPERATION_MULT( this->getType(),other.getType() );
+// 					break;
+// 				}
+// 			}//Int + *
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue * *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: {//Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue * *otherValue );
+// 				}
+// 				case DataContainer::tBool: {
+// 					INCOMPATIBLE_TYPES_OPERATION_MULT( this->getType(),other.getType() );
+// 					break;
+// 				}
+// 			}//Double *
+// 		}
+// 		case DataContainer::tBool: {
+// 			INCOMPATIBLE_TYPES_OPERATION_MULT( this->getType(),other.getType() );
+// 			break;
+// 		}
+// 	}
+// }
 
-//Sub=================================
-DataContainer DataContainer::operator-( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					return DataContainer( *thisValue - *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue - *otherValue );
-					break;
-				}
-				case DataContainer::tBool: {
-					INCOMPATIBLE_TYPES_OPERATION_SUB( this->getType(),other.getType() );
-					break;
-				}
-			}//Int + *
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue - *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: {//Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue - *otherValue );
-				}
-				case DataContainer::tBool: {
-					INCOMPATIBLE_TYPES_OPERATION_SUB( this->getType(),other.getType() );
-					break;
-				}
-			}//Double *
-		}
-		case DataContainer::tBool: {
-			INCOMPATIBLE_TYPES_OPERATION_SUB( this->getType(),other.getType() );
-			break;
-		}
-	}
-}
+// //Sub=================================
+// DataContainer DataContainer::operator-( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					return DataContainer( *thisValue - *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue - *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tBool: {
+// 					INCOMPATIBLE_TYPES_OPERATION_SUB( this->getType(),other.getType() );
+// 					break;
+// 				}
+// 			}//Int + *
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue - *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: {//Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue - *otherValue );
+// 				}
+// 				case DataContainer::tBool: {
+// 					INCOMPATIBLE_TYPES_OPERATION_SUB( this->getType(),other.getType() );
+// 					break;
+// 				}
+// 			}//Double *
+// 		}
+// 		case DataContainer::tBool: {
+// 			INCOMPATIBLE_TYPES_OPERATION_SUB( this->getType(),other.getType() );
+// 			break;
+// 		}
+// 	}
+// }
 
-//Div=================================
-DataContainer DataContainer::operator/( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					return DataContainer( *thisValue / *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue / *otherValue );
-					break;
-				}
-				case DataContainer::tBool: {
-					INCOMPATIBLE_TYPES_OPERATION_DIV( this->getType(),other.getType() );
-					break;
-				}
-			}//Int + *
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue / *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: {//Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue / *otherValue );
-				}
-				case DataContainer::tBool: {
-					INCOMPATIBLE_TYPES_OPERATION_DIV( this->getType(),other.getType() );
-					break;
-				}
-			}//Double *
-		}
-		case DataContainer::tBool: {
-			INCOMPATIBLE_TYPES_OPERATION_DIV( this->getType(),other.getType() );
-			break;
-		}
-	}
-}
+// //Div=================================
+// DataContainer DataContainer::operator/( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					return DataContainer( *thisValue / *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue / *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tBool: {
+// 					INCOMPATIBLE_TYPES_OPERATION_DIV( this->getType(),other.getType() );
+// 					break;
+// 				}
+// 			}//Int + *
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue / *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: {//Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue / *otherValue );
+// 				}
+// 				case DataContainer::tBool: {
+// 					INCOMPATIBLE_TYPES_OPERATION_DIV( this->getType(),other.getType() );
+// 					break;
+// 				}
+// 			}//Double *
+// 		}
+// 		case DataContainer::tBool: {
+// 			INCOMPATIBLE_TYPES_OPERATION_DIV( this->getType(),other.getType() );
+// 			break;
+// 		}
+// 	}
+// }
 
-//maior=================================
-DataContainer DataContainer::operator>( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					return DataContainer( *thisValue > *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue > *otherValue );
-					break;
-				}
-			}//Int + *
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue > *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: {//Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue > *otherValue );
-				}
-			}//Double *
-		}
-	}
-}
+// //maior=================================
+// DataContainer DataContainer::operator>( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					return DataContainer( *thisValue > *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue > *otherValue );
+// 					break;
+// 				}
+// 			}//Int + *
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue > *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: {//Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue > *otherValue );
+// 				}
+// 			}//Double *
+// 		}
+// 	}
+// }
 
-//menor=================================
-DataContainer DataContainer::operator<( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					return DataContainer( *thisValue < *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue < *otherValue );
-					break;
-				}
-			}//Int + *
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue < *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: {//Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue < *otherValue );
-				}
-			}//Double *
-		}
-	}
-}
+// //menor=================================
+// DataContainer DataContainer::operator<( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					return DataContainer( *thisValue < *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue < *otherValue );
+// 					break;
+// 				}
+// 			}//Int + *
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue < *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: {//Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue < *otherValue );
+// 				}
+// 			}//Double *
+// 		}
+// 	}
+// }
 
-//maior ou igual=================================
-DataContainer DataContainer::operator>=( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					return DataContainer( *thisValue >= *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue >= *otherValue );
-					break;
-				}
-			}//Int + *
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue >= *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: {//Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue >= *otherValue );
-				}
-			}//Double *
-		}
-	}
-}
+// //maior ou igual=================================
+// DataContainer DataContainer::operator>=( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					return DataContainer( *thisValue >= *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue >= *otherValue );
+// 					break;
+// 				}
+// 			}//Int + *
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue >= *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: {//Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue >= *otherValue );
+// 				}
+// 			}//Double *
+// 		}
+// 	}
+// }
 
-//menor ou igual=================================
-DataContainer DataContainer::operator<=( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					return DataContainer( *thisValue <= *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue <= *otherValue );
-					break;
-				}
-			}//Int <= *
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue <= *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: {//Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue <= *otherValue );
-				}
-			}//Double <=  *
-		}
-	}
-}
+// //menor ou igual=================================
+// DataContainer DataContainer::operator<=( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					return DataContainer( *thisValue <= *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue <= *otherValue );
+// 					break;
+// 				}
+// 			}//Int <= *
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue <= *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: {//Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue <= *otherValue );
+// 				}
+// 			}//Double <=  *
+// 		}
+// 	}
+// }
 
-//igual=================================
-DataContainer DataContainer::operator==( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					return DataContainer( *thisValue == *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue == *otherValue );
-					break;
-				}
-			}//Int + *
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue == *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: {//Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue == *otherValue );
-				}
-			}//Double *
-		}
-		case DataContainer::tBool: {
-			if( other.type == DataContainer::tBool ) {
-				bool *thisValue = ( bool * ) this->data;
-				bool *otherValue = ( bool * ) other.data;
-				return DataContainer( *thisValue == *otherValue );
-			}
-		}
-	}
-}
+// //igual=================================
+// DataContainer DataContainer::operator==( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					return DataContainer( *thisValue == *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue == *otherValue );
+// 					break;
+// 				}
+// 			}//Int + *
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue == *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: {//Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue == *otherValue );
+// 				}
+// 			}//Double *
+// 		}
+// 		case DataContainer::tBool: {
+// 			if( other.type == DataContainer::tBool ) {
+// 				bool *thisValue = ( bool * ) this->data;
+// 				bool *otherValue = ( bool * ) other.data;
+// 				return DataContainer( *thisValue == *otherValue );
+// 			}
+// 		}
+// 	}
+// }
 
-//diferente=================================
-DataContainer DataContainer::operator!=( DataContainer &other ) {
-	switch( this->type ) {
-		case DataContainer::tInteger: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Int Int
-					int *thisValue = ( int * )this->data;
-					int *otherValue = ( int * )other.data;
-					return DataContainer( *thisValue != *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: { //Int Double
-					int *thisValue =  ( int * )this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue != *otherValue );
-					break;
-				}
-			}//Int + *
-		}
-		case DataContainer::tDouble: {
-			switch ( other.type ) {
-				case DataContainer::tInteger: { //Double Int
-					double *thisValue = ( double * ) this->data;
-					int *otherValue = ( int * ) other.data;
-					return DataContainer( *thisValue != *otherValue );
-					break;
-				}
-				case DataContainer::tDouble: {//Double Double
-					double *thisValue = ( double * ) this->data;
-					double *otherValue = ( double * )other.data;
-					return DataContainer( *thisValue != *otherValue );
-				}
-			}//Double *
-		}
-		case DataContainer::tBool: {
-			if( other.type == DataContainer::tBool ) {
-				bool *thisValue = ( bool * ) this->data;
-				bool *otherValue = ( bool * ) other.data;
-				return DataContainer( *thisValue != *otherValue );
-			}
-		}
-	}
-}
+// //diferente=================================
+// DataContainer DataContainer::operator!=( DataContainer &other ) {
+// 	switch( this->type ) {
+// 		case DataContainer::tInteger: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Int Int
+// 					int *thisValue = ( int * )this->data;
+// 					int *otherValue = ( int * )other.data;
+// 					return DataContainer( *thisValue != *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: { //Int Double
+// 					int *thisValue =  ( int * )this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue != *otherValue );
+// 					break;
+// 				}
+// 			}//Int + *
+// 		}
+// 		case DataContainer::tDouble: {
+// 			switch ( other.type ) {
+// 				case DataContainer::tInteger: { //Double Int
+// 					double *thisValue = ( double * ) this->data;
+// 					int *otherValue = ( int * ) other.data;
+// 					return DataContainer( *thisValue != *otherValue );
+// 					break;
+// 				}
+// 				case DataContainer::tDouble: {//Double Double
+// 					double *thisValue = ( double * ) this->data;
+// 					double *otherValue = ( double * )other.data;
+// 					return DataContainer( *thisValue != *otherValue );
+// 				}
+// 			}//Double *
+// 		}
+// 		case DataContainer::tBool: {
+// 			if( other.type == DataContainer::tBool ) {
+// 				bool *thisValue = ( bool * ) this->data;
+// 				bool *otherValue = ( bool * ) other.data;
+// 				return DataContainer( *thisValue != *otherValue );
+// 			}
+// 		}
+// 	}
+// }
 
 
-//and=================================
-DataContainer DataContainer::operator&&( DataContainer &other ) {
-	if( this->type == DataContainer::tBool && other.type == DataContainer::tBool ) {
-		bool *thisValue = ( bool * ) this->data;
-		bool *otherValue = ( bool * ) other.data;
-		return DataContainer( *thisValue && *otherValue );
-	}
-}
+// //and=================================
+// DataContainer DataContainer::operator&&( DataContainer &other ) {
+// 	if( this->type == DataContainer::tBool && other.type == DataContainer::tBool ) {
+// 		bool *thisValue = ( bool * ) this->data;
+// 		bool *otherValue = ( bool * ) other.data;
+// 		return DataContainer( *thisValue && *otherValue );
+// 	}
+// }
 
-//or=================================
-DataContainer DataContainer::operator||( DataContainer &other ) {
-	if( this->type == DataContainer::tBool && other.type == DataContainer::tBool ) {
-		bool *thisValue = ( bool * ) this->data;
-		bool *otherValue = ( bool * ) other.data;
-		return DataContainer( *thisValue || *otherValue );
-	}
-}
+// //or=================================
+// DataContainer DataContainer::operator||( DataContainer &other ) {
+// 	if( this->type == DataContainer::tBool && other.type == DataContainer::tBool ) {
+// 		bool *thisValue = ( bool * ) this->data;
+// 		bool *otherValue = ( bool * ) other.data;
+// 		return DataContainer( *thisValue || *otherValue );
+// 	}
+// }
 
-//not=================================
-DataContainer DataContainer::operator!() {
-	if( this->type == DataContainer::tBool ) {
-		bool *thisValue = ( bool * ) this->data;
-		return DataContainer( ! *thisValue );
-	}
-}
+// //not=================================
+// DataContainer DataContainer::operator!() {
+// 	if( this->type == DataContainer::tBool ) {
+// 		bool *thisValue = ( bool * ) this->data;
+// 		return DataContainer( ! *thisValue );
+// 	}
+// }
 
 //Data insertion===================================================================================
 //Integer========================================

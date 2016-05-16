@@ -20,7 +20,6 @@
 #include <vector>
 #include <string>
 #include "structures.h"
-#include "datacontainer.h"
 #define N_TYPES 3
 
 extern void yyerror( const char *s, ... ); //The error funtion in Bison file
@@ -33,7 +32,7 @@ namespace AST {
 //Binary operations
 	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent };
 	enum Types { tInt,tReal, tBool,undefined};
-	static std::string TypesString [4]= {"Inteiro", "Real","Booleano","Indefinido"};
+	static std::string TypesString [4]= {"inteiro", "real","booleano","indefinido"};
 	static std::string tipoOperacoes[4] = {"inteira", "real", "booleana","Indefinida"};
 	class Node;
 
@@ -43,7 +42,7 @@ namespace AST {
 	public:
 		virtual ~Node() {}
 		virtual void printTree() {}
-		virtual DataContainer computeTree() {return DataContainer( 0 );}
+
 		Types type;
 	};
 
@@ -52,14 +51,14 @@ namespace AST {
 		int value; //Value of the integer.
 		Integer( int value ) : value( value ) {type = tInt;  } //Default Constructor
 		void printTree();//Just prints the value :)
-		DataContainer computeTree();//Just pops the value :)
+
 	};
 	class Double : public Node {
 	public:
 		double value;
 		Double( double value ) : value( value ) {type = tReal;}
 		void printTree();
-		DataContainer computeTree();
+
 	};
 
 	class Boolean : public Node {
@@ -67,7 +66,7 @@ namespace AST {
 		bool value;
 		Boolean( bool value ) : value( value ) {type = tBool;}
 		void printTree();
-		DataContainer computeTree();
+
 	};
 
 
@@ -80,7 +79,7 @@ namespace AST {
 		
 		BinOp( Node *left, Operation op, Node *right ) : left( left ), right( right ), op( op ) { this->type = undefined;} //Default Contructor
 		void printTree();//Print the tree (right->tree << [operation] << left.tree)
-		DataContainer computeTree();//Returns (left.computeTree [operation] right.computeTree)
+
 		void computeType();
 	};
 
@@ -89,7 +88,7 @@ namespace AST {
 		NodeList lines;//The nodes of this block
 		Block() { }//Empty Constructor
 		void printTree();//Print the tree to  every node in "lines".
-		DataContainer computeTree();//Computes the tree to  every node in "lines".
+
 	};
 
 	class Variable : public Node {
@@ -101,7 +100,35 @@ namespace AST {
 		
 		Variable( std::string id,  Node *next, use useType,Types type ) :id( id ), next( next ),useType( useType )  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
-		DataContainer computeTree();//Compute the node infos
+
+
+	};
+
+	class Array : public Node {
+		public:
+		enum use {ini};
+		std::string id;//The var "name"
+		AST::Node *next;//Next Variable, to multiple variable declarations
+		use useType;
+		AST::Node * tamanho;
+		
+		Array( std::string id,  Node *next, use useType,Types type, AST::Node * tamanho ) :id( id ), next( next ),useType( useType ),tamanho(tamanho)  {this->type = type;} //Default Constructor
+		void printTree();//Print the node infos
+
+
+	};
+
+	class ArrayItem : public Node {
+		public:
+		enum use {atrib,read};
+		std::string id;//The var "name"
+		AST::Node *next;//Next Variable, to multiple variable declarations
+		use useType;
+		AST::Node * indice;
+		
+		ArrayItem( std::string id,  Node *next, use useType,Types type, AST::Node * indice ) :id( id ), next( next ),useType( useType ),indice(indice)  {this->type = type;} //Default Constructor
+		void printTree();//Print the node infos
+
 
 	};
 

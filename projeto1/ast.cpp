@@ -115,7 +115,6 @@ void Variable::printTree() {
 			case AST::Variable::ini: {message = "inicializacao de variavel " + TypesString[( int )type] +" "+ this->id ; break;}
 			case AST::Variable::read: {
 				//std::cout<<"[ST  com "<<simbolTable->symbolMap.size()<<" atribuiu? "<<simbolTable->jaAtribuiu<<"]";
-				//DataContainer thisValue(4);
 				switch( simbolTable->getidentifierType( this->id ) ) {
 					case Structures::tBool: {
 						message = "booleano "+ this->id;
@@ -141,77 +140,59 @@ void Variable::printTree() {
 	return;
 }
 
-
-
-
-
-
-
-//NOT USED - NOT USED - NOT USED - NOT USED - NOT USED - NOT USED - NOT USED - NOT USED - NOT USED - NOT USED - NOT USED
-
-
-
-
-
-
-
-/* ================Compute methods================*/
-//Integer
-DataContainer Integer::computeTree() {
-	return DataContainer( value );
-}
-//Integer
-DataContainer Double::computeTree() {
-	return DataContainer( value );
-}
-
-DataContainer Boolean::computeTree() {
-	return DataContainer( value );
-}
-
-//Binary Operation
-DataContainer BinOp::computeTree() {
-	DataContainer lvalue = left->computeTree();
-	DataContainer rvalue = right->computeTree();
-//	std::cout << "[Debug][AST] Operacao com " << *(int*)lvalue.data << " e " << *(int*)rvalue.data<<std::endl;
-	switch( op ) {
-		case oplus: {
-			DataContainer value = lvalue + rvalue; return value; break;
+void Array::printTree() {
+	if( next != nullptr ) {
+		next->printTree();
+		std::cout << ", ";
+	} else {
+		std::string message = "Tipo Fantasma " + this->id;
+		switch ( this->useType ) {
+			
+			case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "; break;}
+			
 		}
-		case omult: {
-			DataContainer value = lvalue * rvalue; return value; break;
-		}
-		case AST::oand: {
-			DataContainer value = lvalue and rvalue; return value; break;
-		}
-		case AST::oor: {
-			DataContainer value = lvalue or rvalue; return value; break;
-		}
-		/*Syntax: var assign expression*/
-		case AST::oassign: {
-			Variable *var = dynamic_cast<Variable *>( left );
-			simbolTable->updateIdentifierValue( var->id,rvalue );
-			//std::cout <<"valor de " << var->id <<" atualizado para " << simbolTable->symbolMap[var->id].value << "\n";
-			DataContainer value = simbolTable->getIdentifierValue( var->id );
-			return value;
-			break;
-		}
+		std::cout<<message;
+		this->tamanho->printTree();
+		std::cout<<": " <<this->id;
+		return;
 	}
-	return DataContainer( 0 );
+	std::cout << this->id;
+	return;
 }
-//Block
-DataContainer Block::computeTree() {
-	std::cout<<"[Block com "<<lines.size()<<"]\n";
-	for ( Node *line: lines ) {
-		DataContainer value = line->computeTree();
-		//std::cout << "Computed " << value << std::endl;
+
+void ArrayItem::printTree() {
+	if( next != nullptr ) {
+		next->printTree();
+		std::cout << ", ";
+	} else {
+		std::string message = "Tipo Fantasma " + this->id;
+		switch ( this->useType ) {
+			
+			case AST::ArrayItem::atrib: {
+				message = "Atribuicao de valor para arranjo "+ TypesString[( int )type] + " " + this->id + ": \n+indice: " ; 
+				std::cout<<message;
+				this->indice->printTree();
+				std::cout<<"\n+valor: ";
+
+			break;}
+
+			case AST::ArrayItem::read: {
+				message = "arranjo "+ TypesString[( int )type] + " " + this->id + ": \n{+indice: " ; 
+				std::cout<<message;
+				this->indice->printTree();
+				std::cout<<"}";
+
+			break;}
+		}
+		
+		return;
 	}
-	return 0;
+	std::cout << this->id;
+	return;
 }
-//Variable
-DataContainer Variable::computeTree() {
-	Structures::Symbol thisSymbol = simbolTable->symbolMap[this->id];
-	return thisSymbol.value;
-}
+
+
+
+
 
 

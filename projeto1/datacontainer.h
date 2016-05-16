@@ -31,43 +31,43 @@ public:
 	void insertData( double &newDdata );
 	void insertData( bool &newData );
 	DataTypes getType() const;
-	DataContainer operator+ ( DataContainer &other );
-	DataContainer operator* ( DataContainer &other );
-	DataContainer operator- ( DataContainer &other );
-	DataContainer operator/ ( DataContainer &other );
-	DataContainer operator> ( DataContainer &other );
-	DataContainer operator< ( DataContainer &other );
-	DataContainer operator>= ( DataContainer &other );
-	DataContainer operator<= ( DataContainer &other );
-	DataContainer operator== ( DataContainer &other );
-	DataContainer operator!= ( DataContainer &other );
-	DataContainer operator&& ( DataContainer &other );
-	DataContainer operator|| ( DataContainer &other );
-	DataContainer operator! ();
+// 	DataContainer operator+ ( DataContainer &other );
+// 	DataContainer operator* ( DataContainer &other );
+// 	DataContainer operator- ( DataContainer &other );
+// 	DataContainer operator/ ( DataContainer &other );
+// 	DataContainer operator> ( DataContainer &other );
+// 	DataContainer operator< ( DataContainer &other );
+// 	DataContainer operator>= ( DataContainer &other );
+// 	DataContainer operator<= ( DataContainer &other );
+// 	DataContainer operator== ( DataContainer &other );
+// 	DataContainer operator!= ( DataContainer &other );
+// 	DataContainer operator&& ( DataContainer &other );
+// 	DataContainer operator|| ( DataContainer &other );
+// 	DataContainer operator! ();
 	bool operator==( const DataContainer &other ) const;
 	void *data;
 	friend std::ostream &operator<< ( std::ostream &out,const DataContainer &dataContainer );
-private:
-	void INCOMPATIBLE_TYPES_OPERATION_SUM( DataTypes type1,DataTypes type2 ) {
-#define str(x) #x
-		std::cerr<<"Can't sum a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
-#undef str
-	};
-	void INCOMPATIBLE_TYPES_OPERATION_MULT( DataTypes type1,DataTypes type2 ) {
-#define str(x) #x
-		std::cerr<<"Can't multiply a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
-#undef str
-	};
-	void INCOMPATIBLE_TYPES_OPERATION_DIV( DataTypes type1,DataTypes type2 ) {
-#define str(x) #x
-		std::cerr<<"Can't divide a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
-#undef str
-	};
-	void INCOMPATIBLE_TYPES_OPERATION_SUB( DataTypes type1,DataTypes type2 ) {
-#define str(x) #x
-		std::cerr<<"Can't subtract a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
-#undef str
-	};
+// private:
+// 	void INCOMPATIBLE_TYPES_OPERATION_SUM( DataTypes type1,DataTypes type2 ) {
+// #define str(x) #x
+// 		std::cerr<<"Can't sum a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
+// #undef str
+// 	};
+// 	void INCOMPATIBLE_TYPES_OPERATION_MULT( DataTypes type1,DataTypes type2 ) {
+// #define str(x) #x
+// 		std::cerr<<"Can't multiply a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
+// #undef str
+// 	};
+// 	void INCOMPATIBLE_TYPES_OPERATION_DIV( DataTypes type1,DataTypes type2 ) {
+// #define str(x) #x
+// 		std::cerr<<"Can't divide a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
+// #undef str
+// 	};
+// 	void INCOMPATIBLE_TYPES_OPERATION_SUB( DataTypes type1,DataTypes type2 ) {
+// #define str(x) #x
+// 		std::cerr<<"Can't subtract a " << str( type1 ) <<" with a " << str( type2 ) << "!" <<std::endl;
+// #undef str
+// 	};
 	DataTypes type;
 
 };
