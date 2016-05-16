@@ -173,15 +173,15 @@ void ArrayItem::printTree() {
 		switch ( this->useType ) {
 			
 			case AST::ArrayItem::atrib: {
-				message = "Atribuicao de valor para arranjo "+ TypesString[( int )type] + " " + this->id + ": \n+indice: " ; 
+				message = "Atribuicao de valor para arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ; 
 				std::cout<<message;
 				this->indice->printTree();
-				std::cout<<"\n+valor: ";
+				std::cout<<"}: ";
 
 			break;}
 
 			case AST::ArrayItem::read: {
-				message = "arranjo "+ TypesString[( int )type] + " " + this->id + ": \n{+indice: " ; 
+				message = "arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ; 
 				std::cout<<message;
 				this->indice->printTree();
 				std::cout<<"}";
