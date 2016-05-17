@@ -45,7 +45,7 @@ namespace Structures {
 		bool isArray; //flag to indicate if symbol is array or not
 		bool foiRedefinida;
 		Symbol( Kinds kind, Types type, DataContainer value, bool initialized, bool isArray, bool foiRedefinida ):
-			kind( kind ), type( type ),value( value ),initialized( initialized ), isArray(isArray), foiRedefinida(foiRedefinida){};
+			kind( kind ), type( type ),value( value ),initialized( initialized ), isArray( isArray ), foiRedefinida( foiRedefinida ) {};
 		Symbol();
 		void updateValue( DataContainer value ) {this->value = value;};
 		void updateType  ( Types newType ) {this->type=newType;};
@@ -57,13 +57,13 @@ namespace Structures {
 		std::map<std::string , Symbol> symbolMap;
 		SymbolTable();
 
-		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo);
-		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo, int tamanho);
+		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo );
+		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo, int tamanho );
 		AST::Node *assignVariable( std::string id );
-		AST::Node *assignVariable( std::string id, AST::Node * indice );
+		AST::Node *assignVariable( std::string id, AST::Node *indice );
 		bool containsIdentifier( std::string id );
 		AST::Node *getIdentifier( std::string id );
-		AST::Node *getIdentifier( std::string id ,AST::Node * indice);
+		AST::Node *getIdentifier( std::string id ,AST::Node *indice );
 		// DataContainer getIdentifierValue( std::string id );
 		// void updateIdentifierValue( std::string id, DataContainer value );
 		void updateTypes( AST::Node *, Structures::Types tipo );

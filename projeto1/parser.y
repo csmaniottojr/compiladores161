@@ -94,7 +94,7 @@ expr
 : value {$$ = $1;}
 | T_ID {$$ = simbolTable->getIdentifier($1);}
 | T_ID T_COLCH_L value T_COLCH_R {$$ = simbolTable->getIdentifier($1,$3);}
-| expr op expr { $$ = new AST::BinOp($1,$2,$3); std::cout << "[Criando BinOp (" << AST::TypesString[$1->type]<< " " << AST::TypesString[$3->type] << ") ]";}
+| expr op expr { $$ = new AST::BinOp($1,$2,$3);}
 | expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
 ;
 

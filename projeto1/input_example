@@ -1,9 +1,10 @@
 real: a,c,e;
 int: b,d;
-a := 1.5;
+a := 2;
 b := 3.0;
 c := a+b;
-int[0]:arr;
+
+int[2]:arr;
 arr[2]:=3;
 d := arr[2];
 

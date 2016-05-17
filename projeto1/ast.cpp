@@ -11,7 +11,7 @@ using namespace AST;
 /*Aux methods*/
 //===============================================
 void BinOp::computeType() {
-	std::cout << "[BinOp ("<< TypesString[left->type] <<" "<<TypesString[right->type]<<") ]"; 
+	//std::cout << "[BinOp ("<< TypesString[left->type] <<" "<<TypesString[right->type]<<") ]";
 	switch( left->type ) {
 		case AST::tInt: {
 			switch ( right->type ) {
@@ -65,33 +65,31 @@ void BinOp::printTree() {
 	computeType();
 	if( type == AST::undefined ) {
 		std::cout <<"Operacao binaria com tipo indefinido!\n";
-	}else{
-	//	std::cout <<"\nOperacao binaria "<<tipoOperacoes[(int)type]<<"["<<tipoOperacoes[(int)left->type] << " , " << tipoOperacoes[(int)right->type]<<"]\n";
+	} else {
+		//	std::cout <<"\nOperacao binaria "<<tipoOperacoes[(int)type]<<"["<<tipoOperacoes[(int)left->type] << " , " << tipoOperacoes[(int)right->type]<<"]\n";
 	}
+	std::cout <<"(";
+	Types typeLeft = left->type, typeRight = right->type;
 
-std::cout <<"(";
-left->printTree();
-Types typeLeft = left->type, typeRight = right->type;
-
-
-switch( op ) {
-case AST::oplus: _case( print << " soma " << tipoOperacoes[( int )this->type] << " "; )
-case AST::omult: _case( print << " multiplicacao "<< tipoOperacoes[( int )this->type] << " "; )
-case AST::oassign: _case( print<< " = "; )
-case AST::ominus: _case( print << " subtracao "<< tipoOperacoes[( int )this->type] << " "; )
-case AST::oand: _case( print << " e "; )
-case AST::odifferent: _case( print << " diferente de "<< tipoOperacoes[( int )this->type] << " "; )
-case AST::odiv: _case( print << " divisao "<< tipoOperacoes[( int )this->type] << " "; )
-case AST::oequal: _case ( print << " igual "<< tipoOperacoes[( int )this->type] << " "; )
-case AST::ogreater: _case ( print << " maior que "<< tipoOperacoes[( int )this->type] << " "; )
-case AST::ogreatereq: _case ( print << " maior ou igual que "<< tipoOperacoes[( int )this->type] << " "; )
-case AST::oless:_case( print << " menor que "<< tipoOperacoes[( int )this->type] << " "; )
-case AST::olesseq: _case ( print << " menor ou igual que "<< tipoOperacoes[( int )this->type] << " "; )
-case AST::oor:_case ( print << " ou "; )
-}
-right->printTree();
-std::cout <<")";
-return;
+	left->printTree();
+	switch( op ) {
+		case AST::oplus: _case( print << " soma " << tipoOperacoes[( int )this->type] << " "; )
+		case AST::omult: _case( print << " multiplicacao "<< tipoOperacoes[( int )this->type] << " "; )
+		case AST::oassign: _case( print<< " = "; )
+		case AST::ominus: _case( print << " subtracao "<< tipoOperacoes[( int )this->type] << " "; )
+		case AST::oand: _case( print << " e "; )
+		case AST::odifferent: _case( print << " diferente de "<< tipoOperacoes[( int )this->type] << " "; )
+		case AST::odiv: _case( print << " divisao "<< tipoOperacoes[( int )this->type] << " "; )
+		case AST::oequal: _case ( print << " igual "<< tipoOperacoes[( int )this->type] << " "; )
+		case AST::ogreater: _case ( print << " maior que "<< tipoOperacoes[( int )this->type] << " "; )
+		case AST::ogreatereq: _case ( print << " maior ou igual que "<< tipoOperacoes[( int )this->type] << " "; )
+		case AST::oless:_case( print << " menor que "<< tipoOperacoes[( int )this->type] << " "; )
+		case AST::olesseq: _case ( print << " menor ou igual que "<< tipoOperacoes[( int )this->type] << " "; )
+		case AST::oor:_case ( print << " ou "; )
+	}
+	right->printTree();
+	std::cout <<")";
+	return;
 }
 //Block
 //===============================================
@@ -151,13 +149,9 @@ void Array::printTree() {
 	} else {
 		std::string message = "Tipo Fantasma " + this->id;
 		switch ( this->useType ) {
-			
-			case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "+std::to_string(tamanho) + ": "+id; break;}
-			
+			case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "+std::to_string( tamanho ) + ": "+id; break;}
 		}
 		std::cout<<message;
-		
-		
 		return;
 	}
 	std::cout << this->id;
@@ -171,24 +165,21 @@ void ArrayItem::printTree() {
 	} else {
 		std::string message = "Tipo Fantasma " + this->id;
 		switch ( this->useType ) {
-			
 			case AST::ArrayItem::atrib: {
-				message = "Atribuicao de valor para arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ; 
+				message = "Atribuicao de valor para arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ;
 				std::cout<<message;
 				this->indice->printTree();
 				std::cout<<"}: ";
-
-			break;}
-
+				break;
+			}
 			case AST::ArrayItem::read: {
-				message = "arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ; 
+				message = "arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ;
 				std::cout<<message;
 				this->indice->printTree();
 				std::cout<<"}";
-
-			break;}
+				break;
+			}
 		}
-		
 		return;
 	}
 	std::cout << this->id;

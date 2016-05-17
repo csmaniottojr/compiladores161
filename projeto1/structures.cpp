@@ -47,70 +47,59 @@ AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::No
 		this->symbolMap.insert ( newElement );
 		return new AST::Variable( idName,nextVar,AST::Variable::ini,( AST::Types )tipo );
 	} else {
-
-		if(symbolMap.at( idName ).isArray){
-			yyerror("Erro semantico: arranjo %s sofrendo redefinicao.\n",idName.c_str() );
-		}else{
-			yyerror("Erro semantico: variavel %s sofrendo redefinicao.\n",idName.c_str() );
-		}		
+		if( symbolMap.at( idName ).isArray ) {
+			yyerror( "Erro semantico: arranjo %s sofrendo redefinicao.\n",idName.c_str() );
+		} else {
+			yyerror( "Erro semantico: variavel %s sofrendo redefinicao.\n",idName.c_str() );
+		}
 		symbolMap.at( idName ).foiRedefinida=true;
-		return new AST::Variable( idName,nextVar,AST::Variable::ini,AST::Types::undefined);
+		return new AST::Variable( idName,nextVar,AST::Variable::ini,AST::Types::undefined );
 	}
-	
 }
 
 //definir arranjo
 AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::Node *nextVar, Structures::Types tipo, int tamanho ) {
-	
-	if(tamanho <= 0){
-		yyerror("Erro semantico: arranjo %s com tamanho menor do que um.\n",idName.c_str() );
+	if( tamanho <= 0 ) {
+		yyerror( "Erro semantico: arranjo %s com tamanho menor do que um.\n",idName.c_str() );
 		tamanho = 1;
 	}
-
 	if ( ! containsIdentifier( idName ) )  {
 		Structures::Symbol newSymbol( Kinds::kVariable,tipo,DataContainer( 0 ),false, true,false );
 		std::pair<std::string,Structures::Symbol> newElement ( idName,newSymbol );
 		this->symbolMap.insert ( newElement );
 		return new AST::Array( idName,nextVar,AST::Array::ini,( AST::Types )tipo,tamanho );
 	} else {
-		if(symbolMap.at( idName ).isArray){
-			yyerror("Erro semantico: arranjo %s sofrendo redefinicao.\n",idName.c_str() );
-		}else{
-			yyerror("Erro semantico: variavel %s sofrendo redefinicao.\n",idName.c_str() );
-		}		
+		if( symbolMap.at( idName ).isArray ) {
+			yyerror( "Erro semantico: arranjo %s sofrendo redefinicao.\n",idName.c_str() );
+		} else {
+			yyerror( "Erro semantico: variavel %s sofrendo redefinicao.\n",idName.c_str() );
+		}
 		symbolMap.at( idName ).foiRedefinida=true;
-		return new AST::Array( idName,nextVar,AST::Array::ini,AST::Types::undefined,tamanho);
+		return new AST::Array( idName,nextVar,AST::Array::ini,AST::Types::undefined,tamanho );
 	}
-	
 }
 
 //===============================================
 //Mudar recursivamente o tipo de uma lista de variaveis
 void Structures::SymbolTable::updateTypes( AST::Node *nodo, Structures::Types tipo ) {
-
-	
 	AST::Variable *thisvar = dynamic_cast<AST::Variable *>( nodo );
-
-	if(!symbolMap.at( thisvar->id ).foiRedefinida){
+	if( !symbolMap.at( thisvar->id ).foiRedefinida ) {
 		thisvar->type = ( AST::Types ) tipo;
 		symbolMap.at( thisvar->id ).updateType( tipo );
-		
 	}
 	if( thisvar->next != nullptr ) {
 		updateTypes( thisvar->next,tipo );
 	}
-	
 }
 
 //===============================================
 // Obter tipo da variavel
 Structures::Types Structures::SymbolTable::getidentifierType( std::string id ) {
-	if ( symbolMap.find(id) != symbolMap.end() ) {
-	  	return symbolMap.at( id ).type;
+	if ( symbolMap.find( id ) != symbolMap.end() ) {
+		return symbolMap.at( id ).type;
 	} else {
-	  	return Structures::Types::undefined;
+		return Structures::Types::undefined;
 	}
-	
 }
 
 //===============================================
@@ -134,11 +123,9 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
-			
 			if( !it->second.initialized ) {
 				yyerror( "Erro semantico: variavel %s nao inicializada.\n",id.c_str() );
 			}
-			
 			symbolType = it->second.type;
 			//std::cout<<"[usou " << id <<" "<< AST::TypesString[(int)symbolType]<< "]";
 		}
@@ -147,7 +134,7 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 }
 
 
-AST::Node *Structures::SymbolTable::getIdentifier( std::string id,AST::Node * indice ) {
+AST::Node *Structures::SymbolTable::getIdentifier( std::string id,AST::Node *indice ) {
 	Types symbolType;
 	if( !containsIdentifier( id ) ) {
 		yyerror( "[read]Variable \"%s\" used but not defined!\n",id.c_str() );
@@ -158,7 +145,6 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id,AST::Node * in
 			if( !it->second.initialized ) {
 				yyerror( "[read]Variable \"%s\" defined but not initilized!\n",id.c_str() );
 			}
-			
 			symbolType = it->second.type;
 			//std::cout<<"[usou " << id <<" "<< AST::TypesString[(int)symbolType]<< "]";
 		}
@@ -172,28 +158,23 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
 	if( !containsIdentifier( id ) ) {
 		yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
 		return new AST::Variable( id,NULL,AST::Variable::atrib,AST::Types::undefined );
-	}else{
-
-		if( symbolMap.at(id).isArray){
+	} else {
+		if( symbolMap.at( id ).isArray ) {
 			yyerror( "Erro semantico: arranjo %s com uso como variavel.\n",id.c_str() );
 			return new AST::Variable( id,NULL,AST::Variable::atrib,AST::Types::undefined );
 		}
-
-
 		this->symbolMap[id].initialized=true;
 		//std::cout << "[atribuindo " << id << " " << AST::TypesString[(int)this->symbolMap.at(id).type]<< "]";
 		return new AST::Variable( id,NULL,AST::Variable::atrib,( AST::Types )this->symbolMap[id].type );
 	}
-	
 }
 
-AST::Node *Structures::SymbolTable::assignVariable( std::string id , AST::Node * indice) {
+AST::Node *Structures::SymbolTable::assignVariable( std::string id , AST::Node *indice ) {
 	if( !containsIdentifier( id ) ) {
 		yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
 		return new AST::ArrayItem( id,NULL,AST::ArrayItem::atrib,AST::Types::undefined, indice );
 	}
-
-	if(!symbolMap.at(id).isArray){
+	if( !symbolMap.at( id ).isArray ) {
 		yyerror( "Erro semantico: variavel %s com uso como arranjo.\n",id.c_str() );
 		return new AST::ArrayItem( id,NULL,AST::ArrayItem::atrib,AST::Types::undefined,indice );
 	}

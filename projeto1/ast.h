@@ -32,7 +32,7 @@ namespace AST {
 //Binary operations
 	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent };
 	enum Types { tInt,tReal, tBool,undefined};
-	static std::string TypesString [4]= {"inteiro", "real","booleano","indefinido"};
+	static std::string TypesString [4]= {"inteiro", "real","booleano","indefiniwdo"};
 	static std::string tipoOperacoes[4] = {"inteira", "real", "booleana","Indefinida"};
 	class Node;
 
@@ -76,7 +76,7 @@ namespace AST {
 		Operation op;//The operation to be executed
 		Node *left;//the left operand
 		Node *right;//The right operand
-		
+
 		BinOp( Node *left, Operation op, Node *right ) : left( left ), right( right ), op( op ) { this->type = undefined;} //Default Contructor
 		void printTree();//Print the tree (right->tree << [operation] << left.tree)
 
@@ -97,7 +97,7 @@ namespace AST {
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
-		
+
 		Variable( std::string id,  Node *next, use useType,Types type ) :id( id ), next( next ),useType( useType )  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
 
@@ -105,28 +105,28 @@ namespace AST {
 	};
 
 	class Array : public Node {
-		public:
+	public:
 		enum use {ini};
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
 		int tamanho;
-		
-		Array( std::string id,  Node *next, use useType,Types type, int tamanho ) :id( id ), next( next ),useType( useType ),tamanho(tamanho)  {this->type = type;} //Default Constructor
+
+		Array( std::string id,  Node *next, use useType,Types type, int tamanho ) :id( id ), next( next ),useType( useType ),tamanho( tamanho )  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
 
 
 	};
 
 	class ArrayItem : public Node {
-		public:
+	public:
 		enum use {atrib,read};
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
-		AST::Node * indice;
-		
-		ArrayItem( std::string id,  Node *next, use useType,Types type, AST::Node * indice ) :id( id ), next( next ),useType( useType ),indice(indice)  {this->type = type;} //Default Constructor
+		AST::Node *indice;
+
+		ArrayItem( std::string id,  Node *next, use useType,Types type, AST::Node *indice ) :id( id ), next( next ),useType( useType ),indice( indice )  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
 
 
