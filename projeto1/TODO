@@ -3,6 +3,8 @@ erros tratados até o momento:
 v1.0
 1,2,3,4,5,6
 
+falta tratar coerção inteiro p/ real
+
 
 v1.1
 7, 8, 9 (detecta erro de sintaxe e dá segfault,10, 11,12
