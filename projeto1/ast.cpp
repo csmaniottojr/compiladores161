@@ -83,17 +83,20 @@ void BinOp::verifyOperands(){
 			case AST::tInt: {
 				switch ( right->type ) {
 					case AST::tInt:_case( this->type = AST::tInt; )
-					case AST::tReal: _case( this->type = AST::tReal; )
+					case AST::tReal: _case( left->coercionTo=AST::tReal; this->type = AST::tReal; )
 					default:_case( this->type = AST::tInt; yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )right->type].c_str()); ); //TODO Caso não seja compativel com INT!
 				}
 				break;
 			}
 			case AST::tReal: {
+
+				this->type=AST::tReal;
+
 				switch ( right->type ) {
-					case AST::tReal:;
-					case AST::tInt: _case( this->type=AST::tReal; )
-					default: _case( this->type=AST::tReal; yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )right->type].c_str());  ); //TODO Caso não seja compativel com REAL!
+					case AST::tInt: _case( right->coercionTo=AST::tReal; )
+					case AST::tBool: _case(yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )right->type].c_str());  ); //TODO Caso não seja compativel com REAL!
 				}
+				
 				break;
 			}
 			case AST::tBool: {
@@ -107,13 +110,33 @@ void BinOp::verifyOperands(){
 
 		this->type = AST::tBool;
 
-		if((left->type == AST::tInt) || (left->type == AST::tReal)){
-			if(right->type == AST::tBool){
-				yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )right->type].c_str()); 
+
+		switch( left->type ) {
+			case AST::tInt: {
+				switch ( right->type ) {
+					case AST::tReal: _case( left->coercionTo=AST::tReal; )
+					case AST::tBool:_case(  yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )right->type].c_str()); ); //TODO Caso não seja compativel com INT!
+				}
+				break;
 			}
-		}else if((left->type == AST::tBool) && (right->type != AST::tBool)){
-			yyerror("Erro semantico: operacao espera %s mas recebeu %s.\n", tipoOperacoes[( int ) left->type].c_str(), tipoOperacoes[( int ) right->type].c_str()); 
-							
+			case AST::tReal: {
+
+				this->type=AST::tReal;
+
+				switch ( right->type ) {
+					case AST::tInt: _case( right->coercionTo=AST::tReal; )
+					case AST::tBool: _case(yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )right->type].c_str());  ); //TODO Caso não seja compativel com REAL!
+				}
+				
+				break;
+			}
+			case AST::tBool: {
+				
+				if(right->type != AST::tBool){
+					yyerror("Erro semantico: operacao espera %s mas recebeu %s.\n", tipoOperacoes[( int ) left->type].c_str(), tipoOperacoes[( int ) right->type].c_str()); 
+				}			
+				break;
+			}
 		}
 
 	}else if(isBinary()){
@@ -133,6 +156,8 @@ void BinOp::verifyOperands(){
 		if(left->type != right->type){
 			if(!((left->type == AST::tReal) && (right->type == AST::tInt))){
 				yyerror("Erro semantico: operacao %s espera %s mas recebeu %s.\n",printOp().c_str(), tipoOperacoes[( int ) left->type].c_str(), tipoOperacoes[( int ) right->type].c_str());
+			}else{
+				right->coercionTo=AST::tReal; 
 			}
 		}
 
@@ -164,6 +189,11 @@ std::string BinOp::printOp(){
 //===============================================
 void Integer::printTree() {
 	std::cout << "inteiro "<< value;
+
+	if(this->coercionTo){
+		std::cout << " para variavel " <<  tipoOperacoes[( int )this->coercionTo].c_str();
+	}
+
 	return;
 }
 //Double
@@ -247,6 +277,9 @@ void Variable::printTree() {
 					}
 					case Structures::tInteger: {
 						message = "inteiro " + this->id;
+						if(this->coercionTo){
+							message += (" para variavel " + tipoOperacoes[( int )this->coercionTo]);
+						}
 						break;
 					}
 					case Structures::undefined: {
@@ -306,6 +339,10 @@ void ArrayItem::verifyIndex(){
 
 
 void UnaryOp::printTree(){
+
+	if(coercionTo){
+		operand->coercionTo = coercionTo;
+	}
 
 
 	switch(op){
