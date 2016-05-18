@@ -38,6 +38,127 @@ void BinOp::computeType() {
 	}
 }
 
+
+
+bool BinOp::isArithmetic(){
+	switch(op){
+		case Operation::oplus:;
+		case Operation::ominus:;
+		case Operation::omult:;
+		case Operation::odiv:{return true;}
+		default:{return false;}
+	}
+}
+
+bool BinOp::isBinary(){
+	switch(op){
+		case Operation::oand:;
+		case Operation::oor:{return true;}
+		default:{return false;}
+	}
+}
+
+bool BinOp::isComparation(){
+	switch(op){
+		case Operation::oequal:;
+		case Operation::ogreater:;
+		case Operation::oless:;
+		case Operation::ogreatereq:;
+		case Operation::olesseq:;
+		case Operation::odifferent:{return true;}
+		default:{return false;}
+}
+
+}
+
+bool BinOp::isAttribution(){
+	return op == Operation::oassign;
+}
+
+void BinOp::verifyOperands(){
+
+	if(isArithmetic()){
+
+		switch( left->type ) {
+			case AST::tInt: {
+				switch ( right->type ) {
+					case AST::tInt:_case( this->type = AST::tInt; )
+					case AST::tReal: _case( this->type = AST::tReal; )
+					default:_case( this->type = AST::tInt; yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )right->type].c_str()); ); //TODO Caso não seja compativel com INT!
+				}
+				break;
+			}
+			case AST::tReal: {
+				switch ( right->type ) {
+					case AST::tReal:;
+					case AST::tInt: _case( this->type=AST::tReal; )
+					default: _case( this->type=AST::tReal; yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )right->type].c_str());  ); //TODO Caso não seja compativel com REAL!
+				}
+				break;
+			}
+			case AST::tBool: {
+				this->type=AST::tInt;
+				yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )left->type].c_str()); 
+				break;
+			}
+		}
+
+	}else if(isComparation()){
+
+		this->type = AST::tBool;
+
+		if((left->type == AST::tInt) || (left->type == AST::tReal)){
+			if(right->type == AST::tBool){
+				yyerror("Erro semantico: operacao espera %s ou %s mas recebeu %s.\n", tipoOperacoes[( int )AST::tInt].c_str(), tipoOperacoes[( int )AST::tReal].c_str(), tipoOperacoes[( int )right->type].c_str()); 
+			}
+		}else if((left->type == AST::tBool) && (right->type != AST::tBool)){
+			yyerror("Erro semantico: operacao espera %s mas recebeu %s.\n", tipoOperacoes[( int ) left->type].c_str(), tipoOperacoes[( int ) right->type].c_str()); 
+							
+		}
+
+	}else if(isBinary()){
+
+		this->type = AST::tBool;
+
+		if(left->type != this->type) {
+			yyerror("Erro semantico: operacao espera %s mas recebeu %s.\n", tipoOperacoes[( int ) this->type].c_str(), tipoOperacoes[( int ) left->type].c_str());
+			
+		}else if(right->type != this->type){
+			yyerror("Erro semantico: operacao espera %s mas recebeu %s.\n", tipoOperacoes[( int ) this->type].c_str(), tipoOperacoes[( int ) right->type].c_str());
+		}
+
+		
+	}else if(isAttribution()){
+
+		if(left->type != right->type){
+			if(!((left->type == AST::tReal) && (right->type == AST::tInt))){
+				yyerror("Erro semantico: operacao %s espera %s mas recebeu %s.\n",printOp().c_str(), tipoOperacoes[( int ) left->type].c_str(), tipoOperacoes[( int ) right->type].c_str());
+			}
+		}
+
+	}
+	
+}
+
+std::string BinOp::printOp(){
+	switch( op ) {
+		case AST::oplus: {return "soma";}
+		case AST::omult: {return"multiplicacao";}
+		case AST::oassign: { return "atribuicao";}
+		case AST::ominus: {return "subtracao";}
+		case AST::oand: {return "e";}
+		case AST::odifferent: {return "diferente";}
+		case AST::odiv: {return "divisao";}
+		case AST::oequal: {return "igual";}
+		case AST::ogreater: {return "maior";}
+		case AST::ogreatereq: {return "maior ou igual";}
+		case AST::oless:{return "menor";}
+		case AST::olesseq:{return "menor ou igual";}
+		case AST::oor: {return "ou";}
+		case AST::onot: {return "not";}
+	}
+}
+
 /* ================Print Methods================*/
 //Integer
 //===============================================
@@ -54,7 +175,7 @@ void Double::printTree() {
 //Boolean
 //===============================================
 void Boolean::printTree() {
-	std::string result = ( value?"true":"false" );
+	std::string result = ( value?"TRUE":"FALSE" );
 	std::cout << "booleano "<<result;
 }
 
@@ -62,33 +183,35 @@ void Boolean::printTree() {
 //Binary Operation
 //===============================================
 void BinOp::printTree() {
-	computeType();
-	if( type == AST::undefined ) {
-		std::cout <<"Operacao binaria com tipo indefinido!\n";
-	} else {
-		//	std::cout <<"\nOperacao binaria "<<tipoOperacoes[(int)type]<<"["<<tipoOperacoes[(int)left->type] << " , " << tipoOperacoes[(int)right->type]<<"]\n";
+
+	bool isAss = op == AST::oassign;
+
+	if(!isAss){
+		print << "(";
 	}
-	std::cout <<"(";
-	Types typeLeft = left->type, typeRight = right->type;
 
 	left->printTree();
 	switch( op ) {
-		case AST::oplus: _case( print << " soma " << tipoOperacoes[( int )this->type] << " "; )
-		case AST::omult: _case( print << " multiplicacao "<< tipoOperacoes[( int )this->type] << " "; )
-		case AST::oassign: _case( print<< " = "; )
-		case AST::ominus: _case( print << " subtracao "<< tipoOperacoes[( int )this->type] << " "; )
-		case AST::oand: _case( print << " e "; )
-		case AST::odifferent: _case( print << " diferente de "<< tipoOperacoes[( int )this->type] << " "; )
-		case AST::odiv: _case( print << " divisao "<< tipoOperacoes[( int )this->type] << " "; )
-		case AST::oequal: _case ( print << " igual "<< tipoOperacoes[( int )this->type] << " "; )
-		case AST::ogreater: _case ( print << " maior que "<< tipoOperacoes[( int )this->type] << " "; )
-		case AST::ogreatereq: _case ( print << " maior ou igual que "<< tipoOperacoes[( int )this->type] << " "; )
-		case AST::oless:_case( print << " menor que "<< tipoOperacoes[( int )this->type] << " "; )
-		case AST::olesseq: _case ( print << " menor ou igual que "<< tipoOperacoes[( int )this->type] << " "; )
-		case AST::oor:_case ( print << " ou "; )
+		case AST::oplus: _case( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::omult: _case( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::oassign: _case( print<< " "; )
+		case AST::ominus: _case( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::oand: _case( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::odifferent: _case( print << " ("<<printOp()<< tipoOperacoes[( int )this->type] << ") "; )
+		case AST::odiv: _case( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::oequal: _case ( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::ogreater: _case ( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::ogreatereq: _case ( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::oless:_case( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::olesseq: _case ( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
+		case AST::oor:_case ( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
 	}
 	right->printTree();
-	std::cout <<")";
+
+	if(!isAss){
+		print << ")";
+	}
+
 	return;
 }
 //Block
@@ -109,8 +232,8 @@ void Variable::printTree() {
 	} else {
 		std::string message = "Tipo Fantasma " + this->id;
 		switch ( this->useType ) {
-			case AST::Variable::atrib: {message = "atribuicao de variavel " + TypesString[( int )type] +" " + this->id ; break;}
-			case AST::Variable::ini: {message = "inicializacao de variavel " + TypesString[( int )type] +" "+ this->id ; break;}
+			case AST::Variable::atrib: {message = "Atribuicao de valor para variavel " + TypesString[( int )type] +" " + this->id +":"; break;}
+			case AST::Variable::ini: {message = "Declaracao de variavel " + TypesString[( int )type] +" "+ this->id+":" ; break;}
 			case AST::Variable::read: {
 				//std::cout<<"[ST  com "<<simbolTable->symbolMap.size()<<" atribuiu? "<<simbolTable->jaAtribuiu<<"]";
 				switch( simbolTable->getidentifierType( this->id ) ) {
@@ -143,47 +266,64 @@ void Variable::printTree() {
 }
 
 void Array::printTree() {
-	if( next != nullptr ) {
-		next->printTree();
-		std::cout << ", ";
-	} else {
-		std::string message = "Tipo Fantasma " + this->id;
+	
+		std::string message = "";
 		switch ( this->useType ) {
 			case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "+std::to_string( tamanho ) + ": "+id; break;}
 		}
 		std::cout<<message;
-		return;
-	}
-	std::cout << this->id;
-	return;
+		
 }
 
 void ArrayItem::printTree() {
-	if( next != nullptr ) {
-		next->printTree();
-		std::cout << ", ";
-	} else {
-		std::string message = "Tipo Fantasma " + this->id;
+	
+		std::string message = "";
 		switch ( this->useType ) {
 			case AST::ArrayItem::atrib: {
 				message = "Atribuicao de valor para arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ;
 				std::cout<<message;
-				this->indice->printTree();
+				this->index->printTree();
 				std::cout<<"}: ";
 				break;
 			}
 			case AST::ArrayItem::read: {
 				message = "arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ;
 				std::cout<<message;
-				this->indice->printTree();
+				this->index->printTree();
 				std::cout<<"}";
 				break;
 			}
 		}
-		return;
+}
+
+void ArrayItem::verifyIndex(){
+	if(index->type!=AST::tInt){
+
+		yyerror("Erro semantico: indice de tipo %s.\n",tipoOperacoes[( int )index->type].c_str());
+
 	}
-	std::cout << this->id;
-	return;
+}
+
+
+void UnaryOp::printTree(){
+
+
+	switch(op){
+
+		case AST::ominus:{
+			print << "(menos unario) ";
+			operand->printTree();
+			break;
+		}
+
+		case AST::onot:{
+			print << "(not) ";
+			operand->printTree();
+			break;
+		}
+
+	}
+	
 }
 
 

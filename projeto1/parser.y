@@ -50,7 +50,7 @@
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <node> expr line var value
+%type <node> expr line var numericValue booleanValue unOp value
 %type <block> lines program
 %type <operation> op
 %type <type> type
@@ -104,7 +104,7 @@ var /*list of declared vars.*/
 ;
 
 
-
+/*
 value
 : T_INT { $$ = new AST::Integer($1); }
 | T_MINUS T_INT { $$ = new AST::Integer($2*-1); }
@@ -113,6 +113,28 @@ value
 | T_TRUE {$$ = new AST::Boolean(true);}
 | T_FALSE {$$ = new AST::Boolean(false);}
 ;
+*/
+value
+: numericValue {$$ = $1;}
+| booleanValue {$$ = $1;}
+| unOp {$$ = $1;}
+;
+
+numericValue
+: T_INT { $$ = new AST::Integer($1); }
+| T_DOUBLE {$$ = new AST::Double($1);}
+;
+
+booleanValue
+: T_TRUE {$$ = new AST::Boolean(true);}
+| T_FALSE {$$ = new AST::Boolean(false);}
+;
+
+unOp
+: T_MINUS numericValue {$$ = new AST::UnaryOp(AST::ominus,$2);}
+| T_NOT booleanValue {$$ = new AST::UnaryOp(AST::onot,$2);}
+;
+
 
 type
 :T_TDOUBLE 	{$$=Structures::Types::tDouble;}

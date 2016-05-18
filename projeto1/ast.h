@@ -30,7 +30,7 @@ extern Structures::SymbolTable *simbolTable;//Simbol Table, in Bison file
 namespace AST {
 
 //Binary operations
-	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent };
+	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent,onot };
 	enum Types { tInt,tReal, tBool,undefined};
 	static std::string TypesString [4]= {"inteiro", "real","booleano","indefiniwdo"};
 	static std::string tipoOperacoes[4] = {"inteira", "real", "booleana","Indefinida"};
@@ -69,18 +69,32 @@ namespace AST {
 
 	};
 
-
-
 	class BinOp : public Node {
 	public:
 		Operation op;//The operation to be executed
 		Node *left;//the left operand
 		Node *right;//The right operand
 
-		BinOp( Node *left, Operation op, Node *right ) : left( left ), right( right ), op( op ) { this->type = undefined;} //Default Contructor
+		BinOp( Node *left, Operation op, Node *right ) : left( left ), right( right ), op( op ) { verifyOperands();} //Default Contructor
 		void printTree();//Print the tree (right->tree << [operation] << left.tree)
-
+		bool isArithmetic();
+		bool isBinary();
+		bool isComparation();
+		bool isAttribution();
 		void computeType();
+		void verifyOperands();
+		std::string printOp();
+	};
+
+	class UnaryOp : public Node {
+	public:
+		Operation op;//The operation to be executed
+		Node *operand;//the left operand
+		
+
+		UnaryOp( Operation op, Node *operand ) : op( op ), operand( operand ) {this->type = operand->type;} //Default Contructor
+		void printTree();//Print the tree (right->tree << [operation] << left.tree)
+		std::string printOp();
 	};
 
 	class Block : public Node {
@@ -124,9 +138,10 @@ namespace AST {
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
-		AST::Node *indice;
+		AST::Node *index;
+		void verifyIndex();
 
-		ArrayItem( std::string id,  Node *next, use useType,Types type, AST::Node *indice ) :id( id ), next( next ),useType( useType ),indice( indice )  {this->type = type;} //Default Constructor
+		ArrayItem( std::string id,  Node *next, use useType,Types type, AST::Node *index ) :id( id ), next( next ),useType( useType ),index( index )  {this->type = type; verifyIndex();} //Default Constructor
 		void printTree();//Print the node infos
 
 

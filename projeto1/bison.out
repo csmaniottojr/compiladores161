@@ -1,14 +1,13 @@
-Terminals unused in grammar
+Terminais não utilizados na gramática
 
-   T_NOT
    T_PAREN_L
    T_PAREN_R
 
 
-State 51 conflicts: 13 shift/reduce
+Estado 55 conflitos: 13 de deslocamento/redução
 
 
-Grammar
+Gramática
 
     0 $accept: program $end
 
@@ -32,636 +31,700 @@ Grammar
    14 var: T_ID
    15    | var T_VIRGULA T_ID
 
-   16 value: T_INT
-   17      | T_MINUS T_INT
-   18      | T_DOUBLE
-   19      | T_MINUS T_DOUBLE
-   20      | T_TRUE
-   21      | T_FALSE
+   16 value: numericValue
+   17      | booleanValue
+   18      | unOp
 
-   22 type: T_TDOUBLE
-   23     | T_TINT
-   24     | T_TBOOL
+   19 numericValue: T_INT
+   20             | T_DOUBLE
 
-   25 op: T_PLUS
-   26   | T_MULT
-   27   | T_MINUS
-   28   | T_DIV
-   29   | T_IGUAL
-   30   | T_DIFERENTE
-   31   | T_MAIOR
-   32   | T_MENOR
-   33   | T_MAIOR_IGUAL
-   34   | T_MENOR_IGUAL
-   35   | T_AND
-   36   | T_OR
+   21 booleanValue: T_TRUE
+   22             | T_FALSE
+
+   23 unOp: T_MINUS numericValue
+   24     | T_NOT booleanValue
+
+   25 type: T_TDOUBLE
+   26     | T_TINT
+   27     | T_TBOOL
+
+   28 op: T_PLUS
+   29   | T_MULT
+   30   | T_MINUS
+   31   | T_DIV
+   32   | T_IGUAL
+   33   | T_DIFERENTE
+   34   | T_MAIOR
+   35   | T_MENOR
+   36   | T_MAIOR_IGUAL
+   37   | T_MENOR_IGUAL
+   38   | T_AND
+   39   | T_OR
 
 
-Terminals, with rules where they appear
+Terminais, com as regras onde eles aparecem
 
 $end (0) 0
 error (256) 13
 T_ID (258) 6 7 8 10 11 14 15
-T_INT (259) 7 16 17
-T_DOUBLE (260) 18 19
-T_TRUE (261) 20
-T_FALSE (262) 21
-T_PLUS (263) 25
-T_MULT (264) 26
+T_INT (259) 7 19
+T_DOUBLE (260) 20
+T_TRUE (261) 21
+T_FALSE (262) 22
+T_PLUS (263) 28
+T_MULT (264) 29
 T_NL (265) 4 5 6 7 8
 T_ATRIB (266) 6 8
-T_MINUS (267) 17 19 27
-T_DIV (268) 28
-T_IGUAL (269) 29
-T_DIFERENTE (270) 30
-T_MAIOR (271) 31
-T_MENOR (272) 32
-T_MAIOR_IGUAL (273) 33
-T_MENOR_IGUAL (274) 34
-T_NOT (275)
+T_MINUS (267) 23 30
+T_DIV (268) 31
+T_IGUAL (269) 32
+T_DIFERENTE (270) 33
+T_MAIOR (271) 34
+T_MENOR (272) 35
+T_MAIOR_IGUAL (273) 36
+T_MENOR_IGUAL (274) 37
+T_NOT (275) 24
 T_PAREN_L (276)
 T_PAREN_R (277)
-T_AND (278) 35
-T_OR (279) 36
+T_AND (278) 38
+T_OR (279) 39
 T_COLCH_L (280) 7 8 11
 T_COLCH_R (281) 7 8 11
-T_TINT (282) 23
-T_TDOUBLE (283) 22
-T_TBOOL (284) 24
+T_TINT (282) 26
+T_TDOUBLE (283) 25
+T_TBOOL (284) 27
 T_VIRGULA (285) 15
 T_DEF (286) 5 7
 
 
-Nonterminals, with rules where they appear
+Não-terminais com as regras onde eles aparecem
 
 $accept (32)
-    on left: 0
+    à esquerda: 0
 program (33)
-    on left: 1, on right: 0
+    à esquerda: 1, à direita: 0
 lines (34)
-    on left: 2 3, on right: 1 3
+    à esquerda: 2 3, à direita: 1 3
 line (35)
-    on left: 4 5 6 7 8, on right: 2 3
+    à esquerda: 4 5 6 7 8, à direita: 2 3
 expr (36)
-    on left: 9 10 11 12 13, on right: 6 8 12 13
+    à esquerda: 9 10 11 12 13, à direita: 6 8 12 13
 var (37)
-    on left: 14 15, on right: 5 15
+    à esquerda: 14 15, à direita: 5 15
 value (38)
-    on left: 16 17 18 19 20 21, on right: 8 9 11
-type (39)
-    on left: 22 23 24, on right: 5 7
-op (40)
-    on left: 25 26 27 28 29 30 31 32 33 34 35 36, on right: 12
+    à esquerda: 16 17 18, à direita: 8 9 11
+numericValue (39)
+    à esquerda: 19 20, à direita: 16 23
+booleanValue (40)
+    à esquerda: 21 22, à direita: 17 24
+unOp (41)
+    à esquerda: 23 24, à direita: 18
+type (42)
+    à esquerda: 25 26 27, à direita: 5 7
+op (43)
+    à esquerda: 28 29 30 31 32 33 34 35 36 37 38 39, à direita: 12
 
 
-State 0
+Estado0
 
     0 $accept: . program $end
 
-    T_ID       shift, and go to state 1
-    T_NL       shift, and go to state 2
-    T_TINT     shift, and go to state 3
-    T_TDOUBLE  shift, and go to state 4
-    T_TBOOL    shift, and go to state 5
+    T_ID       deslocar, e ir ao estado 1
+    T_NL       deslocar, e ir ao estado 2
+    T_TINT     deslocar, e ir ao estado 3
+    T_TDOUBLE  deslocar, e ir ao estado 4
+    T_TBOOL    deslocar, e ir ao estado 5
 
-    program  go to state 6
-    lines    go to state 7
-    line     go to state 8
-    type     go to state 9
+    program  ir ao estado 6
+    lines    ir ao estado 7
+    line     ir ao estado 8
+    type     ir ao estado 9
 
 
-State 1
+Estado1
 
     6 line: T_ID . T_ATRIB expr T_NL
     8     | T_ID . T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL
 
-    T_ATRIB    shift, and go to state 10
-    T_COLCH_L  shift, and go to state 11
+    T_ATRIB    deslocar, e ir ao estado 10
+    T_COLCH_L  deslocar, e ir ao estado 11
 
 
-State 2
+Estado2
 
     4 line: T_NL .
 
-    $default  reduce using rule 4 (line)
+    $padrão  reduzir usando a regra 4 (line)
 
 
-State 3
+Estado3
 
-   23 type: T_TINT .
+   26 type: T_TINT .
 
-    $default  reduce using rule 23 (type)
-
-
-State 4
-
-   22 type: T_TDOUBLE .
-
-    $default  reduce using rule 22 (type)
+    $padrão  reduzir usando a regra 26 (type)
 
 
-State 5
+Estado4
 
-   24 type: T_TBOOL .
+   25 type: T_TDOUBLE .
 
-    $default  reduce using rule 24 (type)
+    $padrão  reduzir usando a regra 25 (type)
 
 
-State 6
+Estado5
+
+   27 type: T_TBOOL .
+
+    $padrão  reduzir usando a regra 27 (type)
+
+
+Estado6
 
     0 $accept: program . $end
 
-    $end  shift, and go to state 12
+    $end  deslocar, e ir ao estado 12
 
 
-State 7
+Estado7
 
     1 program: lines .
     3 lines: lines . line
 
-    T_ID       shift, and go to state 1
-    T_NL       shift, and go to state 2
-    T_TINT     shift, and go to state 3
-    T_TDOUBLE  shift, and go to state 4
-    T_TBOOL    shift, and go to state 5
+    T_ID       deslocar, e ir ao estado 1
+    T_NL       deslocar, e ir ao estado 2
+    T_TINT     deslocar, e ir ao estado 3
+    T_TDOUBLE  deslocar, e ir ao estado 4
+    T_TBOOL    deslocar, e ir ao estado 5
 
-    $default  reduce using rule 1 (program)
+    $padrão  reduzir usando a regra 1 (program)
 
-    line  go to state 13
-    type  go to state 9
+    line  ir ao estado 13
+    type  ir ao estado 9
 
 
-State 8
+Estado8
 
     2 lines: line .
 
-    $default  reduce using rule 2 (lines)
+    $padrão  reduzir usando a regra 2 (lines)
 
 
-State 9
+Estado9
 
     5 line: type . T_DEF var T_NL
     7     | type . T_COLCH_L T_INT T_COLCH_R T_DEF T_ID T_NL
 
-    T_COLCH_L  shift, and go to state 14
-    T_DEF      shift, and go to state 15
+    T_COLCH_L  deslocar, e ir ao estado 14
+    T_DEF      deslocar, e ir ao estado 15
 
 
-State 10
+Estado10
 
     6 line: T_ID T_ATRIB . expr T_NL
 
-    T_ID      shift, and go to state 16
-    T_INT     shift, and go to state 17
-    T_DOUBLE  shift, and go to state 18
-    T_TRUE    shift, and go to state 19
-    T_FALSE   shift, and go to state 20
-    T_MINUS   shift, and go to state 21
+    T_ID      deslocar, e ir ao estado 16
+    T_INT     deslocar, e ir ao estado 17
+    T_DOUBLE  deslocar, e ir ao estado 18
+    T_TRUE    deslocar, e ir ao estado 19
+    T_FALSE   deslocar, e ir ao estado 20
+    T_MINUS   deslocar, e ir ao estado 21
+    T_NOT     deslocar, e ir ao estado 22
 
-    expr   go to state 22
-    value  go to state 23
+    expr          ir ao estado 23
+    value         ir ao estado 24
+    numericValue  ir ao estado 25
+    booleanValue  ir ao estado 26
+    unOp          ir ao estado 27
 
 
-State 11
+Estado11
 
     8 line: T_ID T_COLCH_L . value T_COLCH_R T_ATRIB expr T_NL
 
-    T_INT     shift, and go to state 17
-    T_DOUBLE  shift, and go to state 18
-    T_TRUE    shift, and go to state 19
-    T_FALSE   shift, and go to state 20
-    T_MINUS   shift, and go to state 21
+    T_INT     deslocar, e ir ao estado 17
+    T_DOUBLE  deslocar, e ir ao estado 18
+    T_TRUE    deslocar, e ir ao estado 19
+    T_FALSE   deslocar, e ir ao estado 20
+    T_MINUS   deslocar, e ir ao estado 21
+    T_NOT     deslocar, e ir ao estado 22
 
-    value  go to state 24
+    value         ir ao estado 28
+    numericValue  ir ao estado 25
+    booleanValue  ir ao estado 26
+    unOp          ir ao estado 27
 
 
-State 12
+Estado12
 
     0 $accept: program $end .
 
-    $default  accept
+    $padrão  aceitar
 
 
-State 13
+Estado13
 
     3 lines: lines line .
 
-    $default  reduce using rule 3 (lines)
+    $padrão  reduzir usando a regra 3 (lines)
 
 
-State 14
+Estado14
 
     7 line: type T_COLCH_L . T_INT T_COLCH_R T_DEF T_ID T_NL
 
-    T_INT  shift, and go to state 25
+    T_INT  deslocar, e ir ao estado 29
 
 
-State 15
+Estado15
 
     5 line: type T_DEF . var T_NL
 
-    T_ID  shift, and go to state 26
+    T_ID  deslocar, e ir ao estado 30
 
-    var  go to state 27
+    var  ir ao estado 31
 
 
-State 16
+Estado16
 
    10 expr: T_ID .
    11     | T_ID . T_COLCH_L value T_COLCH_R
 
-    T_COLCH_L  shift, and go to state 28
+    T_COLCH_L  deslocar, e ir ao estado 32
 
-    $default  reduce using rule 10 (expr)
-
-
-State 17
-
-   16 value: T_INT .
-
-    $default  reduce using rule 16 (value)
+    $padrão  reduzir usando a regra 10 (expr)
 
 
-State 18
+Estado17
 
-   18 value: T_DOUBLE .
+   19 numericValue: T_INT .
 
-    $default  reduce using rule 18 (value)
-
-
-State 19
-
-   20 value: T_TRUE .
-
-    $default  reduce using rule 20 (value)
+    $padrão  reduzir usando a regra 19 (numericValue)
 
 
-State 20
+Estado18
 
-   21 value: T_FALSE .
+   20 numericValue: T_DOUBLE .
 
-    $default  reduce using rule 21 (value)
-
-
-State 21
-
-   17 value: T_MINUS . T_INT
-   19      | T_MINUS . T_DOUBLE
-
-    T_INT     shift, and go to state 29
-    T_DOUBLE  shift, and go to state 30
+    $padrão  reduzir usando a regra 20 (numericValue)
 
 
-State 22
+Estado19
+
+   21 booleanValue: T_TRUE .
+
+    $padrão  reduzir usando a regra 21 (booleanValue)
+
+
+Estado20
+
+   22 booleanValue: T_FALSE .
+
+    $padrão  reduzir usando a regra 22 (booleanValue)
+
+
+Estado21
+
+   23 unOp: T_MINUS . numericValue
+
+    T_INT     deslocar, e ir ao estado 17
+    T_DOUBLE  deslocar, e ir ao estado 18
+
+    numericValue  ir ao estado 33
+
+
+Estado22
+
+   24 unOp: T_NOT . booleanValue
+
+    T_TRUE   deslocar, e ir ao estado 19
+    T_FALSE  deslocar, e ir ao estado 20
+
+    booleanValue  ir ao estado 34
+
+
+Estado23
 
     6 line: T_ID T_ATRIB expr . T_NL
    12 expr: expr . op expr
    13     | expr . error
 
-    error          shift, and go to state 31
-    T_PLUS         shift, and go to state 32
-    T_MULT         shift, and go to state 33
-    T_NL           shift, and go to state 34
-    T_MINUS        shift, and go to state 35
-    T_DIV          shift, and go to state 36
-    T_IGUAL        shift, and go to state 37
-    T_DIFERENTE    shift, and go to state 38
-    T_MAIOR        shift, and go to state 39
-    T_MENOR        shift, and go to state 40
-    T_MAIOR_IGUAL  shift, and go to state 41
-    T_MENOR_IGUAL  shift, and go to state 42
-    T_AND          shift, and go to state 43
-    T_OR           shift, and go to state 44
+    error          deslocar, e ir ao estado 35
+    T_PLUS         deslocar, e ir ao estado 36
+    T_MULT         deslocar, e ir ao estado 37
+    T_NL           deslocar, e ir ao estado 38
+    T_MINUS        deslocar, e ir ao estado 39
+    T_DIV          deslocar, e ir ao estado 40
+    T_IGUAL        deslocar, e ir ao estado 41
+    T_DIFERENTE    deslocar, e ir ao estado 42
+    T_MAIOR        deslocar, e ir ao estado 43
+    T_MENOR        deslocar, e ir ao estado 44
+    T_MAIOR_IGUAL  deslocar, e ir ao estado 45
+    T_MENOR_IGUAL  deslocar, e ir ao estado 46
+    T_AND          deslocar, e ir ao estado 47
+    T_OR           deslocar, e ir ao estado 48
 
-    op  go to state 45
+    op  ir ao estado 49
 
 
-State 23
+Estado24
 
     9 expr: value .
 
-    $default  reduce using rule 9 (expr)
+    $padrão  reduzir usando a regra 9 (expr)
 
 
-State 24
+Estado25
+
+   16 value: numericValue .
+
+    $padrão  reduzir usando a regra 16 (value)
+
+
+Estado26
+
+   17 value: booleanValue .
+
+    $padrão  reduzir usando a regra 17 (value)
+
+
+Estado27
+
+   18 value: unOp .
+
+    $padrão  reduzir usando a regra 18 (value)
+
+
+Estado28
 
     8 line: T_ID T_COLCH_L value . T_COLCH_R T_ATRIB expr T_NL
 
-    T_COLCH_R  shift, and go to state 46
+    T_COLCH_R  deslocar, e ir ao estado 50
 
 
-State 25
+Estado29
 
     7 line: type T_COLCH_L T_INT . T_COLCH_R T_DEF T_ID T_NL
 
-    T_COLCH_R  shift, and go to state 47
+    T_COLCH_R  deslocar, e ir ao estado 51
 
 
-State 26
+Estado30
 
    14 var: T_ID .
 
-    $default  reduce using rule 14 (var)
+    $padrão  reduzir usando a regra 14 (var)
 
 
-State 27
+Estado31
 
     5 line: type T_DEF var . T_NL
    15 var: var . T_VIRGULA T_ID
 
-    T_NL       shift, and go to state 48
-    T_VIRGULA  shift, and go to state 49
+    T_NL       deslocar, e ir ao estado 52
+    T_VIRGULA  deslocar, e ir ao estado 53
 
 
-State 28
+Estado32
 
    11 expr: T_ID T_COLCH_L . value T_COLCH_R
 
-    T_INT     shift, and go to state 17
-    T_DOUBLE  shift, and go to state 18
-    T_TRUE    shift, and go to state 19
-    T_FALSE   shift, and go to state 20
-    T_MINUS   shift, and go to state 21
+    T_INT     deslocar, e ir ao estado 17
+    T_DOUBLE  deslocar, e ir ao estado 18
+    T_TRUE    deslocar, e ir ao estado 19
+    T_FALSE   deslocar, e ir ao estado 20
+    T_MINUS   deslocar, e ir ao estado 21
+    T_NOT     deslocar, e ir ao estado 22
 
-    value  go to state 50
-
-
-State 29
-
-   17 value: T_MINUS T_INT .
-
-    $default  reduce using rule 17 (value)
+    value         ir ao estado 54
+    numericValue  ir ao estado 25
+    booleanValue  ir ao estado 26
+    unOp          ir ao estado 27
 
 
-State 30
+Estado33
 
-   19 value: T_MINUS T_DOUBLE .
+   23 unOp: T_MINUS numericValue .
 
-    $default  reduce using rule 19 (value)
+    $padrão  reduzir usando a regra 23 (unOp)
 
 
-State 31
+Estado34
+
+   24 unOp: T_NOT booleanValue .
+
+    $padrão  reduzir usando a regra 24 (unOp)
+
+
+Estado35
 
    13 expr: expr error .
 
-    $default  reduce using rule 13 (expr)
+    $padrão  reduzir usando a regra 13 (expr)
 
 
-State 32
+Estado36
 
-   25 op: T_PLUS .
+   28 op: T_PLUS .
 
-    $default  reduce using rule 25 (op)
-
-
-State 33
-
-   26 op: T_MULT .
-
-    $default  reduce using rule 26 (op)
+    $padrão  reduzir usando a regra 28 (op)
 
 
-State 34
+Estado37
+
+   29 op: T_MULT .
+
+    $padrão  reduzir usando a regra 29 (op)
+
+
+Estado38
 
     6 line: T_ID T_ATRIB expr T_NL .
 
-    $default  reduce using rule 6 (line)
+    $padrão  reduzir usando a regra 6 (line)
 
 
-State 35
+Estado39
 
-   27 op: T_MINUS .
+   30 op: T_MINUS .
 
-    $default  reduce using rule 27 (op)
-
-
-State 36
-
-   28 op: T_DIV .
-
-    $default  reduce using rule 28 (op)
+    $padrão  reduzir usando a regra 30 (op)
 
 
-State 37
+Estado40
 
-   29 op: T_IGUAL .
+   31 op: T_DIV .
 
-    $default  reduce using rule 29 (op)
-
-
-State 38
-
-   30 op: T_DIFERENTE .
-
-    $default  reduce using rule 30 (op)
+    $padrão  reduzir usando a regra 31 (op)
 
 
-State 39
+Estado41
 
-   31 op: T_MAIOR .
+   32 op: T_IGUAL .
 
-    $default  reduce using rule 31 (op)
-
-
-State 40
-
-   32 op: T_MENOR .
-
-    $default  reduce using rule 32 (op)
+    $padrão  reduzir usando a regra 32 (op)
 
 
-State 41
+Estado42
 
-   33 op: T_MAIOR_IGUAL .
+   33 op: T_DIFERENTE .
 
-    $default  reduce using rule 33 (op)
-
-
-State 42
-
-   34 op: T_MENOR_IGUAL .
-
-    $default  reduce using rule 34 (op)
+    $padrão  reduzir usando a regra 33 (op)
 
 
-State 43
+Estado43
 
-   35 op: T_AND .
+   34 op: T_MAIOR .
 
-    $default  reduce using rule 35 (op)
-
-
-State 44
-
-   36 op: T_OR .
-
-    $default  reduce using rule 36 (op)
+    $padrão  reduzir usando a regra 34 (op)
 
 
-State 45
+Estado44
+
+   35 op: T_MENOR .
+
+    $padrão  reduzir usando a regra 35 (op)
+
+
+Estado45
+
+   36 op: T_MAIOR_IGUAL .
+
+    $padrão  reduzir usando a regra 36 (op)
+
+
+Estado46
+
+   37 op: T_MENOR_IGUAL .
+
+    $padrão  reduzir usando a regra 37 (op)
+
+
+Estado47
+
+   38 op: T_AND .
+
+    $padrão  reduzir usando a regra 38 (op)
+
+
+Estado48
+
+   39 op: T_OR .
+
+    $padrão  reduzir usando a regra 39 (op)
+
+
+Estado49
 
    12 expr: expr op . expr
 
-    T_ID      shift, and go to state 16
-    T_INT     shift, and go to state 17
-    T_DOUBLE  shift, and go to state 18
-    T_TRUE    shift, and go to state 19
-    T_FALSE   shift, and go to state 20
-    T_MINUS   shift, and go to state 21
+    T_ID      deslocar, e ir ao estado 16
+    T_INT     deslocar, e ir ao estado 17
+    T_DOUBLE  deslocar, e ir ao estado 18
+    T_TRUE    deslocar, e ir ao estado 19
+    T_FALSE   deslocar, e ir ao estado 20
+    T_MINUS   deslocar, e ir ao estado 21
+    T_NOT     deslocar, e ir ao estado 22
 
-    expr   go to state 51
-    value  go to state 23
+    expr          ir ao estado 55
+    value         ir ao estado 24
+    numericValue  ir ao estado 25
+    booleanValue  ir ao estado 26
+    unOp          ir ao estado 27
 
 
-State 46
+Estado50
 
     8 line: T_ID T_COLCH_L value T_COLCH_R . T_ATRIB expr T_NL
 
-    T_ATRIB  shift, and go to state 52
+    T_ATRIB  deslocar, e ir ao estado 56
 
 
-State 47
+Estado51
 
     7 line: type T_COLCH_L T_INT T_COLCH_R . T_DEF T_ID T_NL
 
-    T_DEF  shift, and go to state 53
+    T_DEF  deslocar, e ir ao estado 57
 
 
-State 48
+Estado52
 
     5 line: type T_DEF var T_NL .
 
-    $default  reduce using rule 5 (line)
+    $padrão  reduzir usando a regra 5 (line)
 
 
-State 49
+Estado53
 
    15 var: var T_VIRGULA . T_ID
 
-    T_ID  shift, and go to state 54
+    T_ID  deslocar, e ir ao estado 58
 
 
-State 50
+Estado54
 
    11 expr: T_ID T_COLCH_L value . T_COLCH_R
 
-    T_COLCH_R  shift, and go to state 55
+    T_COLCH_R  deslocar, e ir ao estado 59
 
 
-State 51
+Estado55
 
    12 expr: expr . op expr
    12     | expr op expr .
    13     | expr . error
 
-    error          shift, and go to state 31
-    T_PLUS         shift, and go to state 32
-    T_MULT         shift, and go to state 33
-    T_MINUS        shift, and go to state 35
-    T_DIV          shift, and go to state 36
-    T_IGUAL        shift, and go to state 37
-    T_DIFERENTE    shift, and go to state 38
-    T_MAIOR        shift, and go to state 39
-    T_MENOR        shift, and go to state 40
-    T_MAIOR_IGUAL  shift, and go to state 41
-    T_MENOR_IGUAL  shift, and go to state 42
-    T_AND          shift, and go to state 43
-    T_OR           shift, and go to state 44
+    error          deslocar, e ir ao estado 35
+    T_PLUS         deslocar, e ir ao estado 36
+    T_MULT         deslocar, e ir ao estado 37
+    T_MINUS        deslocar, e ir ao estado 39
+    T_DIV          deslocar, e ir ao estado 40
+    T_IGUAL        deslocar, e ir ao estado 41
+    T_DIFERENTE    deslocar, e ir ao estado 42
+    T_MAIOR        deslocar, e ir ao estado 43
+    T_MENOR        deslocar, e ir ao estado 44
+    T_MAIOR_IGUAL  deslocar, e ir ao estado 45
+    T_MENOR_IGUAL  deslocar, e ir ao estado 46
+    T_AND          deslocar, e ir ao estado 47
+    T_OR           deslocar, e ir ao estado 48
 
-    error          [reduce using rule 12 (expr)]
-    T_PLUS         [reduce using rule 12 (expr)]
-    T_MULT         [reduce using rule 12 (expr)]
-    T_NL           reduce using rule 12 (expr)
-    T_MINUS        [reduce using rule 12 (expr)]
-    T_DIV          [reduce using rule 12 (expr)]
-    T_IGUAL        [reduce using rule 12 (expr)]
-    T_DIFERENTE    [reduce using rule 12 (expr)]
-    T_MAIOR        [reduce using rule 12 (expr)]
-    T_MENOR        [reduce using rule 12 (expr)]
-    T_MAIOR_IGUAL  [reduce using rule 12 (expr)]
-    T_MENOR_IGUAL  [reduce using rule 12 (expr)]
-    T_AND          [reduce using rule 12 (expr)]
-    T_OR           [reduce using rule 12 (expr)]
+    error          [reduzir usando a regra 12 (expr)]
+    T_PLUS         [reduzir usando a regra 12 (expr)]
+    T_MULT         [reduzir usando a regra 12 (expr)]
+    T_NL           reduzir usando a regra 12 (expr)
+    T_MINUS        [reduzir usando a regra 12 (expr)]
+    T_DIV          [reduzir usando a regra 12 (expr)]
+    T_IGUAL        [reduzir usando a regra 12 (expr)]
+    T_DIFERENTE    [reduzir usando a regra 12 (expr)]
+    T_MAIOR        [reduzir usando a regra 12 (expr)]
+    T_MENOR        [reduzir usando a regra 12 (expr)]
+    T_MAIOR_IGUAL  [reduzir usando a regra 12 (expr)]
+    T_MENOR_IGUAL  [reduzir usando a regra 12 (expr)]
+    T_AND          [reduzir usando a regra 12 (expr)]
+    T_OR           [reduzir usando a regra 12 (expr)]
 
-    op  go to state 45
+    op  ir ao estado 49
 
 
-State 52
+Estado56
 
     8 line: T_ID T_COLCH_L value T_COLCH_R T_ATRIB . expr T_NL
 
-    T_ID      shift, and go to state 16
-    T_INT     shift, and go to state 17
-    T_DOUBLE  shift, and go to state 18
-    T_TRUE    shift, and go to state 19
-    T_FALSE   shift, and go to state 20
-    T_MINUS   shift, and go to state 21
+    T_ID      deslocar, e ir ao estado 16
+    T_INT     deslocar, e ir ao estado 17
+    T_DOUBLE  deslocar, e ir ao estado 18
+    T_TRUE    deslocar, e ir ao estado 19
+    T_FALSE   deslocar, e ir ao estado 20
+    T_MINUS   deslocar, e ir ao estado 21
+    T_NOT     deslocar, e ir ao estado 22
 
-    expr   go to state 56
-    value  go to state 23
+    expr          ir ao estado 60
+    value         ir ao estado 24
+    numericValue  ir ao estado 25
+    booleanValue  ir ao estado 26
+    unOp          ir ao estado 27
 
 
-State 53
+Estado57
 
     7 line: type T_COLCH_L T_INT T_COLCH_R T_DEF . T_ID T_NL
 
-    T_ID  shift, and go to state 57
+    T_ID  deslocar, e ir ao estado 61
 
 
-State 54
+Estado58
 
    15 var: var T_VIRGULA T_ID .
 
-    $default  reduce using rule 15 (var)
+    $padrão  reduzir usando a regra 15 (var)
 
 
-State 55
+Estado59
 
    11 expr: T_ID T_COLCH_L value T_COLCH_R .
 
-    $default  reduce using rule 11 (expr)
+    $padrão  reduzir usando a regra 11 (expr)
 
 
-State 56
+Estado60
 
     8 line: T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr . T_NL
    12 expr: expr . op expr
    13     | expr . error
 
-    error          shift, and go to state 31
-    T_PLUS         shift, and go to state 32
-    T_MULT         shift, and go to state 33
-    T_NL           shift, and go to state 58
-    T_MINUS        shift, and go to state 35
-    T_DIV          shift, and go to state 36
-    T_IGUAL        shift, and go to state 37
-    T_DIFERENTE    shift, and go to state 38
-    T_MAIOR        shift, and go to state 39
-    T_MENOR        shift, and go to state 40
-    T_MAIOR_IGUAL  shift, and go to state 41
-    T_MENOR_IGUAL  shift, and go to state 42
-    T_AND          shift, and go to state 43
-    T_OR           shift, and go to state 44
+    error          deslocar, e ir ao estado 35
+    T_PLUS         deslocar, e ir ao estado 36
+    T_MULT         deslocar, e ir ao estado 37
+    T_NL           deslocar, e ir ao estado 62
+    T_MINUS        deslocar, e ir ao estado 39
+    T_DIV          deslocar, e ir ao estado 40
+    T_IGUAL        deslocar, e ir ao estado 41
+    T_DIFERENTE    deslocar, e ir ao estado 42
+    T_MAIOR        deslocar, e ir ao estado 43
+    T_MENOR        deslocar, e ir ao estado 44
+    T_MAIOR_IGUAL  deslocar, e ir ao estado 45
+    T_MENOR_IGUAL  deslocar, e ir ao estado 46
+    T_AND          deslocar, e ir ao estado 47
+    T_OR           deslocar, e ir ao estado 48
 
-    op  go to state 45
+    op  ir ao estado 49
 
 
-State 57
+Estado61
 
     7 line: type T_COLCH_L T_INT T_COLCH_R T_DEF T_ID . T_NL
 
-    T_NL  shift, and go to state 59
+    T_NL  deslocar, e ir ao estado 63
 
 
-State 58
+Estado62
 
     8 line: T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL .
 
-    $default  reduce using rule 8 (line)
+    $padrão  reduzir usando a regra 8 (line)
 
 
-State 59
+Estado63
 
     7 line: type T_COLCH_L T_INT T_COLCH_R T_DEF T_ID T_NL .
 
-    $default  reduce using rule 7 (line)
+    $padrão  reduzir usando a regra 7 (line)
