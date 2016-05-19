@@ -82,7 +82,6 @@ namespace AST {
 		bool isBinary();
 		bool isComparation();
 		bool isAttribution();
-		void computeType();
 		void verifyOperands();
 		std::string printOp();
 	};
@@ -144,8 +143,16 @@ namespace AST {
 
 		ArrayItem( std::string id,  Node *next, use useType,Types type, AST::Node *index ) :id( id ), next( next ),useType( useType ),index( index )  {this->type = type; verifyIndex();} //Default Constructor
 		void printTree();//Print the node infos
+	};
 
+	class Loop: public Node{
+	public:
+		AST::Node * expr;
+		AST::Block *stmts;
 
+		Loop(AST::Node * expr, AST::Block *stmts) : expr(expr), stmts(stmts){verifyExpression();}
+		void verifyExpression();
+		void printTree();
 	};
 
 }

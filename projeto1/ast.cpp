@@ -8,37 +8,6 @@ using namespace AST;
 #define _case(X) {X break;}
 #define _casePrint(X) {print << "X"; break;}
 
-/*Aux methods*/
-//===============================================
-void BinOp::computeType() {
-	//std::cout << "[BinOp ("<< TypesString[left->type] <<" "<<TypesString[right->type]<<") ]";
-	switch( left->type ) {
-		case AST::tInt: {
-			switch ( right->type ) {
-				case AST::tInt:_case( this->type = AST::tInt; )
-				case AST::tReal: _case( this->type = AST::tReal; )
-				default:; //TODO Caso não seja compativel com INT!
-			}
-			break;
-		}
-		case AST::tReal: {
-			switch ( right->type ) {
-				case AST::tReal:;
-				case AST::tInt: _case( this->type=AST::tReal; )
-				default:; //TODO Caso não seja compativel com REAL!
-			}
-			break;
-		}
-		case AST::tBool: {
-			switch( right->type ) {
-				case AST::tBool: _case( this->type = AST::tBool; )
-				default:;//TODO Caso não seja compativel com BOOL!
-			}
-		}
-	}
-}
-
-
 
 bool BinOp::isArithmetic(){
 	switch(op){
@@ -361,6 +330,22 @@ void UnaryOp::printTree(){
 
 	}
 	
+}
+
+void Loop::printTree(){
+	std::cout <<"Laco\n";
+	std::cout <<"+enquanto:";
+	expr->printTree();
+	std::cout <<"\n+faca:\n";
+	stmts->printTree();
+	std::cout <<"Fim laco\n";
+
+}
+
+void Loop::verifyExpression(){
+	if(expr->type != AST::tBool){
+		yyerror("Erro semantico: operacao teste espera booleano mas recebeu %s.\n",tipoOperacoes[( int )expr->type].c_str());
+	}
 }
 
 
