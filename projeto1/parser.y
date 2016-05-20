@@ -104,21 +104,10 @@ conds
 ;
 
 newscope: {Structures::SymbolTable* newScope = new Structures::SymbolTable;
-		
-		std::cout << "inserido? " << simbolTable->containsIdentifier("i") << "\n";
 
 	   newScope->updatePai(simbolTable);
 
-	   std::cout << "inserido? " << newScope->pai->containsIdentifier("i") << "\n";
-
-	   simbolTable = newScope;
-
-	   std::cout << "inserido? " << newScope->containsIdentifier("i") << "\n";
-	   std::cout << "inserido? " << newScope->pai->containsIdentifier("i") << "\n";
-	   std::cout << "inserido? " << simbolTable->containsIdentifier("i") << "\n";
-	   std::cout << "inserido? " << simbolTable->containsIdentifier("i") << "\n";
-
-	  
+	   simbolTable = newScope;	  
 	}
 ;
 enewscope: {Structures::SymbolTable* escopoPai = simbolTable->pai;

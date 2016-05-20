@@ -31,7 +31,7 @@ namespace AST {class Node;}
 namespace Structures {
 
 	enum Kinds {kVariable};
-	enum Types {tInteger= 0, tDouble, tBool, tCompound, undefined};
+	enum Types {tInteger= 0, tDouble, tBool, undefined};
 
 
 
@@ -68,8 +68,6 @@ namespace Structures {
 		SymbolTable();
 
 		SymbolTable *pai = nullptr;
-
-		SymbolTable(SymbolTable *pai): pai(pai){};
 
 		void updatePai( SymbolTable *newPai );
 

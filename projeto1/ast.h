@@ -31,7 +31,7 @@ namespace AST {
 
 //Binary operations
 	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent,onot };
-	enum Types { tInt,tReal, tBool,tCompound,undefined};
+	enum Types { tInt,tReal, tBool,undefined};
 	static std::string TypesString [4]= {"inteiro", "real","booleano","indefinido"};
 	static std::string tipoOperacoes[4] = {"inteira", "real", "booleana","Indefinida"};
 	class Node;

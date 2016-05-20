@@ -115,21 +115,25 @@ Structures::Types Structures::SymbolTable::getidentifierType( std::string id ) {
 
 //===============================================
 bool Structures::SymbolTable::containsIdentifier( std::string idName ) {
-	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
-		//std::cout << "procurando "<<idName<<" comparando "<< it->first<<"\n";
-		if( it->first == idName ) {
-			return true;
-		}
-	}
-	return false;
+
+	return symbolMap.find(idName) != symbolMap.end();
+	
 }
 //===============================================
 //Ler variavel
 AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 	Types symbolType;
 	if( !containsIdentifier( id ) ) {
-		yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
-		return new AST::Variable( id,NULL,AST::Variable::read,AST::Types::undefined );
+
+		if(pai == nullptr){
+			
+			yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
+			return new AST::Variable( id,NULL,AST::Variable::read,AST::Types::undefined );
+		}else{
+			
+			return pai->getIdentifier(id);
+
+		}			
 	}
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
@@ -153,7 +157,18 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 AST::Node *Structures::SymbolTable::getIdentifier( std::string id,AST::Node *indice ) {
 	Types symbolType;
 	if( !containsIdentifier( id ) ) {
-		yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
+
+		if(pai == nullptr){
+			
+			yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
+			return new AST::ArrayItem( id,NULL,AST::ArrayItem::read,AST::Types::undefined,indice );
+
+		}else{
+			
+			return pai->getIdentifier(id,indice);
+
+		}	
+
 	}
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
@@ -177,11 +192,10 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
 
 		if(pai == nullptr){
 			
-			std::cout << "não achei\n";
 			yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
 			return new AST::Variable( id,NULL,AST::Variable::atrib,AST::Types::undefined );
 		}else{
-			std::cout << "indo procurar no pai\n";
+			
 			return pai->assignVariable(id);
 
 		}	
@@ -200,8 +214,17 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
 //Atribuir variavel no indice
 AST::Node *Structures::SymbolTable::assignVariable( std::string id , AST::Node *indice ) {
 	if( !containsIdentifier( id ) ) {
-		yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
-		return new AST::ArrayItem( id,NULL,AST::ArrayItem::atrib,AST::Types::undefined, indice );
+
+		if(pai == nullptr){
+			
+			yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
+			return new AST::ArrayItem( id,NULL,AST::ArrayItem::atrib,AST::Types::undefined, indice );
+		}else{
+			
+			return pai->assignVariable(id,indice);
+
+		}	
+		
 	}
 	if( !symbolMap.at( id ).isArray ) {
 		yyerror( "Erro semantico: variavel %s com uso como arranjo.\n",id.c_str() );

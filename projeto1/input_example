@@ -1,8 +1,5 @@
 int: i;
-
-if 10.0 > -2.0
-then
-i:= 5;
-end if
-
-real:b;
+real[10]: ar;
+i:= 1;
+while i <= 10 do ar[i]:= 0.0; i:= i + 1; bool:a; end while
+a:=TRUE;
