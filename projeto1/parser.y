@@ -6,6 +6,8 @@
 	
 	AST::Block *programRoot; /* the root node of our program AST:: */
 	Structures::SymbolTable* simbolTable = new Structures::SymbolTable(); /*The simble table of the program*/
+
+	
 	extern int yylex();
 	extern void yyerror(const char *s, ...);
 
@@ -82,23 +84,39 @@ lines
 
 line
 : T_NL { $$ = NULL; } /*nothing here to be used */
-|cmd {$$ = $1;}
+|atrib {$$ = $1;}
 |T_DEF T_TYPE T_DECL T_ID componentDecl T_END T_DEF { $$ = new AST::Block(); simbolTable->insertCompound($4,$5);}
 ;
 
-cmd
+atrib
 :decl {$$=$1;}
+|conds {$$ = $1;}
 |T_ID T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::oassign,$3); }
 
 |T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1,$3);
 			$$ = new AST::BinOp(node,AST::oassign,$6); }
-
-|T_WHILE expr T_DO lines T_END T_WHILE {$$ = new AST::Loop($2,$4);}
-|T_IF expr T_THEN lines T_END T_IF {$$ = new AST::Conditional($2, $4,NULL);}
-|T_IF expr T_THEN lines T_ELSE lines T_END T_IF {$$ = new AST::Conditional($2, $4, $6);}
+;
+conds:
+ T_WHILE expr T_DO newscope lines T_END killscope T_WHILE {$$ = new AST::Loop($2,$4);}
+|T_IF expr T_THEN newscope lines T_END killscope T_IF {$$ = new AST::Conditional($2, $4,NULL);}
+|T_IF expr T_THEN newscope lines T_ELSE enewscope lines T_END killscope T_IF {$$ = new AST::Conditional($2, $4, $6);}
 ;
 
+newscope: {Structures::SymbolTable* newScope = new Structures::SymbolTable;
+	   newScope->updatePai(simbolTable);
+	   simbolTable = newScope;}
+;
+enewscope: {Structures::SymbolTable* escopoPai = simbolTable->pai;
+	    Structures::SymbolTable* newScope = new Structures::SymbolTable;
+	    newScope->updatePai(escopoPai);
+	    simbolTable = newScope;
+	    }
+;
+killscope:{Structures::SymbolTable* escopoPai = simbolTable->pai;
+	   simbolTable = escopoPai;}
+
+;
 componentDecl
 : decl { $$ = new AST::Block(); $$->lines.push_back($1); }
 | componentDecl decl { if($2 != NULL) $1->lines.push_back($2); }

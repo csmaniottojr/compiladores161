@@ -21,6 +21,7 @@
 //Constructors=====================================================================================
 //SymbolTable====================================
 Structures::SymbolTable::SymbolTable() {
+	pai = nullptr;
 }
 
 //Symbol=========================================
@@ -145,7 +146,8 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 	return new AST::Variable( id, NULL, AST::Variable::read , ( AST::Types )symbolType );
 }
 
-
+//===============================================
+//Ler variavel no indice
 AST::Node *Structures::SymbolTable::getIdentifier( std::string id,AST::Node *indice ) {
 	Types symbolType;
 	if( !containsIdentifier( id ) ) {
@@ -180,7 +182,8 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
 		return new AST::Variable( id,NULL,AST::Variable::atrib,( AST::Types )this->symbolMap[id].type );
 	}
 }
-
+//===============================================
+//Atribuir variavel no indice
 AST::Node *Structures::SymbolTable::assignVariable( std::string id , AST::Node *indice ) {
 	if( !containsIdentifier( id ) ) {
 		yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
@@ -194,10 +197,18 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id , AST::Node *
 	//std::cout << "[atribuindo " << id << " " << AST::TypesString[(int)this->symbolMap.at(id).type]<< "]";
 	return new AST::ArrayItem( id,NULL,AST::ArrayItem::atrib,( AST::Types )this->symbolMap[id].type, indice );
 }
-
+//===============================================
+//Insere um tipo composto
 void insertCompound( std::string idName, AST::Node *components ) {
 	AST::Block *thisvar = dynamic_cast<AST::Block *>( components );
 	for ( AST::Node *line: thisvar->lines ) {
 		std::cout << typeid( line ).name() <<"\n";
 	}
 }
+//===============================================
+//Modifica o escopo (tabela) pai
+void Structures::SymbolTable::updatePai( Structures::SymbolTable *newPai ) {
+	this->pai = newPai;
+}
+
+

@@ -64,19 +64,31 @@ namespace Structures {
 
 	class SymbolTable {
 	public:
-		std::map<std::string , Symbol> symbolMap;
+
 		SymbolTable();
 
+		SymbolTable *pai;
+		void updatePai( SymbolTable *newPai );
+
+		std::map<std::string , Symbol> symbolMap;
+
+
 		AST::Node *insertId( std::string idName, AST::Node *nextVar, Structures::Types tipo,bool isArray );
+		void insertCompound( std::string idName, AST::Node *components );
+
 		AST::Node *assignVariable( std::string id );
 		AST::Node *assignVariable( std::string id, AST::Node *indice );
+
 		bool containsIdentifier( std::string id );
+
 		AST::Node *getIdentifier( std::string id );
 		AST::Node *getIdentifier( std::string id ,AST::Node *indice );
+		Types getidentifierType( std::string id );
+
 		void updateTypes( AST::Node *, Structures::Types tipo );
 		void updateTypesAndSize( AST::Node *nodo, Structures::Types tipo, int size );
-		void insertCompound( std::string idName, AST::Node *components );
-		Types getidentifierType( std::string id );
+
+
 	};
 
 
