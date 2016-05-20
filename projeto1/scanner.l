@@ -33,7 +33,7 @@ digsd [0-9]*
 "<="		{return T_MENOR_IGUAL;}
 ":=" 		{return T_ATRIB;}
 "~"		{return T_NOT;}
-":"		{return T_DEF;}
+":"		{return T_DECL;}
 "("		{return T_PAREN_L;}
 ")"		{return T_PAREN_R;}
 "["		{return T_COLCH_L;}
@@ -44,6 +44,8 @@ digsd [0-9]*
 "while" {return T_WHILE;}
 "end"	{return T_END;}
 "do"	{return T_DO;}
+"def"	{return T_DEF;}
+"type"	{return T_TYPE;}
 "int"		{return T_TINT;}
 "real"		{return T_TDOUBLE;}
 "bool"		{return T_TBOOL;}

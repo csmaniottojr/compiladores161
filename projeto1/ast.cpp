@@ -330,16 +330,17 @@ void Array::printTree() {
 		} else{
 			std::string message = "";
 			switch ( this->useType ) {
+				
 				case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "+std::to_string( size ) + ": "+id; break;}
 			}
 			std::cout<<message;
 			return;
 		}
 		std::cout << this->id;
-		return;
-		
+		return;	
 		
 }
+
 
 void ArrayItem::printTree() {
 	

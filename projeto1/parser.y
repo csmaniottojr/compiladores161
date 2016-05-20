@@ -42,16 +42,16 @@
 %token <boolean> T_TRUE T_FALSE
 %token T_PLUS T_MULT T_NL T_ATRIB T_MINUS T_DIV T_IGUAL T_DIFERENTE T_MAIOR T_MENOR
 %token T_MAIOR_IGUAL T_MENOR_IGUAL T_NOT T_PAREN_L T_PAREN_R T_AND T_OR T_COLCH_L T_COLCH_R
-%token T_TINT T_TDOUBLE T_TBOOL T_WHILE T_END T_DO T_IF T_THEN T_ELSE
-%token T_VIRGULA T_DEF
+%token T_TINT T_TDOUBLE T_TBOOL T_WHILE T_END T_DO T_IF T_THEN T_ELSE T_DEF T_TYPE
+%token T_VIRGULA T_DECL
 
 
 /* type defines the type of our nonterminal symbols.
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <node> expr line var unOp value varAr
-%type <block> lines program
+%type <node> expr line var unOp value varAr cmd decl
+%type <block> lines program componentDecl
 %type <operation> op
 %type <type> type
 //%type <int> exprVar
@@ -82,17 +82,32 @@ lines
 
 line
 : T_NL { $$ = NULL; } /*nothing here to be used */
-|type T_DEF var T_NL {$$ = $3;simbolTable->updateTypes($3, $1);} /*Variable definitions*/
+|cmd {$$ = $1;}
+|T_DEF T_TYPE T_DECL T_ID componentDecl T_END T_DEF { $$ = new AST::Block(); simbolTable->insertCompound($4,$5);}
+;
+
+cmd
+:decl {$$=$1;}
 |T_ID T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::oassign,$3); }
 
-|type T_COLCH_L T_INT T_COLCH_R T_DEF varAr T_NL {$$ = $6; simbolTable->updateTypesAndSize($6, $1, $3);}/*Array definitions*/
 |T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1,$3);
 			$$ = new AST::BinOp(node,AST::oassign,$6); }
 
 |T_WHILE expr T_DO lines T_END T_WHILE {$$ = new AST::Loop($2,$4);}
 |T_IF expr T_THEN lines T_END T_IF {$$ = new AST::Conditional($2, $4,NULL);}
 |T_IF expr T_THEN lines T_ELSE lines T_END T_IF {$$ = new AST::Conditional($2, $4, $6);}
+;
+
+componentDecl
+: decl { $$ = new AST::Block(); $$->lines.push_back($1); }
+| componentDecl decl { if($2 != NULL) $1->lines.push_back($2); }
+;
+
+
+decl
+:type T_DECL var T_NL {$$ = $3;simbolTable->updateTypes($3, $1);} /*Variable definitions*/
+|type T_COLCH_L T_INT T_COLCH_R T_DECL varAr T_NL {simbolTable->updateTypesAndSize($6, $1, $3); $$ = $6; }/*Array definitions*/
 ;
 
 expr 
@@ -104,7 +119,7 @@ expr
 
  varAr/*list of declared vars.*/
 : T_ID { $$ = simbolTable->insertId($1,NULL,Structures::Types::tInteger,true); }
-| var T_VIRGULA T_ID {$$= simbolTable->insertId($3,$1,Structures::Types::tInteger,true); } /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
+| varAr T_VIRGULA T_ID {$$= simbolTable->insertId($3,$1,Structures::Types::tInteger,true); } /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
 ;
 
 var /*list of declared vars.*/

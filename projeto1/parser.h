@@ -85,8 +85,10 @@ extern int yydebug;
     T_IF = 288,
     T_THEN = 289,
     T_ELSE = 290,
-    T_VIRGULA = 291,
-    T_DEF = 292
+    T_DEF = 291,
+    T_TYPE = 292,
+    T_VIRGULA = 293,
+    T_DECL = 294
   };
 #endif
 
@@ -107,7 +109,7 @@ union YYSTYPE
 	Structures::Types type;
 
 
-#line 111 "parser.h" /* yacc.c:1909  */
+#line 113 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

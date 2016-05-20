@@ -130,7 +130,6 @@ namespace AST {
 		Array( std::string id,  Node *next, use useType,Types type, int size ) :id( id ), next( next ),useType( useType ),size( size )  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
 
-
 	};
 
 	class ArrayItem : public Node {
@@ -165,6 +164,15 @@ namespace AST {
 
 		Conditional(AST::Node * expr, AST::Block *ifblock, AST::Block * elseblock) : expr(expr), ifblock(ifblock), elseblock(elseblock) {verifyExpression();}
 		void verifyExpression();
+		void printTree();
+	};
+
+	class Compound : public Node{
+
+	public:
+		std::string id;
+		AST::Block *components;
+		Compound(std::string id, AST::Block *components): id(id), components(components){}
 		void printTree();
 	};
 
