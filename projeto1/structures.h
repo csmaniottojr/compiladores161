@@ -31,7 +31,7 @@ namespace AST {class Node;}
 namespace Structures {
 
 	enum Kinds {kVariable};
-	enum Types {tInteger= 0, tDouble, tBool, undefined};
+	enum Types {tInteger= 0, tDouble, tBool, tCompound, undefined};
 
 
 
@@ -40,34 +40,42 @@ namespace Structures {
 
 		Kinds kind;//Kind of symbol (var, func,...)
 		Types type;//Type of symbol (Int, Double,...)
-		DataContainer value;//Space to store a value while interpretating
 		bool initialized;//Defines if th symbol was initialized or not
 		bool isArray; //flag to indicate if symbol is array or not
-		bool foiRedefinida;
-		Symbol( Kinds kind, Types type, DataContainer value, bool initialized, bool isArray, bool foiRedefinida ):
-			kind( kind ), type( type ),value( value ),initialized( initialized ), isArray( isArray ), foiRedefinida( foiRedefinida ) {};
+		bool foiRedefinida = false;
+		bool isCompound = false;
+		std::vector<Symbol> components;
+		Symbol( Kinds kind, Types type, bool initialized, bool isArray ):
+			kind( kind ), type( type ),initialized( initialized ), isArray( isArray ) {};
 		Symbol();
-		void updateValue( DataContainer value ) {this->value = value;};
 		void updateType  ( Types newType ) {this->type=newType;};
 
 	};
+
+	// class Compound {
+	// public:
+
+	// 	Types type;
+	// 	std::vector<Symbol> components;
+
+	// 	Compound(std::vector<Symbol> components): components(components) {type = Types::tCompound;};
+	// 	Compound();
+	// };
 
 	class SymbolTable {
 	public:
 		std::map<std::string , Symbol> symbolMap;
 		SymbolTable();
 
-		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo );
-		AST::Node *insertVariable( std::string idName, AST::Node *nextVar, Structures::Types tipo, int tamanho );
+		AST::Node *insertId( std::string idName, AST::Node *nextVar, Structures::Types tipo,bool isArray );
 		AST::Node *assignVariable( std::string id );
 		AST::Node *assignVariable( std::string id, AST::Node *indice );
 		bool containsIdentifier( std::string id );
 		AST::Node *getIdentifier( std::string id );
 		AST::Node *getIdentifier( std::string id ,AST::Node *indice );
-		// DataContainer getIdentifierValue( std::string id );
-		// void updateIdentifierValue( std::string id, DataContainer value );
 		void updateTypes( AST::Node *, Structures::Types tipo );
-		bool jaAtribuiu = false;
+		void updateTypesAndSize( AST::Node *nodo, Structures::Types tipo, int size );
+		void insertCompound( std::string idName, AST::Node *components );
 		Types getidentifierType( std::string id );
 	};
 

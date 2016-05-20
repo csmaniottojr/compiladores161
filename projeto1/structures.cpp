@@ -16,6 +16,7 @@
  */
 #include "structures.h"
 #include "ast.h"
+#include <typeinfo>
 
 //Constructors=====================================================================================
 //SymbolTable====================================
@@ -27,7 +28,6 @@ Structures::Symbol::Symbol() {
 	this->initialized = false;
 	this->type = Structures::Types::tInteger;
 	this->kind = Structures::Kinds::kVariable;
-	this->value = DataContainer( 0 ); //Creates a int* with 0 in its elements
 }
 
 
@@ -40,12 +40,19 @@ Structures::Symbol::Symbol() {
 //SymbolTable======================================================================================
 //===============================================
 //definir variavel
-AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::Node *nextVar, Structures::Types tipo ) {
+AST::Node *Structures::SymbolTable::insertId ( std::string idName, AST::Node *nextVar, Structures::Types tipo, bool isArray ) {
 	if ( ! containsIdentifier( idName ) )  {
-		Structures::Symbol newSymbol( Kinds::kVariable,tipo,DataContainer( 0 ),false, false,false );
-		std::pair<std::string,Structures::Symbol> newElement ( idName,newSymbol );
-		this->symbolMap.insert ( newElement );
-		return new AST::Variable( idName,nextVar,AST::Variable::ini,( AST::Types )tipo );
+		if( !isArray ) {
+			Structures::Symbol newSymbol( Kinds::kVariable,tipo,false, false );
+			std::pair<std::string,Structures::Symbol> newElement ( idName,newSymbol );
+			this->symbolMap.insert ( newElement );
+			return new AST::Variable( idName,nextVar,AST::Variable::ini,( AST::Types )tipo );
+		} else {
+			Structures::Symbol newSymbol( Kinds::kVariable,tipo,false, true );
+			std::pair<std::string,Structures::Symbol> newElement ( idName,newSymbol );
+			this->symbolMap.insert ( newElement );
+			return new AST::Array( idName,nextVar,AST::Array::ini,( AST::Types )tipo,1 );
+		}
 	} else {
 		if( symbolMap.at( idName ).isArray ) {
 			yyerror( "Erro semantico: arranjo %s sofrendo redefinicao.\n",idName.c_str() );
@@ -53,31 +60,15 @@ AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::No
 			yyerror( "Erro semantico: variavel %s sofrendo redefinicao.\n",idName.c_str() );
 		}
 		symbolMap.at( idName ).foiRedefinida=true;
-		return new AST::Variable( idName,nextVar,AST::Variable::ini,AST::Types::undefined );
+		if( !isArray ) {
+			return new AST::Variable( idName,nextVar,AST::Variable::ini,AST::Types::undefined );
+		} else {
+			return new AST::Array( idName,nextVar,AST::Array::ini,AST::Types::undefined,1 );
+		}
 	}
 }
 
-//definir arranjo
-AST::Node *Structures::SymbolTable::insertVariable ( std::string idName, AST::Node *nextVar, Structures::Types tipo, int tamanho ) {
-	if( tamanho <= 0 ) {
-		yyerror( "Erro semantico: arranjo %s com tamanho menor do que um.\n",idName.c_str() );
-		tamanho = 1;
-	}
-	if ( ! containsIdentifier( idName ) )  {
-		Structures::Symbol newSymbol( Kinds::kVariable,tipo,DataContainer( 0 ),false, true,false );
-		std::pair<std::string,Structures::Symbol> newElement ( idName,newSymbol );
-		this->symbolMap.insert ( newElement );
-		return new AST::Array( idName,nextVar,AST::Array::ini,( AST::Types )tipo,tamanho );
-	} else {
-		if( symbolMap.at( idName ).isArray ) {
-			yyerror( "Erro semantico: arranjo %s sofrendo redefinicao.\n",idName.c_str() );
-		} else {
-			yyerror( "Erro semantico: variavel %s sofrendo redefinicao.\n",idName.c_str() );
-		}
-		symbolMap.at( idName ).foiRedefinida=true;
-		return new AST::Array( idName,nextVar,AST::Array::ini,AST::Types::undefined,tamanho );
-	}
-}
+
 
 //===============================================
 //Mudar recursivamente o tipo de uma lista de variaveis
@@ -89,6 +80,23 @@ void Structures::SymbolTable::updateTypes( AST::Node *nodo, Structures::Types ti
 	}
 	if( thisvar->next != nullptr ) {
 		updateTypes( thisvar->next,tipo );
+	}
+}
+
+void Structures::SymbolTable::updateTypesAndSize( AST::Node *nodo, Structures::Types tipo, int size ) {
+	AST::Array *thisvar = dynamic_cast<AST::Array *>( nodo );
+	int newSize = size;
+	if( size <= 0 ) {
+		yyerror( "Erro semantico: arranjo %s com tamanho menor do que um.\n",thisvar->id.c_str() );
+		newSize = 1;
+	}
+	if( !symbolMap.at( thisvar->id ).foiRedefinida ) {
+		thisvar->type = ( AST::Types ) tipo;
+		thisvar->size = newSize;
+		symbolMap.at( thisvar->id ).updateType( tipo );
+	}
+	if( thisvar->next != nullptr ) {
+		updateTypesAndSize( thisvar->next,tipo,size );
 	}
 }
 
@@ -123,6 +131,10 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
+			if(  it->second.isCompound ) {
+				yyerror( "Erro semantico: tipo %s com uso como variavel.\n",id.c_str() );
+				return new AST::Variable( id,NULL,AST::Variable::read,AST::Types::undefined );
+			}
 			if( !it->second.initialized ) {
 				yyerror( "Erro semantico: variavel %s nao inicializada.\n",id.c_str() );
 			}
@@ -137,13 +149,13 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 AST::Node *Structures::SymbolTable::getIdentifier( std::string id,AST::Node *indice ) {
 	Types symbolType;
 	if( !containsIdentifier( id ) ) {
-		yyerror( "[read]Variable \"%s\" used but not defined!\n",id.c_str() );
+		yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
 	}
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
 			if( !it->second.initialized ) {
-				yyerror( "[read]Variable \"%s\" defined but not initilized!\n",id.c_str() );
+				yyerror( "Erro semantico: variavel %s  nao inicializada.\n",id.c_str() );
 			}
 			symbolType = it->second.type;
 			//std::cout<<"[usou " << id <<" "<< AST::TypesString[(int)symbolType]<< "]";
@@ -183,25 +195,9 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id , AST::Node *
 	return new AST::ArrayItem( id,NULL,AST::ArrayItem::atrib,( AST::Types )this->symbolMap[id].type, indice );
 }
 
-//===============================================
-//ler valor de variavel
-// DataContainer Structures::SymbolTable::getIdentifierValue( std::string id ) {
-// 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
-// 		if( it->first == id ) {
-// 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
-// 			return it->second.value;
-// 		}
-// 	}
-// 	return DataContainer( 666 );
-// }
-//===============================================
-//Atualizar valor de variavel
-// void Structures::SymbolTable::updateIdentifierValue( std::string id, DataContainer value ) {
-// 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
-// 		if( it->first == id ) {
-// 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
-// 			it->second.updateValue( value );
-// 			jaAtribuiu = true;
-// 		}
-// 	}
-// }
+void insertCompound( std::string idName, AST::Node *components ) {
+	AST::Block *thisvar = dynamic_cast<AST::Block *>( components );
+	for ( AST::Node *line: thisvar->lines ) {
+		std::cout << typeid( line ).name() <<"\n";
+	}
+}

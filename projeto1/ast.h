@@ -30,9 +30,9 @@ extern Structures::SymbolTable *simbolTable;//Simbol Table, in Bison file
 namespace AST {
 
 //Binary operations
-	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent };
-	enum Types { tInt,tReal, tBool,undefined};
-	static std::string TypesString [4]= {"inteiro", "real","booleano","indefiniwdo"};
+	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent,onot };
+	enum Types { tInt,tReal, tBool,tCompound,undefined};
+	static std::string TypesString [4]= {"inteiro", "real","booleano","indefinido"};
 	static std::string tipoOperacoes[4] = {"inteira", "real", "booleana","Indefinida"};
 	class Node;
 
@@ -44,6 +44,8 @@ namespace AST {
 		virtual void printTree() {}
 
 		Types type;
+		Types coercionTo;
+		bool hasParentheses = false;
 	};
 
 	class Integer : public Node {
@@ -69,19 +71,34 @@ namespace AST {
 
 	};
 
-
-
 	class BinOp : public Node {
 	public:
 
 		Operation op;//The operation to be executed
 		Node *left;//the left operand
 		Node *right;//The right operand
-		bool isAritmetic( Operation op );
-		BinOp( Node *left, Operation op, Node *right ) : left( left ), right( right ), op( op ) { this->type = undefined;} //Default Contructor
-		void printTree();//Print the tree (right->tree << [operation] << left.tree)
 
-		void computeType();
+
+		BinOp( Node *left, Operation op, Node *right ) : left( left ), right( right ), op( op ) { verifyOperands();} //Default Contructor
+
+		void printTree();//Print the tree (right->tree << [operation] << left.tree)
+		bool isArithmetic();
+		bool isBinary();
+		bool isComparation();
+		bool isAttribution();
+		void verifyOperands();
+		std::string printOp();
+	};
+
+	class UnaryOp : public Node {
+	public:
+		Operation op;//The operation to be executed
+		Node *operand;//the left operand
+
+
+		UnaryOp( Operation op, Node *operand ) : op( op ), operand( operand ) {this->type = operand->type;} //Default Contructor
+		void printTree();//Print the tree (right->tree << [operation] << left.tree)
+		std::string printOp();
 	};
 
 	class Block : public Node {
@@ -111,11 +128,10 @@ namespace AST {
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
-		int tamanho;
+		int size;
 
-		Array( std::string id,  Node *next, use useType,Types type, int tamanho ) :id( id ), next( next ),useType( useType ),tamanho( tamanho )  {this->type = type;} //Default Constructor
+		Array( std::string id,  Node *next, use useType,Types type, int size ) :id( id ), next( next ),useType( useType ),size( size )  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
-
 
 	};
 
@@ -125,12 +141,42 @@ namespace AST {
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
-		AST::Node *indice;
+		AST::Node *index;
+		void verifyIndex();
 
-		ArrayItem( std::string id,  Node *next, use useType,Types type, AST::Node *indice ) :id( id ), next( next ),useType( useType ),indice( indice )  {this->type = type;} //Default Constructor
+		ArrayItem( std::string id,  Node *next, use useType,Types type, AST::Node *index ) :id( id ), next( next ),useType( useType ),index( index )  {this->type = type; verifyIndex();} //Default Constructor
 		void printTree();//Print the node infos
+	};
 
+	class Loop: public Node {
+	public:
+		AST::Node *expr;
+		AST::Block *stmts;
 
+		Loop( AST::Node *expr, AST::Block *stmts ) : expr( expr ), stmts( stmts ) {verifyExpression();}
+		void verifyExpression();
+		void printTree();
+	};
+
+	class Conditional: public Node {
+
+	public:
+		AST::Node *expr;
+		AST::Block *ifblock;
+		AST::Block *elseblock;
+
+		Conditional( AST::Node *expr, AST::Block *ifblock, AST::Block *elseblock ) : expr( expr ), ifblock( ifblock ), elseblock( elseblock ) {verifyExpression();}
+		void verifyExpression();
+		void printTree();
+	};
+
+	class Compound : public Node {
+
+	public:
+		std::string id;
+		AST::Block *components;
+		Compound( std::string id, AST::Block *components ): id( id ), components( components ) {}
+		void printTree();
 	};
 
 }

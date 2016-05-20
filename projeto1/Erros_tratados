@@ -1,0 +1,14 @@
+erros tratados até o momento:
+
+v1.0
+1,2,3,4,5,6
+
+
+v1.1
+7, 8, 9 (detecta erro de sintaxe e dá segfault) ,10, 11,12
+
+v1.3 
+26,27,28
+
+v1.4
+29,30,31(verificar quando funções estiverem prontas)

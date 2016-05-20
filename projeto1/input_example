@@ -1,10 +1,11 @@
 real: a,c,e;
 int: b,d;
 a := 2;
+a := -2;
 b := 3.0;
 c := a+b;
 
-int[2]:arr;
+int[0]:arr,aaa;
 arr[2]:=3;
 d := arr[2];
 

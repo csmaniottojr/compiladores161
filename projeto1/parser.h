@@ -79,8 +79,19 @@ extern int yydebug;
     T_TINT = 282,
     T_TDOUBLE = 283,
     T_TBOOL = 284,
-    T_VIRGULA = 285,
-    T_DEF = 286
+    T_WHILE = 285,
+    T_END = 286,
+    T_DO = 287,
+    T_IF = 288,
+    T_THEN = 289,
+    T_ELSE = 290,
+    T_DEF = 291,
+    T_TYPE = 292,
+    T_VIRGULA = 293,
+    T_DECL = 294,
+    T_FUNC = 295,
+    T_RETURN = 296,
+    T_FUNCDECL = 297
   };
 #endif
 
@@ -101,7 +112,7 @@ union YYSTYPE
 	Structures::Types type;
 
 
-#line 105 "parser.h" /* yacc.c:1909  */
+#line 116 "parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

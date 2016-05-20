@@ -19,7 +19,7 @@ digsd [0-9]*
 [\n \t]		; //ignores spaces
 
 {digs}		{yylval.integer = std::atoi(yytext); return T_INT;}
-{digsd}\.{digs}	{yylval.ddouble = std::atof(yytext); return T_DOUBLE;}		
+{digsd}\.{digsd}	{yylval.ddouble = std::atof(yytext); return T_DOUBLE;}		
 "+"		{return T_PLUS;}
 "-"		{return T_MINUS;}
 "*"		{return T_MULT;}
@@ -33,16 +33,22 @@ digsd [0-9]*
 "<="		{return T_MENOR_IGUAL;}
 ":=" 		{return T_ATRIB;}
 "~"		{return T_NOT;}
-":"		{return T_DEF;}
+":"		{return T_DECL;}
 "("		{return T_PAREN_L;}
 ")"		{return T_PAREN_R;}
 "["		{return T_COLCH_L;}
 "]"		{return T_COLCH_R;}
-"def"		{return T_FUNCDEF;}
 "decl"		{return T_FUNCDECL;}
 "fun"		{return T_FUNC;}
 "return"	{return T_RETURN;}
-"end"		{return T_END;}
+"if"	{return T_IF;}
+"then"	{return T_THEN;}
+"else"	{return T_ELSE;}
+"while" {return T_WHILE;}
+"end"	{return T_END;}
+"do"	{return T_DO;}
+"def"	{return T_DEF;}
+"type"	{return T_TYPE;}
 "int"		{return T_TINT;}
 "real"		{return T_TDOUBLE;}
 "bool"		{return T_TBOOL;}
