@@ -19,7 +19,7 @@ digsd [0-9]*
 [\n \t]		; //ignores spaces
 
 {digs}		{yylval.integer = std::atoi(yytext); return T_INT;}
-{digsd}\.{digs}	{yylval.ddouble = std::atof(yytext); return T_DOUBLE;}		
+{digsd}\.{digsd}	{yylval.ddouble = std::atof(yytext); return T_DOUBLE;}		
 "+"		{return T_PLUS;}
 "-"		{return T_MINUS;}
 "*"		{return T_MULT;}
@@ -38,6 +38,9 @@ digsd [0-9]*
 ")"		{return T_PAREN_R;}
 "["		{return T_COLCH_L;}
 "]"		{return T_COLCH_R;}
+"if"	{return T_IF;}
+"then"	{return T_THEN;}
+"else"	{return T_ELSE;}
 "while" {return T_WHILE;}
 "end"	{return T_END;}
 "do"	{return T_DO;}

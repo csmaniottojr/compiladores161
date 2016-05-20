@@ -42,7 +42,7 @@
 %token <boolean> T_TRUE T_FALSE
 %token T_PLUS T_MULT T_NL T_ATRIB T_MINUS T_DIV T_IGUAL T_DIFERENTE T_MAIOR T_MENOR
 %token T_MAIOR_IGUAL T_MENOR_IGUAL T_NOT T_PAREN_L T_PAREN_R T_AND T_OR T_COLCH_L T_COLCH_R
-%token T_TINT T_TDOUBLE T_TBOOL T_WHILE T_END T_DO
+%token T_TINT T_TDOUBLE T_TBOOL T_WHILE T_END T_DO T_IF T_THEN T_ELSE
 %token T_VIRGULA T_DEF
 
 
@@ -50,7 +50,7 @@
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <node> expr line var numericValue booleanValue unOp value
+%type <node> expr line var unOp value varAr
 %type <block> lines program
 %type <operation> op
 %type <type> type
@@ -85,46 +85,48 @@ line
 |type T_DEF var T_NL {$$ = $3;simbolTable->updateTypes($3, $1);} /*Variable definitions*/
 |T_ID T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::oassign,$3); }
-|type T_COLCH_L T_INT T_COLCH_R T_DEF T_ID T_NL {$$= simbolTable->insertVariable($6,NULL,$1,$3);}/*Array definitions*/
+
+|type T_COLCH_L T_INT T_COLCH_R T_DEF varAr T_NL {$$ = $6; simbolTable->updateTypesAndSize($6, $1, $3);}/*Array definitions*/
 |T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1,$3);
 			$$ = new AST::BinOp(node,AST::oassign,$6); }
+
 |T_WHILE expr T_DO lines T_END T_WHILE {$$ = new AST::Loop($2,$4);}
+|T_IF expr T_THEN lines T_END T_IF {$$ = new AST::Conditional($2, $4,NULL);}
+|T_IF expr T_THEN lines T_ELSE lines T_END T_IF {$$ = new AST::Conditional($2, $4, $6);}
 ;
 
-expr
+expr 
 : value {$$ = $1;}
+| T_PAREN_L expr T_PAREN_R {$2->hasParentheses = true; $$ = $2; }
 | expr op expr { $$ = new AST::BinOp($1,$2,$3);}
 | expr error { yyerrok; $$ = $1; } /*just a point for error recovery*/
 ;
 
+ varAr/*list of declared vars.*/
+: T_ID { $$ = simbolTable->insertId($1,NULL,Structures::Types::tInteger,true); }
+| var T_VIRGULA T_ID {$$= simbolTable->insertId($3,$1,Structures::Types::tInteger,true); } /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
+;
+
 var /*list of declared vars.*/
-: T_ID { $$ = simbolTable->insertVariable($1,NULL,Structures::Types::tInteger);}
-| var T_VIRGULA T_ID {$$= simbolTable->insertVariable($3,$1,Structures::Types::tInteger);} /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
+: T_ID { $$ = simbolTable->insertId($1,NULL,Structures::Types::tInteger,false); }
+| var T_VIRGULA T_ID {$$= simbolTable->insertId($3,$1,Structures::Types::tInteger,false); } /*Inserts $3 in the ST, and marks $1 as it's NEXT*/
 ;
 
 
 
 value
-: numericValue {$$ = $1;}
-| booleanValue {$$ = $1;}
+: T_INT { $$ = new AST::Integer($1); }
+| T_DOUBLE {$$ = new AST::Double($1);}
+| T_TRUE {$$ = new AST::Boolean(true);}
+| T_FALSE {$$ = new AST::Boolean(false);}
 | unOp {$$ = $1;}
 | T_ID {$$ = simbolTable->getIdentifier($1);}
 | T_ID T_COLCH_L value T_COLCH_R {$$ = simbolTable->getIdentifier($1,$3);}
 ;
 
-numericValue
-: T_INT { $$ = new AST::Integer($1); }
-| T_DOUBLE {$$ = new AST::Double($1);}
-;
-
-booleanValue
-: T_TRUE {$$ = new AST::Boolean(true);}
-| T_FALSE {$$ = new AST::Boolean(false);}
-;
-
 unOp
-: T_MINUS numericValue {$$ = new AST::UnaryOp(AST::ominus,$2);}
-| T_NOT booleanValue {$$ = new AST::UnaryOp(AST::onot,$2);}
+: T_MINUS expr {$$ = new AST::UnaryOp(AST::ominus,$2);}
+| T_NOT expr {$$ = new AST::UnaryOp(AST::onot,$2);}
 ;
 
 

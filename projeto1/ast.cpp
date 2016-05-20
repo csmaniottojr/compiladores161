@@ -157,10 +157,19 @@ std::string BinOp::printOp(){
 //Integer
 //===============================================
 void Integer::printTree() {
+
+	if(hasParentheses){
+		std::cout<< "(abre parenteses) ";
+	}
+
 	std::cout << "inteiro "<< value;
 
 	if(this->coercionTo){
 		std::cout << " para variavel " <<  tipoOperacoes[( int )this->coercionTo].c_str();
+	}
+
+	if(hasParentheses){
+		std::cout<< " (fecha parenteses)";
 	}
 
 	return;
@@ -168,14 +177,26 @@ void Integer::printTree() {
 //Double
 //===============================================
 void Double::printTree() {
-	std::cout << "real "<<value;
-	return;
+
+	if(hasParentheses){
+		std::cout<< "(abre parenteses) " << "real "<<value << " (fecha parenteses)";
+	}else{
+		std::cout << "real "<<value;
+	}
+
+	
 }
 //Boolean
 //===============================================
 void Boolean::printTree() {
 	std::string result = ( value?"TRUE":"FALSE" );
-	std::cout << "booleano "<<result;
+
+	if(hasParentheses){
+		std::cout<< "(abre parenteses) " << "booleano "<<result << " (fecha parenteses)";
+	}else{
+		std::cout << "booleano "<<result;
+	}
+	return;
 }
 
 
@@ -187,6 +208,10 @@ void BinOp::printTree() {
 
 	if(!isAss){
 		print << "(";
+	}
+
+	if(hasParentheses){
+		std::cout<< "(abre parenteses) ";
 	}
 
 	left->printTree();
@@ -206,6 +231,10 @@ void BinOp::printTree() {
 		case AST::oor:_case ( print << " ("<<printOp() << " " << tipoOperacoes[( int )this->type] << ") "; )
 	}
 	right->printTree();
+
+	if(hasParentheses){
+		std::cout<< " (fecha parenteses)";
+	}
 
 	if(!isAss){
 		print << ")";
@@ -232,27 +261,53 @@ void Variable::printTree() {
 		std::string message = "Tipo Fantasma " + this->id;
 		switch ( this->useType ) {
 			case AST::Variable::atrib: {message = "Atribuicao de valor para variavel " + TypesString[( int )type] +" " + this->id +":"; break;}
-			case AST::Variable::ini: {message = "Declaracao de variavel " + TypesString[( int )type] +" "+ this->id+":" ; break;}
+			case AST::Variable::ini: {message = "Declaracao de variavel " + TypesString[( int )type] +": "+ this->id ; break;}
 			case AST::Variable::read: {
 				//std::cout<<"[ST  com "<<simbolTable->symbolMap.size()<<" atribuiu? "<<simbolTable->jaAtribuiu<<"]";
 				switch( simbolTable->getidentifierType( this->id ) ) {
 					case Structures::tBool: {
-						message = "booleano "+ this->id;
+
+						if(hasParentheses){
+							message = "(abre parenteses) booleano "+ this->id +" (fecha parenteses)";
+						}else{
+							message = "booleano " + this->id;
+						}
+
 						break;
 					}
 					case Structures::tDouble: {
-						message = "real " + this->id;
+						
+						if(hasParentheses){
+							message = "(abre parenteses) real "+ this->id +" (fecha parenteses)";
+						}else{
+							message = "real " + this->id;
+						}
 						break;
 					}
 					case Structures::tInteger: {
+						message = "";
+
+						if(hasParentheses){
+							message += "(abre parenteses) ";
+						}
+
 						message = "inteiro " + this->id;
 						if(this->coercionTo){
 							message += (" para variavel " + tipoOperacoes[( int )this->coercionTo]);
 						}
+
+						if(hasParentheses){
+							message += " (fecha parenteses)";
+						}
 						break;
 					}
 					case Structures::undefined: {
-						message = "indefinido " + this->id;
+						if(hasParentheses){
+							message = "(abre parenteses) indefinido "+ this->id +" (fecha parenteses)";
+						}else{
+							message = "indefinido " + this->id;
+						}
+						
 						break;
 					}
 				};
@@ -268,12 +323,21 @@ void Variable::printTree() {
 }
 
 void Array::printTree() {
-	
-		std::string message = "";
-		switch ( this->useType ) {
-			case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "+std::to_string( tamanho ) + ": "+id; break;}
+
+		if( next != nullptr ) {
+			next->printTree();
+			std::cout << ", ";
+		} else{
+			std::string message = "";
+			switch ( this->useType ) {
+				case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "+std::to_string( size ) + ": "+id; break;}
+			}
+			std::cout<<message;
+			return;
 		}
-		std::cout<<message;
+		std::cout << this->id;
+		return;
+		
 		
 }
 
@@ -317,14 +381,16 @@ void UnaryOp::printTree(){
 	switch(op){
 
 		case AST::ominus:{
-			print << "(menos unario) ";
+			print << "((menos unario) ";
 			operand->printTree();
+			print << ")";
 			break;
 		}
 
 		case AST::onot:{
-			print << "(not) ";
+			print << "((nao) ";
 			operand->printTree();
+			print << ")";
 			break;
 		}
 
@@ -348,8 +414,26 @@ void Loop::verifyExpression(){
 	}
 }
 
+void Conditional::printTree(){
+	std::cout <<"Expressao condicional\n";
+	std::cout <<"+se:";
+	expr->printTree();
+	std::cout <<"\n+entao:\n";
+	ifblock->printTree();
+
+	if(elseblock != NULL){
+		std::cout <<"+senao:\n";
+		elseblock->printTree();
+	}
+
+	std::cout <<"Fim expressao condicional\n";
+
+}
 
 
-
-
+void Conditional::verifyExpression(){
+	if(expr->type != AST::tBool){
+		yyerror("Erro semantico: operacao teste espera booleano mas recebeu %s.\n",tipoOperacoes[( int )expr->type].c_str());
+	}
+}
 

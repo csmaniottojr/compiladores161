@@ -31,7 +31,7 @@ namespace AST {
 
 //Binary operations
 	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent,onot };
-	enum Types { tInt,tReal, tBool,undefined};
+	enum Types { tInt,tReal, tBool,tCompound,undefined};
 	static std::string TypesString [4]= {"inteiro", "real","booleano","indefinido"};
 	static std::string tipoOperacoes[4] = {"inteira", "real", "booleana","Indefinida"};
 	class Node;
@@ -45,6 +45,7 @@ namespace AST {
 
 		Types type;
 		Types coercionTo;
+		bool hasParentheses = false;
 	};
 
 	class Integer : public Node {
@@ -124,9 +125,9 @@ namespace AST {
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
-		int tamanho;
+		int size;
 
-		Array( std::string id,  Node *next, use useType,Types type, int tamanho ) :id( id ), next( next ),useType( useType ),tamanho( tamanho )  {this->type = type;} //Default Constructor
+		Array( std::string id,  Node *next, use useType,Types type, int size ) :id( id ), next( next ),useType( useType ),size( size )  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
 
 
@@ -151,6 +152,18 @@ namespace AST {
 		AST::Block *stmts;
 
 		Loop(AST::Node * expr, AST::Block *stmts) : expr(expr), stmts(stmts){verifyExpression();}
+		void verifyExpression();
+		void printTree();
+	};
+
+	class Conditional: public Node{
+
+	public:
+		AST::Node * expr;
+		AST::Block * ifblock;
+		AST::Block * elseblock;
+
+		Conditional(AST::Node * expr, AST::Block *ifblock, AST::Block * elseblock) : expr(expr), ifblock(ifblock), elseblock(elseblock) {verifyExpression();}
 		void verifyExpression();
 		void printTree();
 	};

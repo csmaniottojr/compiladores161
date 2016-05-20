@@ -1,5 +1,11 @@
-int: i;
-real[10]:ar;
-i:=1;
+real: a,c,e;
+int: b,d;
+a := 2;
+a := -2;
+b := 3.0;
+c := a+b;
 
-while i <= 10 do ar[i]:= 0.0; i:= i + 1; end while;
+int[0]:arr;
+arr[2]:=3;
+d := arr[2];
+
