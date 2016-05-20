@@ -73,10 +73,11 @@ namespace AST {
 
 	class BinOp : public Node {
 	public:
+
 		Operation op;//The operation to be executed
 		Node *left;//the left operand
 		Node *right;//The right operand
-
+		bool isAritmetic( Operation op );
 		BinOp( Node *left, Operation op, Node *right ) : left( left ), right( right ), op( op ) { this->type = undefined;} //Default Contructor
 		void printTree();//Print the tree (right->tree << [operation] << left.tree)
 

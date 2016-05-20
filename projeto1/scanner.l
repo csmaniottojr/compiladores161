@@ -38,6 +38,11 @@ digsd [0-9]*
 ")"		{return T_PAREN_R;}
 "["		{return T_COLCH_L;}
 "]"		{return T_COLCH_R;}
+"def"		{return T_FUNCDEF;}
+"decl"		{return T_FUNCDECL;}
+"fun"		{return T_FUNC;}
+"return"	{return T_RETURN;}
+"end"		{return T_END;}
 "int"		{return T_TINT;}
 "real"		{return T_TDOUBLE;}
 "bool"		{return T_TBOOL;}
