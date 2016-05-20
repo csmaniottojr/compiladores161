@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.0.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,67 +40,69 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 17 "parser.y" /* yacc.c:1909  */
+#line 19 "parser.y" /* yacc.c:1909  */
 
 #include "structures.h"
-
+	
 
 #line 49 "parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-enum yytokentype {
-	T_ID = 258,
-	T_INT = 259,
-	T_DOUBLE = 260,
-	T_TRUE = 261,
-	T_FALSE = 262,
-	T_PLUS = 263,
-	T_MULT = 264,
-	T_NL = 265,
-	T_ATRIB = 266,
-	T_MINUS = 267,
-	T_DIV = 268,
-	T_IGUAL = 269,
-	T_DIFERENTE = 270,
-	T_MAIOR = 271,
-	T_MENOR = 272,
-	T_MAIOR_IGUAL = 273,
-	T_MENOR_IGUAL = 274,
-	T_NOT = 275,
-	T_PAREN_L = 276,
-	T_PAREN_R = 277,
-	T_AND = 278,
-	T_OR = 279,
-	T_COLCH_L = 280,
-	T_COLCH_R = 281,
-	T_TINT = 282,
-	T_TDOUBLE = 283,
-	T_TBOOL = 284,
-	T_WHILE = 285,
-	T_END = 286,
-	T_DO = 287,
-	T_IF = 288,
-	T_THEN = 289,
-	T_ELSE = 290,
-	T_DEF = 291,
-	T_TYPE = 292,
-	T_VIRGULA = 293,
-	T_DECL = 294,
-	T_FUNC = 295,
-	T_RETURN = 296,
-	T_FUNCDECL = 297
-};
+  enum yytokentype
+  {
+    T_ID = 258,
+    T_INT = 259,
+    T_DOUBLE = 260,
+    T_TRUE = 261,
+    T_FALSE = 262,
+    T_PLUS = 263,
+    T_MULT = 264,
+    T_NL = 265,
+    T_ATRIB = 266,
+    T_MINUS = 267,
+    T_DIV = 268,
+    T_IGUAL = 269,
+    T_DIFERENTE = 270,
+    T_MAIOR = 271,
+    T_MENOR = 272,
+    T_MAIOR_IGUAL = 273,
+    T_MENOR_IGUAL = 274,
+    T_NOT = 275,
+    T_PAREN_L = 276,
+    T_PAREN_R = 277,
+    T_AND = 278,
+    T_OR = 279,
+    T_COLCH_L = 280,
+    T_COLCH_R = 281,
+    T_TINT = 282,
+    T_TDOUBLE = 283,
+    T_TBOOL = 284,
+    T_WHILE = 285,
+    T_END = 286,
+    T_DO = 287,
+    T_IF = 288,
+    T_THEN = 289,
+    T_ELSE = 290,
+    T_DEF = 291,
+    T_TYPE = 292,
+    T_VIRGULA = 293,
+    T_DECL = 294,
+    T_FUNC = 295,
+    T_RETURN = 296,
+    T_FUNCDECL = 297
+  };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+typedef union YYSTYPE YYSTYPE;
+union YYSTYPE
+{
+#line 27 "parser.y" /* yacc.c:1909  */
 
-union YYSTYPE {
-#line 25 "parser.y" /* yacc.c:1909  */
-
-	char *identifier;
+	char* identifier;
 	int integer;
 	double ddouble;
 	AST::Node *node;
@@ -112,8 +114,6 @@ union YYSTYPE {
 
 #line 116 "parser.h" /* yacc.c:1909  */
 };
-
-typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -121,6 +121,6 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
-int yyparse ( void );
+int yyparse (void);
 
 #endif /* !YY_YY_PARSER_H_INCLUDED  */

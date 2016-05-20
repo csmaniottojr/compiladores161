@@ -1,11 +1,8 @@
-real: a,c,e;
-int: b,d;
-a := 2;
-a := -2;
-b := 3.0;
-c := a+b;
+int: i;
 
-int[0]:arr,aaa;
-arr[2]:=3;
-d := arr[2];
+if 10.0 > -2.0
+then
+i:= 5;
+end if
 
+real:b;

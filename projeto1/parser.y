@@ -52,8 +52,8 @@
  * Types should match the names used in the union.
  * Example: %type<node> expr
  */
-%type <node> expr line var unOp value varAr cmd decl
-%type <block> lines program componentDecl
+%type <node> expr line var unOp value varAr cmd decl conds
+%type <block> lines program 
 %type <operation> op
 %type <type> type
 //%type <int> exprVar
@@ -84,11 +84,11 @@ lines
 
 line
 : T_NL { $$ = NULL; } /*nothing here to be used */
-|atrib {$$ = $1;}
-|T_DEF T_TYPE T_DECL T_ID componentDecl T_END T_DEF { $$ = new AST::Block(); simbolTable->insertCompound($4,$5);}
+|cmd {$$ = $1;}
+//|T_DEF T_TYPE T_DECL T_ID componentDecl T_END T_DEF { $$ = new AST::Block(); simbolTable->insertCompound($4,$5);}
 ;
 
-atrib
+cmd
 :decl {$$=$1;}
 |conds {$$ = $1;}
 |T_ID T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1);
@@ -97,30 +97,46 @@ atrib
 |T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1,$3);
 			$$ = new AST::BinOp(node,AST::oassign,$6); }
 ;
-conds:
- T_WHILE expr T_DO newscope lines T_END killscope T_WHILE {$$ = new AST::Loop($2,$4);}
-|T_IF expr T_THEN newscope lines T_END killscope T_IF {$$ = new AST::Conditional($2, $4,NULL);}
-|T_IF expr T_THEN newscope lines T_ELSE enewscope lines T_END killscope T_IF {$$ = new AST::Conditional($2, $4, $6);}
+conds
+:T_WHILE expr T_DO newscope lines T_END killscope T_WHILE {$$ = new AST::Loop($2,$5);}
+|T_IF expr T_THEN newscope lines T_END killscope T_IF {$$ = new AST::Conditional($2, $5,NULL);}
+|T_IF expr T_THEN newscope lines T_ELSE enewscope lines T_END killscope T_IF {$$ = new AST::Conditional($2, $5, $8);}
 ;
 
 newscope: {Structures::SymbolTable* newScope = new Structures::SymbolTable;
+		
+		std::cout << "inserido? " << simbolTable->containsIdentifier("i") << "\n";
+
 	   newScope->updatePai(simbolTable);
-	   simbolTable = newScope;}
+
+	   std::cout << "inserido? " << newScope->pai->containsIdentifier("i") << "\n";
+
+	   simbolTable = newScope;
+
+	   std::cout << "inserido? " << newScope->containsIdentifier("i") << "\n";
+	   std::cout << "inserido? " << newScope->pai->containsIdentifier("i") << "\n";
+	   std::cout << "inserido? " << simbolTable->containsIdentifier("i") << "\n";
+	   std::cout << "inserido? " << simbolTable->containsIdentifier("i") << "\n";
+
+	  
+	}
 ;
 enewscope: {Structures::SymbolTable* escopoPai = simbolTable->pai;
+
 	    Structures::SymbolTable* newScope = new Structures::SymbolTable;
 	    newScope->updatePai(escopoPai);
-	    simbolTable = newScope;
+	    simbolTable = newScope;    
+
 	    }
 ;
 killscope:{Structures::SymbolTable* escopoPai = simbolTable->pai;
 	   simbolTable = escopoPai;}
 
 ;
-componentDecl
-: decl { $$ = new AST::Block(); $$->lines.push_back($1); }
-| componentDecl decl { if($2 != NULL) $1->lines.push_back($2); }
-;
+//componentDecl
+//: decl { $$ = new AST::Block(); $$->lines.push_back($1); }
+//| componentDecl decl { if($2 != NULL) $1->lines.push_back($2); }
+//;
 
 
 decl

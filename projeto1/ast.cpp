@@ -233,53 +233,60 @@ void Variable::printTree() {
 				//std::cout<<"[ST  com "<<simbolTable->symbolMap.size()<<" atribuiu? "<<simbolTable->jaAtribuiu<<"]";
 				switch( simbolTable->getidentifierType( this->id ) ) {
 					case Structures::tBool: {
-						if( hasParentheses ) {
+
+						if(hasParentheses){
 							message = "(abre parenteses) booleano "+ this->id +" (fecha parenteses)";
-						} else {
+						}else{
 							message = "booleano " + this->id;
 						}
+
 						break;
 					}
 					case Structures::tDouble: {
-						if( hasParentheses ) {
+						
+						if(hasParentheses){
 							message = "(abre parenteses) real "+ this->id +" (fecha parenteses)";
-						} else {
+						}else{
 							message = "real " + this->id;
 						}
 						break;
 					}
 					case Structures::tInteger: {
 						message = "";
-						if( hasParentheses ) {
+
+						if(hasParentheses){
 							message += "(abre parenteses) ";
 						}
+
 						message = "inteiro " + this->id;
-						if( this->coercionTo ) {
-							message += ( " para variavel " + tipoOperacoes[( int )this->coercionTo] );
+						if(this->coercionTo){
+							message += (" para variavel " + tipoOperacoes[( int )this->coercionTo]);
 						}
-						if( hasParentheses ) {
+
+						if(hasParentheses){
 							message += " (fecha parenteses)";
 						}
 						break;
 					}
 					case Structures::undefined: {
-						if( hasParentheses ) {
+						if(hasParentheses){
 							message = "(abre parenteses) indefinido "+ this->id +" (fecha parenteses)";
-						} else {
+						}else{
 							message = "indefinido " + this->id;
 						}
+						
 						break;
 					}
 				};
 				//message="leitura de variavel "
 				//message = "";  break;
 			}
-			std::cout<<message;
-			return;
 		}
-		std::cout << this->id;
+		std::cout<<message;
 		return;
 	}
+	std::cout << this->id;
+	return;
 }
 void Array::printTree() {
 	if( next != nullptr ) {

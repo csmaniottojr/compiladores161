@@ -67,7 +67,10 @@ namespace Structures {
 
 		SymbolTable();
 
-		SymbolTable *pai;
+		SymbolTable *pai = nullptr;
+
+		SymbolTable(SymbolTable *pai): pai(pai){};
+
 		void updatePai( SymbolTable *newPai );
 
 		std::map<std::string , Symbol> symbolMap;
