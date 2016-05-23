@@ -33,6 +33,7 @@
 	AST::Operation operation;
 	bool boolean;
 	Structures::Types type;
+	Structures::SymbolTable* scope;
 
 }
 
@@ -43,7 +44,7 @@
 %token <ddouble> T_DOUBLE
 %token <boolean> T_TRUE T_FALSE
 %token T_PLUS T_MULT T_NL T_ATRIB T_MINUS T_DIV T_IGUAL T_DIFERENTE T_MAIOR T_MENOR
-%token T_MAIOR_IGUAL T_MENOR_IGUAL T_NOT T_PAREN_L T_PAREN_R T_AND T_OR T_COLCH_L T_COLCH_R
+%token T_MAIOR_IGUAL T_MENOR_IGUAL T_NOT T_PAREN_L T_PAREN_R T_AND T_OR T_COLCH_L T_COLCH_R T_POINT
 %token T_TINT T_TDOUBLE T_TBOOL T_WHILE T_END T_DO T_IF T_THEN T_ELSE T_DEF T_TYPE
 %token T_VIRGULA T_DECL T_FUNC T_RETURN T_FUNCDECL
 
@@ -53,9 +54,10 @@
  * Example: %type<node> expr
  */
 %type <node> expr line var unOp value varAr cmd decl conds
-%type <block> lines program 
+%type <block> lines program componentDecl
 %type <operation> op
 %type <type> type
+%type <scope> killcscope
 //%type <int> exprVar
 
 
@@ -85,7 +87,7 @@ lines
 line
 : T_NL { $$ = NULL; } /*nothing here to be used */
 |cmd {$$ = $1;}
-//|T_DEF T_TYPE T_DECL T_ID componentDecl T_END T_DEF { $$ = new AST::Block(); simbolTable->insertCompound($4,$5);}
+|T_DEF T_TYPE T_DECL T_ID newscope componentDecl T_END killcscope T_DEF { $$ = simbolTable->insertCompound($4,$8,$6);}
 ;
 
 cmd
@@ -94,8 +96,26 @@ cmd
 |T_ID T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1);
 			$$ = new AST::BinOp(node,AST::oassign,$3); }
 
+|T_ID T_COLCH_L value T_COLCH_R T_POINT T_ID T_ATRIB expr T_NL {
+	
+	//===============POR ALGUM MOTIVO N ESTÁ FUNCIONANDO ESSA REGRA
+
+	//std::cout << "entrou nessa regra\n";
+	//$$= new AST::Node();
+	//simbolTable->assignVariable($1,$3,$6);
+	//$$ = new AST::BinOp(node,AST::oassign,$8);
+}
+
 |T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1,$3);
 			$$ = new AST::BinOp(node,AST::oassign,$6); }
+
+|T_ID T_POINT T_ID T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1,$3);
+			$$ = new AST::BinOp(node,AST::oassign,$5);}
+
+|T_ID T_POINT T_ID T_COLCH_L value T_COLCH_R T_ATRIB expr T_NL {AST::Node* node = simbolTable->assignVariable($1,$3,$5);
+			$$ = new AST::BinOp(node,AST::oassign,$8);}
+
+
 ;
 conds
 :T_WHILE expr T_DO newscope lines T_END killscope T_WHILE {$$ = new AST::Loop($2,$5);}
@@ -120,17 +140,27 @@ enewscope: {Structures::SymbolTable* escopoPai = simbolTable->pai;
 ;
 killscope:{Structures::SymbolTable* escopoPai = simbolTable->pai;
 	   simbolTable = escopoPai;}
-
 ;
-//componentDecl
-//: decl { $$ = new AST::Block(); $$->lines.push_back($1); }
-//| componentDecl decl { if($2 != NULL) $1->lines.push_back($2); }
-//;
+killcscope:{
+	Structures::SymbolTable* escopoPai = simbolTable->pai;
+	$$ = simbolTable;
+	simbolTable = escopoPai;
+
+}
+;
+
+
+componentDecl
+: decl { $$ = new AST::Block(); $$->lines.push_back($1); }
+| componentDecl decl { if($2 != NULL) $1->lines.push_back($2); }
+;
 
 
 decl
 :type T_DECL var T_NL {$$ = $3;simbolTable->updateTypes($3, $1);} /*Variable definitions*/
 |type T_COLCH_L T_INT T_COLCH_R T_DECL varAr T_NL {simbolTable->updateTypesAndSize($6, $1, $3); $$ = $6; }/*Array definitions*/
+|T_ID T_DECL var T_NL {$$ = $3;simbolTable->updateTypes($3, Structures::Types::compound,$1);}
+|T_ID T_COLCH_L T_INT T_COLCH_R T_DECL varAr T_NL {$$ = $6;simbolTable->updateTypesAndSize($6, Structures::Types::compound,$3,$1);}
 ;
 
 expr 
@@ -160,6 +190,9 @@ value
 | unOp {$$ = $1;}
 | T_ID {$$ = simbolTable->getIdentifier($1);}
 | T_ID T_COLCH_L value T_COLCH_R {$$ = simbolTable->getIdentifier($1,$3);}
+| T_ID T_POINT T_ID {$$ = simbolTable->getIdentifier($1,$3);}
+| T_ID T_POINT T_ID T_COLCH_L value T_COLCH_R  {$$ = simbolTable->getIdentifier($1,$3,$5);}
+| T_ID T_COLCH_L value T_COLCH_R T_POINT T_ID {$$ = simbolTable->getIdentifier($1,$3,$6);}
 ;
 
 unOp

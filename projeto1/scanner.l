@@ -38,6 +38,7 @@ digsd [0-9]*
 ")"		{return T_PAREN_R;}
 "["		{return T_COLCH_L;}
 "]"		{return T_COLCH_R;}
+"->"		{return T_POINT;}
 "decl"		{return T_FUNCDECL;}
 "fun"		{return T_FUNC;}
 "return"	{return T_RETURN;}

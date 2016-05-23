@@ -31,9 +31,9 @@ namespace AST {
 
 //Binary operations
 	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent,onot };
-	enum Types { tInt,tReal, tBool,undefined};
-	static std::string TypesString [4]= {"inteiro", "real","booleano","indefinido"};
-	static std::string tipoOperacoes[4] = {"inteira", "real", "booleana","Indefinida"};
+	enum Types { tInt,tReal, tBool,undefined,compound};
+	static std::string TypesString [5]= {"inteiro", "real","booleano","indefinido", "composto"};
+	static std::string tipoOperacoes[5] = {"inteira", "real", "booleana","Indefinida", "composto"};
 	class Node;
 
 	typedef std::vector<Node *> NodeList; //List of nodes
@@ -45,6 +45,7 @@ namespace AST {
 
 		Types type;
 		Types coercionTo;
+		std::string id;
 		bool hasParentheses = false;
 	};
 
@@ -115,8 +116,9 @@ namespace AST {
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
-
-		Variable( std::string id,  Node *next, use useType,Types type ) :id( id ), next( next ),useType( useType )  {this->type = type;} //Default Constructor
+		std::string idType = "";
+		AST::Node *component = nullptr;
+		Variable( std::string id,  Node *next, use useType,Types type ) :id( id ), next( next ),useType( useType )  {this->type = type; } //Default Constructor
 		void printTree();//Print the node infos
 
 
@@ -128,8 +130,8 @@ namespace AST {
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
+		std::string idType = "";
 		int size;
-
 		Array( std::string id,  Node *next, use useType,Types type, int size ) :id( id ), next( next ),useType( useType ),size( size )  {this->type = type;} //Default Constructor
 		void printTree();//Print the node infos
 
@@ -142,6 +144,8 @@ namespace AST {
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
 		AST::Node *index;
+		std::string idType = "";
+		AST::Node *component = nullptr;
 		void verifyIndex();
 
 		ArrayItem( std::string id,  Node *next, use useType,Types type, AST::Node *index ) :id( id ), next( next ),useType( useType ),index( index )  {this->type = type; verifyIndex();} //Default Constructor

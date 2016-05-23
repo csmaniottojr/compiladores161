@@ -1,5 +1,6 @@
 #include "ast.h"
 #include "structures.h"
+#include <typeinfo>
 
 
 using namespace AST;
@@ -225,19 +226,57 @@ void Variable::printTree() {
 		next->printTree();
 		std::cout << ", ";
 	} else {
-		std::string message = "Tipo Fantasma " + this->id;
+		// std::string message = "Tipo Fantasma " + this->id;
 		switch ( this->useType ) {
-			case AST::Variable::atrib: {message = "Atribuicao de valor para variavel " + TypesString[( int )type] +" " + this->id +":"; break;}
-			case AST::Variable::ini: {message = "Declaracao de variavel " + TypesString[( int )type] +": "+ this->id ; break;}
+			case AST::Variable::atrib: {
+
+				if(idType==""){
+					std::cout << "Atribuicao de valor para variavel " + TypesString[( int )type] +" " + this->id +":"; 
+
+				}else{
+
+					AST::Variable *castToVar = dynamic_cast<AST::Variable *>( component );
+					std::string componentName;
+					AST::Types  componentType;
+					if(castToVar != nullptr){
+						componentName = castToVar->id;
+						componentType = castToVar->type;
+						std::cout << "Atribuicao de valor para variavel " + idType +" " + this->id +" componente " + TypesString[( int )componentType] +" "+ componentName +":"; 
+						
+					}else{
+						AST::ArrayItem *castToArray = dynamic_cast<AST::ArrayItem *>( component );
+						componentName = castToArray->id;
+						componentType = castToArray->type;
+						AST::Node * index = castToArray->index;
+						std::cout << "Atribuicao de valor para variavel " + idType +" " + this->id +" componente arranjo " + TypesString[( int )componentType] +" "+ componentName +"{+indice: "; 
+												
+						index->printTree();
+						std::cout<<"}: ";
+
+					}
+
+					}	
+
+				break;}
+			case AST::Variable::ini: {
+
+				if(idType==""){
+					std::cout << "Declaracao de variavel " + TypesString[( int )type] +": "+ this->id ; 
+
+				}else{
+					std::cout << "Declaracao de variavel " + idType +": "+ this->id ; 
+				}		
+
+				break;}
 			case AST::Variable::read: {
 				//std::cout<<"[ST  com "<<simbolTable->symbolMap.size()<<" atribuiu? "<<simbolTable->jaAtribuiu<<"]";
 				switch( simbolTable->getidentifierType( this->id ) ) {
 					case Structures::tBool: {
 
 						if(hasParentheses){
-							message = "(abre parenteses) booleano "+ this->id +" (fecha parenteses)";
+							std::cout << "(abre parenteses) booleano "+ this->id +" (fecha parenteses)";
 						}else{
-							message = "booleano " + this->id;
+							std::cout << "booleano " + this->id;
 						}
 
 						break;
@@ -245,34 +284,73 @@ void Variable::printTree() {
 					case Structures::tDouble: {
 						
 						if(hasParentheses){
-							message = "(abre parenteses) real "+ this->id +" (fecha parenteses)";
+							std::cout << "(abre parenteses) real "+ this->id +" (fecha parenteses)";
 						}else{
-							message = "real " + this->id;
+							std::cout << "real " + this->id;
 						}
 						break;
 					}
 					case Structures::tInteger: {
-						message = "";
+						// message = "";
 
 						if(hasParentheses){
-							message += "(abre parenteses) ";
+							std::cout << "(abre parenteses) ";
 						}
 
-						message = "inteiro " + this->id;
+						std::cout << "inteiro " + this->id;
 						if(this->coercionTo){
-							message += (" para variavel " + tipoOperacoes[( int )this->coercionTo]);
+							std::cout << (" para variavel " + tipoOperacoes[( int )this->coercionTo]);
 						}
 
 						if(hasParentheses){
-							message += " (fecha parenteses)";
+							std::cout << " (fecha parenteses)";
 						}
+						break;
+					}
+					case Structures::compound:{
+
+						AST::Variable *castToVar = dynamic_cast<AST::Variable *>( component );
+						std::string componentName;
+						AST::Types  componentType;
+						AST::Node * index;
+						if(castToVar != nullptr){
+							componentName = castToVar->id;
+							componentType = castToVar->type;
+
+
+							if(hasParentheses){
+								std::cout << "(abre parenteses) "+idType +" " + this->id +" componente " + TypesString[( int )componentType] +" "+ componentName +" (fecha parenteses)";
+							}else{
+								std::cout << idType +" " + this->id +" componente " + TypesString[( int )componentType] +" "+ componentName;
+							}
+							
+						}else{
+							AST::ArrayItem *castToArray = dynamic_cast<AST::ArrayItem *>( component );
+							componentName = castToArray->id;
+							componentType = castToArray->type;
+							index = castToArray->index;
+
+							if(hasParentheses){
+								std::cout << "(abre parenteses) "+idType +" " + this->id +" componente arranjo " + TypesString[( int )componentType] +" "+ componentName +": {+indice: "; 
+								index->printTree();
+								std::cout<<"} (fecha parenteses)";
+							}else{
+								std::cout << idType +" " + this->id +" componente arranjo " + TypesString[( int )componentType] +" "+ componentName +": {+indice: ";
+								index->printTree();
+								std::cout<<"}";
+							}
+
+
+						}
+											
+						
 						break;
 					}
 					case Structures::undefined: {
 						if(hasParentheses){
-							message = "(abre parenteses) indefinido "+ this->id +" (fecha parenteses)";
+							std::cout << "(abre parenteses) indefinido "+ this->id +" (fecha parenteses)";
 						}else{
-							message = "indefinido " + this->id;
+							std::cout << "indefinido " + this->id;
 						}
 						
 						break;
@@ -282,7 +360,7 @@ void Variable::printTree() {
 				//message = "";  break;
 			}
 		}
-		std::cout<<message;
+		// std::cout<<message;
 		return;
 	}
 	std::cout << this->id;
@@ -295,7 +373,17 @@ void Array::printTree() {
 	} else {
 		std::string message = "";
 		switch ( this->useType ) {
-			case AST::Array::ini: {message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "+std::to_string( size ) + ": "+id; break;}
+			case AST::Array::ini: {
+
+
+				if(idType==""){
+					message = "Declaracao de arranjo " + TypesString[( int )type] + " de tamanho "+std::to_string( size ) + ": "+id; 
+				}else{
+					message = "Declaracao de arranjo " + idType + " de tamanho "+std::to_string( size ) + ": "+id; 
+				}
+				break;}
+		
+
 		}
 		std::cout<<message;
 		return;
@@ -307,6 +395,8 @@ void ArrayItem::printTree() {
 	std::string message = "";
 	switch ( this->useType ) {
 		case AST::ArrayItem::atrib: {
+
+			
 			message = "Atribuicao de valor para arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ;
 			std::cout<<message;
 			this->index->printTree();
@@ -314,10 +404,46 @@ void ArrayItem::printTree() {
 			break;
 		}
 		case AST::ArrayItem::read: {
-			message = "arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ;
-			std::cout<<message;
-			this->index->printTree();
-			std::cout<<"}";
+
+
+			if(idType==""){
+				message = "arranjo "+ TypesString[( int )type] + " " + this->id + ": {+indice: " ;
+				std::cout<<message;
+				this->index->printTree();
+				std::cout<<"}";
+
+			}else{
+
+				AST::Variable *castToVar = dynamic_cast<AST::Variable *>( component );
+				std::string componentName;
+				AST::Types  componentType;
+				if(castToVar != nullptr){
+					componentName = castToVar->id;
+					componentType = castToVar->type;
+					std::cout << "arranjo " + idType +" " + this->id +" componente " + TypesString[( int )componentType] +" "+ componentName +": {+indice: "; 
+					this->index->printTree();
+					std::cout<<"}";
+
+				}else{
+					AST::ArrayItem *castToArray = dynamic_cast<AST::ArrayItem *>( component );
+					componentName = castToArray->id;
+					componentType = castToArray->type;
+					AST::Node * indexComp = castToArray->index;
+					std::cout << "arranjo " + idType +" " + this->id +" componente " + TypesString[( int )componentType] +" {+indice: "; 
+					this->index->printTree();
+					std::cout<<"}: ";
+					std::cout << " "+ componentName +": {+indice: ";			
+					indexComp->printTree();
+					
+
+				}
+
+				}
+
+
+
+
+			
 			break;
 		}
 		return;
@@ -376,4 +502,23 @@ void Conditional::verifyExpression() {
 	if( expr->type != AST::tBool ) {
 		yyerror( "Erro semantico: operacao teste espera booleano mas recebeu %s.\n",tipoOperacoes[( int )expr->type].c_str() );
 	}
+}
+
+void Compound::printTree(){
+
+	std::cout << "Definicao tipo: " << id << "\n+componentes:\n";
+
+	for ( Node *decl: components->lines ) {
+		AST::Variable *castToVar = dynamic_cast<AST::Variable *>( decl );
+		if(castToVar != nullptr){
+			std::cout << "Componente " << tipoOperacoes[( int )castToVar->type] <<": " << castToVar->id <<"\n";
+			
+		}else{
+			AST::Array *castToArray = dynamic_cast<AST::Array *>( decl );
+			std::cout << "Componente arranjo " << tipoOperacoes[( int )castToArray->type] <<" de tamanho "<<castToArray->size <<": " << castToArray->id <<"\n";
+		}
+		
+	}
+	std::cout << "Fim definicao";
+
 }

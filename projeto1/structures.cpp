@@ -16,7 +16,7 @@
  */
 #include "structures.h"
 #include "ast.h"
-#include <typeinfo>
+
 
 //Constructors=====================================================================================
 //SymbolTable====================================
@@ -74,7 +74,7 @@ AST::Node *Structures::SymbolTable::insertId ( std::string idName, AST::Node *ne
 
 
 //===============================================
-//Mudar recursivamente o tipo de uma lista de variaveis
+//Mudar recursivamente o tipo de uma lista de variaveis primitivas
 void Structures::SymbolTable::updateTypes( AST::Node *nodo, Structures::Types tipo ) {
 	AST::Variable *thisvar = dynamic_cast<AST::Variable *>( nodo );
 	if( !symbolMap.at( thisvar->id ).foiRedefinida ) {
@@ -86,6 +86,22 @@ void Structures::SymbolTable::updateTypes( AST::Node *nodo, Structures::Types ti
 	}
 }
 
+//===============================================
+//Mudar recursivamente o tipo de uma lista de variaveis compostas
+void Structures::SymbolTable::updateTypes( AST::Node *nodo, Structures::Types tipo, std::string idType ) {
+	AST::Variable *thisvar = dynamic_cast<AST::Variable *>( nodo );
+	if( !symbolMap.at( thisvar->id ).foiRedefinida ) {
+		symbolMap.at( thisvar->id ).idType = idType;
+		thisvar->type = ( AST::Types ) tipo;
+		thisvar->idType = idType;
+		symbolMap.at( thisvar->id ).updateType( tipo );
+	}
+	if( thisvar->next != nullptr ) {
+		updateTypes( thisvar->next,tipo );
+	}
+}
+//===============================================
+//Mudar recursivamente o tipo de uma lista de arranjos primitivas
 void Structures::SymbolTable::updateTypesAndSize( AST::Node *nodo, Structures::Types tipo, int size ) {
 	AST::Array *thisvar = dynamic_cast<AST::Array *>( nodo );
 	int newSize = size;
@@ -100,6 +116,26 @@ void Structures::SymbolTable::updateTypesAndSize( AST::Node *nodo, Structures::T
 	}
 	if( thisvar->next != nullptr ) {
 		updateTypesAndSize( thisvar->next,tipo,size );
+	}
+}
+//===============================================
+//Mudar recursivamente o tipo de uma lista de arranjos compostos
+void Structures::SymbolTable::updateTypesAndSize( AST::Node *nodo, Structures::Types tipo, int size,std::string idType ) {
+	AST::Array *thisvar = dynamic_cast<AST::Array *>( nodo );
+	int newSize = size;
+	if( size <= 0 ) {
+		yyerror( "Erro semantico: arranjo %s com tamanho menor do que um.\n",thisvar->id.c_str() );
+		newSize = 1;
+	}
+	if( !symbolMap.at( thisvar->id ).foiRedefinida ) {
+		symbolMap.at( thisvar->id ).idType = idType;
+		thisvar->type = ( AST::Types ) tipo;
+		thisvar->size = newSize;
+		thisvar->idType = idType;
+		symbolMap.at( thisvar->id ).updateType( tipo );
+	}
+	if( thisvar->next != nullptr ) {
+		updateTypesAndSize( thisvar->next,tipo,size,idType );
 	}
 }
 
@@ -138,7 +174,7 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id ) {
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
-			if(  it->second.isCompound ) {
+			if(  it->second.type == Structures::Types::compound ) {
 				yyerror( "Erro semantico: tipo %s com uso como variavel.\n",id.c_str() );
 				return new AST::Variable( id,NULL,AST::Variable::read,AST::Types::undefined );
 			}
@@ -173,6 +209,12 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id,AST::Node *ind
 	for ( std::map<std::string,Structures::Symbol>::iterator it = simbolTable->symbolMap.begin(); it!= simbolTable->symbolMap.end(); it++ ) {
 		if( it->first == id ) {
 			//		std::cout <<"{ST achou  " << id << "="<<it->second.value<<"}";
+
+			if(  it->second.type == Structures::Types::compound ) {
+				yyerror( "Erro semantico: tipo %s com uso como variavel.\n",id.c_str() );
+				return new AST::ArrayItem( id,NULL,AST::ArrayItem::read,AST::Types::undefined,indice );
+			}
+
 			if( !it->second.initialized ) {
 				yyerror( "Erro semantico: variavel %s  nao inicializada.\n",id.c_str() );
 			}
@@ -182,12 +224,203 @@ AST::Node *Structures::SymbolTable::getIdentifier( std::string id,AST::Node *ind
 	}
 	return new AST::ArrayItem( id, NULL, AST::ArrayItem::read , ( AST::Types )symbolType,indice );
 }
+//===============================================
+//Ler variável de composto
+
+AST::Node *Structures::SymbolTable::getIdentifier( std::string idVar, std::string idComponent ) {
+	Types symbolType;
+		if( !containsIdentifier( idVar ) ) {
+
+			if(pai == nullptr){
+				
+				yyerror( "Erro semantico: variavel %s sem declaracao.\n",idVar.c_str() );
+				return new AST::Variable( idVar,NULL,AST::Variable::read,AST::Types::undefined );
+			}else{
+				
+				return pai->getIdentifier(idVar,idComponent);
+
+			}			
+		}
+
+
+		if(symbolMap.at(idVar).type != Structures::Types::compound){
+			if( symbolMap.at( idVar ).isArray ) {
+				yyerror( "Erro semantico: arranjo %s com uso como tipo.\n",idVar.c_str() );
+			}else{
+				yyerror( "Erro semantico: variavel %s com uso como tipo.\n",idVar.c_str() );
+				}
+				return new AST::Variable( idVar,NULL,AST::Variable::atrib,AST::Types::undefined );
+			}
+
+		std::string idType = symbolMap.at( idVar ).idType;
+
+		Structures::Types varType;
+
+		AST::Variable *compVar;
+
+		if(compoundScopeMap[idType]->symbolMap.find(idComponent) != compoundScopeMap[idType]->symbolMap.end()){
+			
+			if(!this->compoundScopeMap[idType]->symbolMap[idComponent].initialized){
+				yyerror( "Erro semantico: componente %s nao inicializada.\n",idComponent.c_str() );
+			}
+			compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,( AST::Types )this->compoundScopeMap[idType]->symbolMap[idComponent].type );
+			varType = this->compoundScopeMap[idType]->symbolMap[idComponent].type;
+			
+		}else{
+			yyerror("Erro semantico: tipo %s nao contem componente %s.\n", idType.c_str(),idComponent.c_str());
+			compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,AST::Types::undefined );
+			varType = Structures::Types::undefined;
+		}
+
+		AST::Variable *var = new AST::Variable( idVar,NULL,AST::Variable::read,( AST::Types )varType);
+		var->idType = idType;
+
+
+		var->component = compVar;
+		return var;
+
+}
+
+//===============================================
+//Ler variável de composto no indice
+
+AST::Node *Structures::SymbolTable::getIdentifier( std::string idVar, std::string idComponent, AST::Node *indice ) {
+	Types symbolType;
+		if( !containsIdentifier( idVar ) ) {
+
+			if(pai == nullptr){
+				
+				yyerror( "Erro semantico: variavel %s sem declaracao.\n",idVar.c_str() );
+				return new AST::Variable( idVar,NULL,AST::Variable::read,AST::Types::undefined );
+			}else{
+				
+				return pai->getIdentifier(idVar,idComponent);
+
+			}			
+		}
+
+
+		if(symbolMap.at(idVar).type != Structures::Types::compound){
+			if( symbolMap.at( idVar ).isArray ) {
+				yyerror( "Erro semantico: arranjo %s com uso como tipo.\n",idVar.c_str() );
+			}else{
+				yyerror( "Erro semantico: variavel %s com uso como tipo.\n",idVar.c_str() );
+				}
+				return new AST::Variable( idVar,NULL,AST::Variable::atrib,AST::Types::undefined );
+			}
+
+		std::string idType = symbolMap.at( idVar ).idType;
+
+		Structures::Types varType;
+
+		AST::ArrayItem *compVar;
+
+		if(compoundScopeMap[idType]->symbolMap.find(idComponent) != compoundScopeMap[idType]->symbolMap.end()){
+			
+			
+			
+
+			if(!this->compoundScopeMap[idType]->symbolMap[idComponent].isArray){
+				yyerror("Erro semantico: componente %s do tipo %s sendo tratado como arranjo é variável primitiva.\n", idComponent.c_str(),idType.c_str());
+				compVar =  new AST::ArrayItem( idComponent,NULL,AST::ArrayItem::read,AST::Types::undefined,indice);
+				varType = varType = Structures::Types::undefined;
+			
+			}else{
+				
+				compVar =  new AST::ArrayItem( idComponent,NULL,AST::ArrayItem::read,( AST::Types )this->compoundScopeMap[idType]->symbolMap[idComponent].type,indice );
+				varType = this->compoundScopeMap[idType]->symbolMap[idComponent].type;
+			}
+
+
+			
+		}else{
+			yyerror("Erro semantico: tipo %s nao contem componente %s.\n", idType.c_str(),idComponent.c_str());
+			compVar =  new AST::ArrayItem( idComponent,NULL,AST::ArrayItem::read,AST::Types::undefined,indice );
+			varType = Structures::Types::undefined;
+		}
+
+		AST::Variable *var = new AST::Variable( idVar,NULL,AST::Variable::read,( AST::Types )varType);
+		var->idType = idType;
+
+
+		var->component = compVar;
+		return var;
+
+}
+
+//===============================================
+//Ler variável no indice de componente
+
+AST::Node *Structures::SymbolTable::getIdentifier( std::string idVar,  AST::Node *indice, std::string idComponent ) {
+	Types symbolType;
+		if( !containsIdentifier( idVar ) ) {
+
+			if(pai == nullptr){
+				
+				yyerror( "Erro semantico: variavel %s sem declaracao.\n",idVar.c_str() );
+				return new AST::Variable( idVar,NULL,AST::Variable::read,AST::Types::undefined );
+			}else{
+				
+				return pai->getIdentifier(idVar,idComponent);
+
+			}			
+		}
+
+
+		if(symbolMap.at(idVar).type != Structures::Types::compound){
+			if( symbolMap.at( idVar ).isArray ) {
+				yyerror( "Erro semantico: arranjo %s com uso como tipo.\n",idVar.c_str() );
+			}else{
+				yyerror( "Erro semantico: variavel %s com uso como tipo.\n",idVar.c_str() );
+				}
+				return new AST::Variable( idVar,NULL,AST::Variable::atrib,AST::Types::undefined );
+			}
+
+		if(!symbolMap.at( idVar ).isArray ) {
+			yyerror( "Erro semantico: variavel %s com uso como arranjo.\n",idVar.c_str() );
+		}
+
+		std::string idType = symbolMap.at( idVar ).idType;
+
+		Structures::Types varType;
+
+		AST::Variable *compVar;
+
+		if(compoundScopeMap[idType]->symbolMap.find(idComponent) != compoundScopeMap[idType]->symbolMap.end()){
+			
+
+			if(this->compoundScopeMap[idType]->symbolMap[idComponent].isArray){
+				yyerror("Erro semantico: componente %s do tipo %s sendo tratado como variável primitiva é arranjo.\n", idComponent.c_str(),idType.c_str());
+				compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,AST::Types::undefined);
+				varType = varType = Structures::Types::undefined;
+			
+			}else{
+				
+				compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,( AST::Types )this->compoundScopeMap[idType]->symbolMap[idComponent].type );
+				varType = this->compoundScopeMap[idType]->symbolMap[idComponent].type;
+			}
+
+
+			
+		}else{
+			yyerror("Erro semantico: tipo %s nao contem componente %s.\n", idType.c_str(),idComponent.c_str());
+			compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,AST::Types::undefined );
+			varType = Structures::Types::undefined;
+		}
+
+		AST::ArrayItem *var = new AST::ArrayItem( idVar,NULL,AST::ArrayItem::read,( AST::Types )varType,indice);
+		var->idType = idType;
+
+
+		var->component = compVar;
+		return var;
+
+}
 
 //===============================================
 //Atribuir  variavel
 AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
-	
-	
+		
 	if( !containsIdentifier( id ) ) {
 
 		if(pai == nullptr){
@@ -197,7 +430,6 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id ) {
 		}else{
 			
 			return pai->assignVariable(id);
-
 		}	
 
 	} else {
@@ -217,7 +449,7 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id , AST::Node *
 
 		if(pai == nullptr){
 			
-			yyerror( "Erro semantico: variavel %s sem declaracao.\n",id.c_str() );
+			yyerror( "Erro semantico: arranjo %s sem declaracao.\n",id.c_str() );
 			return new AST::ArrayItem( id,NULL,AST::ArrayItem::atrib,AST::Types::undefined, indice );
 		}else{
 			
@@ -234,13 +466,208 @@ AST::Node *Structures::SymbolTable::assignVariable( std::string id , AST::Node *
 	//std::cout << "[atribuindo " << id << " " << AST::TypesString[(int)this->symbolMap.at(id).type]<< "]";
 	return new AST::ArrayItem( id,NULL,AST::ArrayItem::atrib,( AST::Types )this->symbolMap[id].type, indice );
 }
+
+//===============================================
+//atribuir componente de tipo composto
+AST::Node *Structures::SymbolTable::assignVariable( std::string idVar, std::string idComponent ){
+	if( !containsIdentifier( idVar ) ) {
+
+		if(pai == nullptr){
+			
+			yyerror( "Erro semantico: variavel %s sem declaracao.\n",idVar.c_str() );
+			return new AST::Variable( idVar,NULL,AST::Variable::atrib,AST::Types::undefined );
+		}else{
+			
+			return pai->assignVariable(idVar);
+		}	
+
+	} else {
+
+		if(symbolMap.at( idVar ).type != Structures::Types::compound){
+			if( symbolMap.at( idVar ).isArray ) {
+				yyerror( "Erro semantico: arranjo %s com uso como tipo.\n",idVar.c_str() );
+			}else{
+				yyerror( "Erro semantico: variavel %s com uso como tipo.\n",idVar.c_str() );
+			}
+			return new AST::Variable( idVar,NULL,AST::Variable::atrib,AST::Types::undefined );
+		}
+
+		if( symbolMap.at( idVar ).isArray ) {
+			yyerror( "Erro semantico: arranjo %s com uso como tipo.\n",idVar.c_str() );
+			return new AST::Variable( idVar,NULL,AST::Variable::atrib,AST::Types::undefined );
+		}
+
+		std::string idType = symbolMap.at( idVar ).idType;
+
+		Structures::Types varType;
+
+		AST::Variable *compVar;
+
+		if(compoundScopeMap[idType]->symbolMap.find(idComponent) != compoundScopeMap[idType]->symbolMap.end()){
+			this->compoundScopeMap[idType]->symbolMap[idComponent].initialized=true;
+			compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,( AST::Types )this->compoundScopeMap[idType]->symbolMap[idComponent].type );
+			varType = this->compoundScopeMap[idType]->symbolMap[idComponent].type;
+		}else{
+			yyerror("Erro semantico: tipo %s nao contem componente %s.\n", idType.c_str(),idComponent.c_str());
+			compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,AST::Types::undefined );
+			varType = Structures::Types::undefined;
+		}
+
+		AST::Variable *var = new AST::Variable( idVar,NULL,AST::Variable::atrib,( AST::Types )varType);
+		var->idType = idType;
+
+
+		var->component = compVar;
+		return var;
+	}
+}
+
+//===============================================
+//atribuir componente de tipo composto no indice
+AST::Node *Structures::SymbolTable::assignVariable( std::string idVar, std::string idComponent,AST::Node *indice  ){
+	if( !containsIdentifier( idVar ) ) {
+
+		if(pai == nullptr){
+			
+			yyerror( "Erro semantico: variavel %s sem declaracao.\n",idVar.c_str() );
+			return new AST::Variable( idVar,NULL,AST::Variable::atrib,AST::Types::undefined );
+		}else{
+			
+			return pai->assignVariable(idVar);
+		}	
+
+	} else {
+
+		if(symbolMap.at( idVar ).type != Structures::Types::compound){
+			if( symbolMap.at( idVar ).isArray ) {
+				yyerror( "Erro semantico: arranjo %s com uso como tipo.\n",idVar.c_str() );
+			}else{
+				yyerror( "Erro semantico: variavel %s com uso como tipo.\n",idVar.c_str() );
+			}
+			return new AST::Variable( idVar,NULL,AST::Variable::atrib,AST::Types::undefined );
+		}
+
+		std::string idType = symbolMap.at( idVar ).idType;
+
+		Structures::Types varType;
+
+		AST::ArrayItem *compVar;
+
+		if(compoundScopeMap[idType]->symbolMap.find(idComponent) != compoundScopeMap[idType]->symbolMap.end()){
+
+			if(!this->compoundScopeMap[idType]->symbolMap[idComponent].isArray){
+				yyerror("Erro semantico: componente %s do tipo %s sendo tratado como arranjo é variável primitiva.\n", idComponent.c_str(),idType.c_str());
+				compVar =  new AST::ArrayItem( idComponent,NULL,AST::ArrayItem::read,AST::Types::undefined,indice);
+				varType = varType = Structures::Types::undefined;
+			
+			}else{
+				this->compoundScopeMap[idType]->symbolMap[idComponent].initialized=true;
+				compVar =  new AST::ArrayItem( idComponent,NULL,AST::ArrayItem::read,( AST::Types )this->compoundScopeMap[idType]->symbolMap[idComponent].type,indice );
+				varType = this->compoundScopeMap[idType]->symbolMap[idComponent].type;
+			}
+			
+		}else{
+			yyerror("Erro semantico: tipo %s nao contem componente %s.\n", idType.c_str(),idComponent.c_str());
+			compVar =  new AST::ArrayItem( idComponent,NULL,AST::ArrayItem::read,AST::Types::undefined ,indice);
+			varType = Structures::Types::undefined;
+		}
+
+		AST::Variable *var = new AST::Variable( idVar,NULL,AST::Variable::atrib,( AST::Types )varType);
+		var->idType = idType;
+
+
+		var->component = compVar;
+		return var;
+	}
+}
+
+
+
+
+//===============================================
+//atribuir indice de tipo composto na variavel
+AST::Node *Structures::SymbolTable::assignVariable( std::string idVar, AST::Node *indice, std::string idComponent  ){
+	if( !containsIdentifier( idVar ) ) {
+
+		if(pai == nullptr){
+			
+			yyerror( "Erro semantico: arranjo %s sem declaracao.\n",idVar.c_str() );
+			return new AST::ArrayItem( idVar,NULL,AST::ArrayItem::atrib,AST::Types::undefined,indice);
+		}else{
+			
+			return pai->assignVariable(idVar);
+		}	
+
+	} else {
+
+		if(symbolMap.at( idVar ).type != Structures::Types::compound){
+			if(! symbolMap.at( idVar ).isArray ) {
+				
+				yyerror( "Erro semantico: variavel %s com uso como arranjo.\n",idVar.c_str() );
+			}
+			return new AST::ArrayItem( idVar,NULL,AST::ArrayItem::atrib,AST::Types::undefined,indice );
+		}
+
+		std::string idType = symbolMap.at( idVar ).idType;
+
+		Structures::Types varType;
+
+		AST::Variable *compVar;
+
+		if(compoundScopeMap[idType]->symbolMap.find(idComponent) != compoundScopeMap[idType]->symbolMap.end()){
+
+			if(this->compoundScopeMap[idType]->symbolMap[idComponent].isArray){
+				yyerror("Erro semantico: componente %s do tipo %s sendo tratado como arranjo é variável primitiva.\n", idComponent.c_str(),idType.c_str());
+				compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,AST::Types::undefined);
+				varType = varType = Structures::Types::undefined;
+			
+			}else{
+				this->compoundScopeMap[idType]->symbolMap[idComponent].initialized=true;
+				compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,( AST::Types )this->compoundScopeMap[idType]->symbolMap[idComponent].type );
+				varType = this->compoundScopeMap[idType]->symbolMap[idComponent].type;
+			}
+			
+		}else{
+			yyerror("Erro semantico: tipo %s nao contem componente %s.\n", idType.c_str(),idComponent.c_str());
+			compVar =  new AST::Variable( idComponent,NULL,AST::Variable::read,AST::Types::undefined);
+			varType = Structures::Types::undefined;
+		}
+
+		AST::ArrayItem *var = new AST::ArrayItem( idVar,NULL,AST::ArrayItem::atrib,( AST::Types )varType,indice);
+		var->idType = idType;
+
+
+		var->component = compVar;
+		return var;
+	}
+}
+
+
 //===============================================
 //Insere um tipo composto
-void insertCompound( std::string idName, AST::Node *components ) {
-	AST::Block *thisvar = dynamic_cast<AST::Block *>( components );
-	for ( AST::Node *line: thisvar->lines ) {
-		std::cout << typeid( line ).name() <<"\n";
+AST::Node *Structures::SymbolTable::insertCompound( std::string idName, Structures::SymbolTable *compoundScope, AST::Node* declarations ) {
+	
+	if ( ! containsIdentifier( idName ) )  {
+		
+			Structures::Symbol newSymbol( Kinds::kVariable,Structures::Types::compound,false, false );
+			std::pair<std::string,Structures::Symbol> newElement ( idName,newSymbol );
+			this->symbolMap.insert ( newElement );
+
+			std::pair<std::string,Structures::SymbolTable*> newCompost ( idName,compoundScope );
+			this->compoundScopeMap.insert ( newCompost );
+
+
+			return new AST::Compound(idName,dynamic_cast<AST::Block *>( declarations ));
+		
+	} else {
+		
+		yyerror( "Erro semantico: tipo %s sofrendo redefinicao.\n",idName.c_str() );
+		
+		symbolMap.at( idName ).foiRedefinida=true;
+		return new AST::Compound(idName,dynamic_cast<AST::Block *>( declarations ));
+		
 	}
+
 }
 //===============================================
 //Modifica o escopo (tabela) pai

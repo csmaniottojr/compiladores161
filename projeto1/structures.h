@@ -31,7 +31,7 @@ namespace AST {class Node;}
 namespace Structures {
 
 	enum Kinds {kVariable};
-	enum Types {tInteger= 0, tDouble, tBool, undefined};
+	enum Types {tInteger= 0, tDouble, tBool, undefined, compound};
 
 
 
@@ -43,8 +43,7 @@ namespace Structures {
 		bool initialized;//Defines if th symbol was initialized or not
 		bool isArray; //flag to indicate if symbol is array or not
 		bool foiRedefinida = false;
-		bool isCompound = false;
-		std::vector<Symbol> components;
+		std::string idType = "";
 		Symbol( Kinds kind, Types type, bool initialized, bool isArray ):
 			kind( kind ), type( type ),initialized( initialized ), isArray( isArray ) {};
 		Symbol();
@@ -72,22 +71,32 @@ namespace Structures {
 		void updatePai( SymbolTable *newPai );
 
 		std::map<std::string , Symbol> symbolMap;
+		std::map<std::string, SymbolTable*> compoundScopeMap;
 
 
 		AST::Node *insertId( std::string idName, AST::Node *nextVar, Structures::Types tipo,bool isArray );
-		void insertCompound( std::string idName, AST::Node *components );
+		AST::Node *insertCompound( std::string idName, Structures::SymbolTable *compostScope, AST::Node* declarations );
 
 		AST::Node *assignVariable( std::string id );
 		AST::Node *assignVariable( std::string id, AST::Node *indice );
+		AST::Node *assignVariable( std::string idVar, std::string idComponent );
+		AST::Node *assignVariable( std::string idVar, std::string idComponent, AST::Node *indice );
+		AST::Node *assignVariable( std::string idVar, AST::Node *indice, std::string idComponent );
 
 		bool containsIdentifier( std::string id );
 
 		AST::Node *getIdentifier( std::string id );
 		AST::Node *getIdentifier( std::string id ,AST::Node *indice );
+		AST::Node *getIdentifier( std::string idVar, std::string idComponent );
+		AST::Node *getIdentifier( std::string idVar, std::string idComponent,AST::Node *indice );
+		AST::Node *getIdentifier( std::string idVar, AST::Node *indice, std::string idComponent );
 		Types getidentifierType( std::string id );
 
 		void updateTypes( AST::Node *, Structures::Types tipo );
+		void updateTypes( AST::Node *nodo, Structures::Types tipo, std::string idType );
 		void updateTypesAndSize( AST::Node *nodo, Structures::Types tipo, int size );
+		void updateTypesAndSize( AST::Node *nodo, Structures::Types tipo, int size, std::string idType );
+		//void updateTypesAndSize( AST::Node *nodo, Structures::Types tipo,std::string idType, int size );
 
 
 	};

@@ -76,22 +76,23 @@ extern int yydebug;
     T_OR = 279,
     T_COLCH_L = 280,
     T_COLCH_R = 281,
-    T_TINT = 282,
-    T_TDOUBLE = 283,
-    T_TBOOL = 284,
-    T_WHILE = 285,
-    T_END = 286,
-    T_DO = 287,
-    T_IF = 288,
-    T_THEN = 289,
-    T_ELSE = 290,
-    T_DEF = 291,
-    T_TYPE = 292,
-    T_VIRGULA = 293,
-    T_DECL = 294,
-    T_FUNC = 295,
-    T_RETURN = 296,
-    T_FUNCDECL = 297
+    T_POINT = 282,
+    T_TINT = 283,
+    T_TDOUBLE = 284,
+    T_TBOOL = 285,
+    T_WHILE = 286,
+    T_END = 287,
+    T_DO = 288,
+    T_IF = 289,
+    T_THEN = 290,
+    T_ELSE = 291,
+    T_DEF = 292,
+    T_TYPE = 293,
+    T_VIRGULA = 294,
+    T_DECL = 295,
+    T_FUNC = 296,
+    T_RETURN = 297,
+    T_FUNCDECL = 298
   };
 #endif
 
@@ -110,9 +111,10 @@ union YYSTYPE
 	AST::Operation operation;
 	bool boolean;
 	Structures::Types type;
+	Structures::SymbolTable* scope;
 
 
-#line 116 "parser.h" /* yacc.c:1909  */
+#line 118 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
