@@ -19,7 +19,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "structures.h"
 #define N_TYPES 3
 
 extern void yyerror( const char *s, ... ); //The error funtion in Bison file
@@ -33,7 +32,7 @@ namespace AST {
 	enum Operation { oplus, omult, oassign, oand, oor, ominus, odiv, oequal, ogreater, oless, ogreatereq, olesseq, odifferent,onot };
 	enum Types { tInt,tReal, tBool,undefined,compound};
 	static std::string TypesString [5]= {"inteiro", "real","booleano","indefinido", "composto"};
-	static std::string tipoOperacoes[5] = {"inteira", "real", "booleana","Indefinida", "composto"};
+	static std::string tipoOperacoes[5] = {"inteira", "real", "booleana","Indefinida", "composta"};
 	class Node;
 
 	typedef std::vector<Node *> NodeList; //List of nodes
@@ -112,7 +111,7 @@ namespace AST {
 
 	class Variable : public Node {
 	public:
-		enum use {atrib,ini,read};
+		enum use {atrib,ini,read,param};
 		std::string id;//The var "name"
 		AST::Node *next;//Next Variable, to multiple variable declarations
 		use useType;
@@ -180,6 +179,42 @@ namespace AST {
 		std::string id;
 		AST::Block *components;
 		Compound( std::string id, AST::Block *components ): id( id ), components( components ) {}
+		void printTree();
+	};
+	class Function : public Node {
+
+	public:
+		enum funcUse {decl,def,read};
+		funcUse useType;
+		AST::Variable *params;
+		std::string id;
+		AST::Types type;
+		AST::Block *corpo;
+		void printParams( AST::Variable *parametros ) {
+			if( parametros==nullptr ) {
+				std::cout << "+parametros:";
+				return;
+			}
+			printParams( dynamic_cast<AST::Variable *>( parametros->next ) );
+			std::cout << "\nParametro " << AST::TypesString[( int )parametros->type] << ": " << parametros->id;
+		}
+
+		Function( std::string id, AST::Types tipo, AST::Variable *parametros ,funcUse uso ) {
+			this->id = id;
+			this->type = tipo;
+			this->params =  parametros;
+			this->useType = uso;
+		}
+		Function( std::string id, AST::Types tipo, AST::Variable *parametros ,funcUse uso , AST::Block *corpo ) {
+			this->id = id;
+			this->type = tipo;
+			this->params =  parametros;
+			this->useType = uso;
+			this->corpo = corpo;
+		}
+
+
+
 		void printTree();
 	};
 

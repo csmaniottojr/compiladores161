@@ -6,7 +6,7 @@ PARAM=-std=c++11
 OUTPUT=myparse
 all: flex yacc clang
 clang:*.cpp *.h
-	${CC} -o ${OUTPUT} *.cpp ${LLVMPARAM} ${PARAM}
+	${CC} -o ${OUTPUT} *.cpp ${LLVMPARAM} ${PARAM} -g
 
 yacc: parser.y
 	${BISON} --defines=parser.h --output=parser.cpp --verbose --report-file=bison.out parser.y

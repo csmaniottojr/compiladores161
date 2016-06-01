@@ -1,5 +1,5 @@
 [Buildset]
-BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x02\x00\x00\x00(\x00p\x00r\x00o\x00j\x00e\x00t\x00o\x001\x00C\x00o\x00m\x00p\x00i\x00l\x00a\x00d\x00o\x00r\x00e\x00s\x00\x00\x00\x08\x00t\x00e\x00s\x00t)
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00(\x00p\x00r\x00o\x00j\x00e\x00t\x00o\x001\x00C\x00o\x00m\x00p\x00i\x00l\x00a\x00d\x00o\x00r\x00e\x00s)
 
 [Defines And Includes][Compiler]
 Name=GCC
@@ -23,7 +23,7 @@ Dependency Action=Nothing
 Display Demangle Names=true
 Display Static Members=false
 EnvironmentGroup=
-Executable=file:///home/decker/Documents/Compiladores16.1/projeto1/myparse
+Executable=file:///home/decker/Documents/Compiladores/gits/meusGits/trabalhos/compiladores161/projeto1/myparse
 External Terminal=konsole --noclose --workdir %workdir -e %exe
 GDB Path=
 Project Target=
